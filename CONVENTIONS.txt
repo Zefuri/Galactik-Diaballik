@@ -1,0 +1,14 @@
+(Toutes les classes, attributs, variables et méthodes doivent être en anglais et rédiger sous ce format)
+
+public class ClassName {
+
+	private int varName;
+
+	public ClassName(int varName) {
+		this.varName = varName;
+	}
+
+	public void methodName(int var1, String var2) {
+		...
+	}
+}
