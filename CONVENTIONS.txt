@@ -1,4 +1,4 @@
-(Toutes les classes, attributs, variables et méthodes doivent être en anglais et rédiger sous ce format)
+(Toutes les classes, attributs, variables et méthodes doivent être en anglais et rédigés sous ce format)
 
 public class ClassName {
 
