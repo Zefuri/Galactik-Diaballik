@@ -29,6 +29,18 @@ public class Stage {
         this.board[i][j] = empty;
     }
 
+    public int whichTeam(int i, int j){
+        int n = this.whatsInTheBox(i,j);
+        if (n == ballSnowKid || n == snowKid){
+            return snowKid;
+        }
+        if (n == ballShadow || n == shadow){
+            return shadow;
+        }
+        return empty;
+    }
+
+
     public void move(int i, int j, char move) { //this should do a proper move    move piece at i j, with move
         int player = whatsInTheBox(i, j);
         if (!this.isABallHere(i,j)) {
@@ -49,8 +61,53 @@ public class Stage {
                     if (j < 6 && this.isEmpty(i, j + 1))
                         simpleMove(i, j, i, j + 1, player);
                     break;
+                default:
+                    System.out.println("wrong move input in move function");
+                    break;
             }
         }
+    }
+
+    public int direction(int i, int j, int nextI, int nextJ) {
+        if (i == nextI) {//same line
+            if (nextJ < j) {  //left
+                return 1;//same line left
+            } else {//right
+                return 2;//same line right
+            }
+        } else {
+            if (j == nextJ) {// same column
+                if (nextI < i) {  //up
+                    return 3;//same column up
+                }
+                else{//down
+                    return 4;//same column down
+                }
+            }
+            else{//diag check
+                int diffI = i - nextI;
+                int diffJ = j - nextJ;
+                if (diffJ == diffI){
+                    if (diffJ > 0){//bottom right
+                        return 5;
+                    }
+                    else{//top left
+                        return 6;
+                    }
+                }
+                else{
+                    if(diffJ == -diffI){
+                        if (diffJ > 0){//top right
+                            return 7;
+                        }
+                        else{//bottom left
+                            return 8;
+                        }
+                    }
+                }
+            }
+        }
+        return 0;
     }
 
     public void simplePass(int i, int j, int nextI, int nextJ){ //player at i j pass the ball to nextI nextJ
@@ -58,7 +115,65 @@ public class Stage {
         this.board[nextI][nextJ]--;
     }
 
-    public void pass(int i, int j, int nextI, int nextJ){ //player at i j pass the ball to nextI nextJ,
 
+    public void pass(int i, int j, int nextI, int nextJ) { //player at i j pass the ball to nextI nextJ
+        int team = this.whichTeam(i, j);
+        if (team != empty && team == this.whichTeam(nextI, nextJ) && this.isABallHere(i, j)){
+            boolean intercepted = false;
+            int dir = this.direction(i, j, nextI, nextJ);
+            int incI, incJ; //incrementation parameters
+            switch (dir){
+                case 1://same line on the left
+                    incI = 0;
+                    incJ = -1;
+                    break;
+                case 2://same line on the right
+                    incI = 0;
+                    incJ = 1;
+                    break;
+                case 3://same column up
+                    incI = -1;
+                    incJ = 0;
+                    break;
+                case 4://same column down
+                    incI = 1;
+                    incJ = 0;
+                    break;
+                case 5:// bottom right
+                    incI = 1;
+                    incJ = 1;
+                    break;
+                case 6://top left
+                    incI = -1;
+                    incJ = -1;
+                    break;
+                case 7://top right
+                    incI = -1;
+                    incJ = 1;
+                    break;
+                case 8://bottom left
+                    incI = 1;
+                    incJ = -1;
+                    break;
+                default:
+                    incI = 0;
+                    incJ = 0;
+                    break;
+            }
+
+
+            int box;
+            for(int startI = i, startJ = j; ((startI != nextI) && (startJ != nextJ)); startI += incI, startJ=+ incJ){
+                box = this.whatsInTheBox(startI, startJ);
+                if (box != empty && box != team) {
+                    intercepted = true;
+                    break;
+                }
+            }
+            if (!intercepted) {
+                simplePass(i, j, nextI, nextJ);
+            }
+        }
     }
 }
+
