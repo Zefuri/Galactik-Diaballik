@@ -2,7 +2,13 @@ package model;
 
 public class Stadium {
     public static final int empty = 0, ballSnowKid = 1, snowKid = 2, ballShadow = 3, shadow = 4;
-    int[][] board = new int[7][7];
+
+    int[][] board; 
+    
+    public Stadium() {
+        this.board = new int[7][7];
+        resetBoard();
+    }
 
     public void resetBoard(){  //initialising board
         this.board[0] = new int[]{shadow, shadow, shadow, ballShadow, shadow, shadow, shadow};
@@ -13,15 +19,23 @@ public class Stadium {
     }
 
     public int whatsInTheBox(int i, int j){ //what's in i j
-        return this.board[i][j];
-    }
-
-    public boolean isABallHere(int i, int j){ //is there a ball in i j
-        return this.board[i][j] % 2 != 0;
+        return board[i][j];
     }
 
     public boolean isEmpty(int i, int j){ //is i j empty
-        return this.board[i][j] == 0;
+        return board[i][j] == empty;
+    }
+
+    public boolean isSnowKid(int i, int j) {
+        return board[i][j] == snowKid || board[i][j] == ballSnowKid;
+    }
+
+    public boolean isShadow(int i, int j) {
+        return board[i][j] == shadow || board[i][j] == ballShadow;
+    }
+
+    public boolean isABallHere(int i, int j){ //is there a ball in i j
+        return board[i][j] == ballSnowKid || board[i][j] == ballShadow;
     }
 
     public void simpleMove(int i, int j, int nextI, int nextJ, int player){ //move player at i j to nextI nextJ, no matter what
