@@ -189,8 +189,8 @@ public class Stadium {
                 if(!intercepted){
                     simplePass(playerOne, playerTwo);
                 }
-            }
-        }
+            }else{intercepted = true;}
+        }else{intercepted = true;}
         return !intercepted;
     }
 
