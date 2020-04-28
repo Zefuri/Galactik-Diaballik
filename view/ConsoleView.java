@@ -2,6 +2,7 @@ package view;
 
 import java.util.Scanner;
 
+import model.Player;
 import model.Stadium;
 
 public class ConsoleView {
@@ -14,12 +15,14 @@ public class ConsoleView {
     public void display() {
         for (int i = 0; i < 7; i++) {
             for (int j = 0; j < 7; j++) {
-                if (stadium.isSnowKid(i, j)) {
-                        System.out.print(stadium.isABallHere(i, j) ? "N" : "n");
-                } else if (stadium.isShadow(i, j)) {
-                        System.out.print(stadium.isABallHere(i, j) ? "H" : "h");
-                } else {
+                Player player = stadium.whatsInTheBox(i, j);
+
+                if (player == null) {
                         System.out.print(".");
+                } else if (player.getTeam().equals("Snowkids")) {
+                        System.out.print(player.getBallPossession() ? "N" : "n");
+                } else if (player.getTeam().equals("Shadows")) {
+                        System.out.print(player.getBallPossession() ? "H" : "h");
                 }
             }
 
@@ -62,7 +65,8 @@ public class ConsoleView {
 
                 char direction = scanner.next().toUpperCase().charAt(0);
 
-                stadium.move(i, j, direction);
+                Player player = stadium.whatsInTheBox(i, j);
+                stadium.move(player, direction);
             } else if (command.equals("p")) {
                 String from = scanner.next();
                 int fromI =  6 - ((int)from.charAt(1) - (int)'1');
@@ -72,7 +76,9 @@ public class ConsoleView {
                 int toI = 6 - ((int)to.charAt(1) - (int)'1');
                 int toJ = (int)to.charAt(0) - (int)'a';
 
-                stadium.pass(fromI, fromJ, toI, toJ);
+                Player fromPlayer = stadium.whatsInTheBox(fromI, fromJ);
+                Player toPlayer = stadium.whatsInTheBox(toI, toJ);
+                stadium.pass(fromPlayer, toPlayer);
             }
         }
     }

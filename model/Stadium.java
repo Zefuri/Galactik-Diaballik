@@ -1,79 +1,101 @@
 package model;
 
-public class Stadium {
-    public static final int empty = 0, ballSnowKid = 1, snowKid = 2, ballShadow = 3, shadow = 4;
+import static java.lang.Math.abs;
 
-    int[][] board; 
-    
-    public Stadium() {
-        this.board = new int[7][7];
-        resetBoard();
+public class Stadium {
+    Player[][] board = new Player[7][7];
+    Player[] snowKids = new Player[7];
+    Player[] shadows = new Player[7];
+
+    public Stadium(){
+        this.initTeam(snowKids, "Snowkids");
+        this.initTeam(shadows, "Shadows");
+        this.resetBoard();
+    }
+
+    public void initTeam(Player[] team, String teamName){
+        for (int i = 0; i<7; i++){
+            team[i] = new Player(teamName);
+        }
+    }
+
+    public Player[] getSnowKids(){
+        return this.snowKids;
+    }
+
+    public Player[] getShadows(){
+        return this.shadows;
+    }
+
+    public Player[] getOpponent(String team){
+        if(team.equals("Snowkids")){
+            return shadows;
+        }
+        else{
+            if(team.equals("Shadows")){
+                return snowKids;
+            }
+        }
+        return null;
     }
 
     public void resetBoard(){  //initialising board
-        this.board[0] = new int[]{shadow, shadow, shadow, ballShadow, shadow, shadow, shadow};
-        for (int i = 1; i < 6; i++){
-            this.board[i] = new int[]{empty, empty, empty, empty, empty, empty, empty};
+        for(int i = 0; i < 7; i++){
+            board[0][i] = snowKids[i];
+            snowKids[i].movePlayer(0,i);
         }
-        this.board[6] = new int[]{snowKid, snowKid, snowKid, ballSnowKid, snowKid, snowKid, snowKid};
+        for (int i = 1; i < 6; i++) {
+            for (int j = 0; j < 7; j++) {
+                board[i][j] = null;
+            }
+        }
+        for(int i = 0; i < 7; i++){
+            board[6][i] = shadows[i];
+            shadows[i].movePlayer(6,i);
+        }
+        board[0][3].setBallPossession(true);
+        board[6][3].setBallPossession(true);
     }
 
-    public int whatsInTheBox(int i, int j){ //what's in i j
-        return board[i][j];
-    }
-
-    public boolean isEmpty(int i, int j){ //is i j empty
-        return board[i][j] == empty;
-    }
-
-    public boolean isSnowKid(int i, int j) {
-        return board[i][j] == snowKid || board[i][j] == ballSnowKid;
-    }
-
-    public boolean isShadow(int i, int j) {
-        return board[i][j] == shadow || board[i][j] == ballShadow;
+    public Player whatsInTheBox(int i, int j){ //what's in i j
+        return this.board[i][j];
     }
 
     public boolean isABallHere(int i, int j){ //is there a ball in i j
-        return board[i][j] == ballSnowKid || board[i][j] == ballShadow;
+        return this.whatsInTheBox(i, j).getBallPossession();
     }
 
-    public void simpleMove(int i, int j, int nextI, int nextJ, int player){ //move player at i j to nextI nextJ, no matter what
+    public boolean isEmpty(int i, int j){ //is i j empty
+        return this.whatsInTheBox(i, j) == null;
+    }
+
+    public void simpleMove(Player player, int nextI, int nextJ){ //move player at i j to nextI nextJ, no matter what
+        this.board[player.getI()][player.getJ()] = null;
+        player.movePlayer(nextI, nextJ);
         this.board[nextI][nextJ] = player;
-        this.board[i][j] = empty;
+
     }
 
-    public int whichTeam(int i, int j){
-        int n = this.whatsInTheBox(i,j);
-        if (n == ballSnowKid || n == snowKid){
-            return snowKid;
-        }
-        if (n == ballShadow || n == shadow){
-            return shadow;
-        }
-        return empty;
-    }
-
-
-    public void move(int i, int j, char move) { //this should do a proper move    move piece at i j, with move
-        int player = whatsInTheBox(i, j);
-        if (!this.isABallHere(i,j)) {
+    public void move(Player player, char move) { //this should do a proper move    move piece at i j, with move
+        int i = player.getI();
+        int j = player.getJ();
+        if (!this.isABallHere(i, j)) {
             switch (move) {
                 case 'U':
                     if (i > 0 && this.isEmpty(i - 1, j))
-                        simpleMove(i, j, i - 1, j, player);
+                        simpleMove(player, i - 1, j);
                     break;
                 case 'D':
                     if (i < 6 && this.isEmpty(i + 1, j))
-                        simpleMove(i, j, i + 1, j, player);
+                        simpleMove(player, i + 1, j);
                     break;
                 case 'L':
                     if (j > 0 && this.isEmpty(i, j - 1))
-                        simpleMove(i, j, i, j - 1, player);
+                        simpleMove(player, i, j - 1);
                     break;
                 case 'R':
                     if (j < 6 && this.isEmpty(i, j + 1))
-                        simpleMove(i, j, i, j + 1, player);
+                        simpleMove(player, i, j + 1);
                     break;
                 default:
                     System.out.println("wrong move input in move function");
@@ -82,16 +104,16 @@ public class Stadium {
         }
     }
 
-    public int direction(int i, int j, int nextI, int nextJ) {
-        if (i == nextI) {//same line
-            if (nextJ < j) {  //left
+    public int direction(Player playerOne, Player playerTwo) {
+        if (playerOne.getI() == playerTwo.getI()) {//same line
+            if (playerTwo.getJ() < playerOne.getJ()) {  //left
                 return 1;//same line left
             } else {//right
                 return 2;//same line right
             }
         } else {
-            if (j == nextJ) {// same column
-                if (nextI < i) {  //up
+            if (playerOne.getJ() == playerTwo.getJ()) {// same column
+                if (playerTwo.getI() < playerOne.getI()) {  //up
                     return 3;//same column up
                 }
                 else{//down
@@ -99,8 +121,8 @@ public class Stadium {
                 }
             }
             else{//diag check
-                int diffI = i - nextI;
-                int diffJ = j - nextJ;
+                int diffI = playerOne.getI() - playerTwo.getI();
+                int diffJ = playerOne.getJ() - playerTwo.getI();
                 if (diffJ == diffI){
                     if (diffJ > 0){//bottom right
                         return 5;
@@ -124,68 +146,31 @@ public class Stadium {
         return 0;
     }
 
-    public void simplePass(int i, int j, int nextI, int nextJ){ //player at i j pass the ball to nextI nextJ
-        this.board[i][j]++;
-        this.board[nextI][nextJ]--;
+    public void simplePass(Player playerOne, Player playerTwo){ //player at i j pass the ball to nextI nextJ
+        playerOne.setBallPossession(false);
+        playerTwo.setBallPossession(true);
     }
 
 
-    public void pass(int i, int j, int nextI, int nextJ) { //player at i j pass the ball to nextI nextJ
-        int team = this.whichTeam(i, j);
-        if (team != empty && team == this.whichTeam(nextI, nextJ) && this.isABallHere(i, j)){
+    public void pass(Player playerOne, Player playerTwo) { //player at i j pass the ball to nextI nextJ
+        if(playerOne.isATeammate(playerTwo) && (playerOne.getBallPossession()) && !(playerTwo.getBallPossession())){
             boolean intercepted = false;
-            int dir = this.direction(i, j, nextI, nextJ);
-            int incI, incJ; //incrementation parameters
-            switch (dir){
-                case 1://same line on the left
-                    incI = 0;
-                    incJ = -1;
-                    break;
-                case 2://same line on the right
-                    incI = 0;
-                    incJ = 1;
-                    break;
-                case 3://same column up
-                    incI = -1;
-                    incJ = 0;
-                    break;
-                case 4://same column down
-                    incI = 1;
-                    incJ = 0;
-                    break;
-                case 5:// bottom right
-                    incI = 1;
-                    incJ = 1;
-                    break;
-                case 6://top left
-                    incI = -1;
-                    incJ = -1;
-                    break;
-                case 7://top right
-                    incI = -1;
-                    incJ = 1;
-                    break;
-                case 8://bottom left
-                    incI = 1;
-                    incJ = -1;
-                    break;
-                default:
-                    incI = 0;
-                    incJ = 0;
-                    break;
-            }
-
-
-            int box;
-            for(int startI = i, startJ = j; ((startI != nextI) && (startJ != nextJ)); startI += incI, startJ=+ incJ){
-                box = this.whatsInTheBox(startI, startJ);
-                if (box != empty && box != team) {
-                    intercepted = true;
-                    break;
+            int dir = direction(playerOne, playerTwo);
+            if(dir != 0) {
+                Player[] opponent = this.getOpponent(playerOne.getTeam());
+                for(int i = 0;(!intercepted) && i < 7; i++) {
+                    Player checking = opponent[i];
+                    if (this.direction(playerOne, checking) == dir){
+                         int distFriend = abs(playerTwo.getI() - playerOne.getI()) + abs(playerTwo.getJ() - playerOne.getJ());
+                         int distOpp = abs(checking.getI() - playerOne.getI()) + abs(checking.getJ() - playerOne.getJ());
+                         if (distFriend < distOpp){
+                             intercepted = true;
+                         }
+                    }
                 }
-            }
-            if (!intercepted) {
-                simplePass(i, j, nextI, nextJ);
+                if(!intercepted){
+                    simplePass(playerOne, playerTwo);
+                }
             }
         }
     }
