@@ -1,6 +1,6 @@
 package model;
 
-public class Stage {
+public class Stadium {
     public static final int empty = 0, ballSnowKid = 1, snowKid = 2, ballShadow = 3, shadow = 4;
     int[][] board = new int[7][7];
 
