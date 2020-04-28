@@ -24,4 +24,8 @@ public class Player {
 	public void setBallPossession(boolean ballPossession) {
 		this.ballPossession = ballPossession;
 	}
+	
+	public boolean isATeammate(Player player) {
+		return this.team.equals(player.team);
+	}
 }
