@@ -15,11 +15,11 @@ class RandomAI_1 extends PlayerType {
 	public int ballNumber(){
 		int n=-1;
 		
-		int[] equip;
+		Player[] equip;
 		if(num == 0){
-			equip = getSnowKids();
+			equip = stadium.getSnowKids();
 		}else{
-			equip = getShadows();
+			equip = stadium.getShadows();
 		}
 		
 		for(int i=0; i!=equip.length && n==-1; i++){
@@ -43,11 +43,11 @@ class RandomAI_1 extends PlayerType {
 	//number of possibility pass
 	public int passNumber(){
 		int n = 0;
-		int[] equip;
+		Player[] equip;
 		if(num == 0){
-			equip = getSnowKids();
+			equip = stadium.getSnowKids();
 		}else{
-			equip = getShadows();
+			equip = stadium.getShadows();
 		}
 		
 		int ball = ballNumber();
@@ -57,6 +57,7 @@ class RandomAI_1 extends PlayerType {
 				n++;
 			}
 		}
+		return n;
 	}
 	
 	//return true if player can move up
@@ -101,7 +102,7 @@ class RandomAI_1 extends PlayerType {
 		if(canUp(player)){n++;}
 		if(canDown(player)){n++;}
 		if(canLeft(player)){n++;}
-		if(canRigth(player)){n++;}
+		if(canRight(player)){n++;}
 		return n;
 	}
 	
@@ -113,11 +114,11 @@ class RandomAI_1 extends PlayerType {
 	//return number of players can move
 	public int movePlayerNumber(){
 		int n = 0;
-		int[] equip;
+		Player[] equip;
 		if(num == 0){
-			equip = getSnowKids();
+			equip = stadium.getSnowKids();
 		}else{
-			equip = getShadows();
+			equip = stadium.getShadows();
 		}
 		
 		int ball = ballNumber();
@@ -136,11 +137,11 @@ class RandomAI_1 extends PlayerType {
 		int d = 2; //number of moves remaining
 		int ball = ballNumber(); //number of player with ball
 		
-		int[] equip; //player list of this equip
+		Player[] equip; //player list of this equip
 		if(num == 0){
-			equip = getSnowKids();
+			equip = stadium.getSnowKids();
 		}else{
-			equip = getShadows();
+			equip = stadium.getShadows();
 		}
 
 		//choose: 0-end, 1-pass, 2-move
