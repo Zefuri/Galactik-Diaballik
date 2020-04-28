@@ -3,19 +3,27 @@ package model;
 import static java.lang.Math.abs;
 
 public class Stadium {
+    public static final int teamOne = 0;
+    public static final int teamTwo = 1;
     Player[][] board = new Player[7][7];
     Player[] snowKids = new Player[7];
     Player[] shadows = new Player[7];
+    int turn;
+    int nbPass;
+    int nbMove;
 
     public Stadium(){
-        this.initTeam(snowKids, "Snowkids");
-        this.initTeam(shadows, "Shadows");
+        this.initTeam(snowKids, teamOne);
+        this.initTeam(shadows, teamTwo);
         this.resetBoard();
+        this.turn = 0;
+        this.nbMove = 0;
+        this.nbPass = 0;
     }
 
-    public void initTeam(Player[] team, String teamName){
+    public void initTeam(Player[] team,int nbTeam){
         for (int i = 0; i<7; i++){
-            team[i] = new Player(teamName);
+            team[i] = new Player(nbTeam);
         }
     }
 
@@ -27,12 +35,20 @@ public class Stadium {
         return this.shadows;
     }
 
-    public Player[] getOpponent(String team){
-        if(team.equals("Snowkids")){
+    public int whosTurn(){
+        return this.turn % 2;
+    }
+
+    public int whoJustPlayed(){
+        return (this.turn - 1) % 2;
+    }
+
+    public Player[] getOpponent(int team){
+        if(team == teamOne){
             return shadows;
         }
         else{
-            if(team.equals("Shadows")){
+            if(team == teamTwo){
                 return snowKids;
             }
         }
@@ -76,7 +92,7 @@ public class Stadium {
 
     }
 
-    public void move(Player player, char move) { //this should do a proper move    move piece at i j, with move
+    public boolean move(Player player, char move) { //this should do a proper move    move piece at i j, with move
         int i = player.getI();
         int j = player.getJ();
         if (!this.isABallHere(i, j)) {
@@ -99,9 +115,11 @@ public class Stadium {
                     break;
                 default:
                     System.out.println("wrong move input in move function");
-                    break;
+                    return false;
             }
+            return true;
         }
+        return false;
     }
 
     public int direction(Player playerOne, Player playerTwo) {
@@ -122,7 +140,7 @@ public class Stadium {
             }
             else{//diag check
                 int diffI = playerOne.getI() - playerTwo.getI();
-                int diffJ = playerOne.getJ() - playerTwo.getI();
+                int diffJ = playerOne.getJ() - playerTwo.getJ();
                 if (diffJ == diffI){
                     if (diffJ > 0){//bottom right
                         return 5;
@@ -152,9 +170,9 @@ public class Stadium {
     }
 
 
-    public void pass(Player playerOne, Player playerTwo) { //player at i j pass the ball to nextI nextJ
+    public boolean pass(Player playerOne, Player playerTwo) { //player at i j pass the ball to nextI nextJ
+        boolean intercepted = false;
         if(playerOne.isATeammate(playerTwo) && (playerOne.getBallPossession()) && !(playerTwo.getBallPossession())){
-            boolean intercepted = false;
             int dir = direction(playerOne, playerTwo);
             if(dir != 0) {
                 Player[] opponent = this.getOpponent(playerOne.getTeam());
@@ -173,6 +191,45 @@ public class Stadium {
                 }
             }
         }
+        return !intercepted;
+    }
+
+    public boolean antiplay(int team){
+        Player[] playerlist;
+        boolean result = true;
+        if (team == teamOne){
+            playerlist = snowKids;
+        }
+        else{
+            if(team == teamTwo){
+                playerlist = shadows;
+            }
+            else{
+                return false;
+            }
+        }
+        for(int i = 0; i < 7; i++){
+            Player checking = playerlist[i];
+            int i = checking.getI();
+            int j = checking.getJ();
+            if (j > 0){
+                if (i > 0){
+
+                }               //TODO
+
+                if (checking.getI() < 6){
+
+                }
+            }
+        }
+    }
+
+    public void isAWin(){
+        //TODO
+    }
+
+    public void normalTurn(){
+        //TODO
     }
 }
 

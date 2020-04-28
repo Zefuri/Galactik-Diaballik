@@ -1,17 +1,17 @@
 package model;
 
 public class Player {
-	private String team;
+	private int team;
 	private boolean ballPossession;
 	private int i;
 	private int j;
 
-	public Player(String team) {
+	public Player(int team) {
 		this.team = team;
 		this.ballPossession = false;
 	}
 
-	public Player(String team, int x, int y) {
+	public Player(int team, int x, int y) {
 		this.team = team;
 		this.ballPossession = false;
 		this.i = x;
@@ -27,7 +27,7 @@ public class Player {
 		this.j = y;
 	}
 
-	public String getTeam() {
+	public int getTeam() {
 		return team;
 	}
 	
@@ -35,7 +35,7 @@ public class Player {
 		return ballPossession;
 	}
 	
-	public void setTeam(String team) {
+	public void setTeam(int team) {
 		this.team = team;
 	}
 	
@@ -44,6 +44,6 @@ public class Player {
 	}
 
 	public boolean isATeammate(Player player) {
-		return this.team.equals(player.team);
+		return this.team == player.team;
 	}
 }
