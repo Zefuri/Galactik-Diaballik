@@ -41,8 +41,8 @@ public class Stadium {
 
     public void resetBoard(){  //initialising board
         for(int i = 0; i < 7; i++){
-            board[0][i] = shadows[i];
-            shadows[i].movePlayer(0,i);
+            board[0][i] = snowKids[i];
+            snowKids[i].movePlayer(0,i);
         }
         for (int i = 1; i < 6; i++) {
             for (int j = 0; j < 7; j++) {
