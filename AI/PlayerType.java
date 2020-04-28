@@ -3,12 +3,12 @@ import model.Stadium;
 
 // Commun class for all player : AI or human
 abstract class PlayerType {
-	Stadium stade;
+	Stadium stadium;
 	int num;
 
 	PlayerType(int n, Stadium p) {
 		num = n;
-		stade = p;
+		stadium = p;
 	}
 
 	int num() {
@@ -16,7 +16,7 @@ abstract class PlayerType {
 	}
 
 	//For AI
-	boolean timeout() {
+	boolean timeOut() {
 		return false;
 	}
 
