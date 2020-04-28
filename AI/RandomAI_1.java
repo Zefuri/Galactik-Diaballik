@@ -184,4 +184,8 @@ class RandomAI_1 extends PlayerType {
 		}
 		return true;
 	}
+	
+	public static void main(String args[]){
+		//tests
+	}
 }

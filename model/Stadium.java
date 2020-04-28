@@ -93,6 +93,7 @@ public class Stadium {
     }
 
     public boolean move(Player player, char move) { //this should do a proper move    move piece at i j, with move
+    	boolean b = true;
         int i = player.getI();
         int j = player.getJ();
         if (!this.isABallHere(i, j)) {
@@ -100,24 +101,32 @@ public class Stadium {
                 case 'U':
                     if (i > 0 && this.isEmpty(i - 1, j))
                         simpleMove(player, i - 1, j);
+                    else
+                    	b = false;
                     break;
                 case 'D':
                     if (i < 6 && this.isEmpty(i + 1, j))
                         simpleMove(player, i + 1, j);
+                    else
+                    	b = false;
                     break;
                 case 'L':
                     if (j > 0 && this.isEmpty(i, j - 1))
                         simpleMove(player, i, j - 1);
+                    else
+                    	b = false;
                     break;
                 case 'R':
                     if (j < 6 && this.isEmpty(i, j + 1))
                         simpleMove(player, i, j + 1);
+                    else
+                    	b = false;
                     break;
                 default:
                     System.out.println("wrong move input in move function");
                     return false;
             }
-            return true;
+            return b;
         }
         return false;
     }
@@ -210,8 +219,8 @@ public class Stadium {
         }
         for(int k = 0; k < 7; k++) { 
         	/*
-        	 * Variable de la loop changée en k pour pouvoir garder
-        	 * la sémantique (i,j) pour les corrdonnées d'un joueur
+        	 * Variable de la loop changee en k pour pouvoir garder
+        	 * la semantique (i,j) pour les coordonnees d'un joueur
         	 */
             Player checking = playerlist[k];
             int i = checking.getI();
@@ -237,5 +246,27 @@ public class Stadium {
     public void normalTurn(){
         //TODO
     }
+/*Benjamin*/
+	public String toString(){
+		String s = "";
+		for(int i=0; i!=board.length; i++){
+			for(int j=0; j!=board.length; j++){
+				s+="|";
+				if(board[i][j]==null){
+					s+="_";
+				}else if(board[i][j].getTeam()==0 && !board[i][j].getBallPossession()){
+					s+="6";
+				}else if(board[i][j].getTeam()==1 && !board[i][j].getBallPossession()){
+					s+="9";
+				}else if(board[i][j].getTeam()==0 && board[i][j].getBallPossession()){
+					s+="2";
+				}else{
+					s+="5";
+				}
+			}
+			s+="|\n";
+		}
+		return s;
+	}
 }
 
