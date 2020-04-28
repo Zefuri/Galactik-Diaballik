@@ -208,8 +208,12 @@ public class Stadium {
                 return false;
             }
         }
-        for(int i = 0; i < 7; i++){
-            Player checking = playerlist[i];
+        for(int k = 0; k < 7; k++) { 
+        	/*
+        	 * Variable de la loop changée en k pour pouvoir garder
+        	 * la sémantique (i,j) pour les corrdonnées d'un joueur
+        	 */
+            Player checking = playerlist[k];
             int i = checking.getI();
             int j = checking.getJ();
             if (j > 0){
@@ -222,6 +226,8 @@ public class Stadium {
                 }
             }
         }
+        
+        return result;
     }
 
     public void isAWin(){
