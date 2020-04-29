@@ -190,7 +190,7 @@ public class Stadium {
                     if (this.direction(playerOne, checking) == dir){
                          int distFriend = abs(playerTwo.getI() - playerOne.getI()) + abs(playerTwo.getJ() - playerOne.getJ());
                          int distOpp = abs(checking.getI() - playerOne.getI()) + abs(checking.getJ() - playerOne.getJ());
-                         if (distFriend < distOpp){
+                         if (distFriend > distOpp){
                              intercepted = true;
                          }
                     }
@@ -249,25 +249,35 @@ public class Stadium {
 /*Benjamin*/
 	public String toString(){
 		//board read
-		String s = "";
-		for(int i=0; i!=board.length; i++){
-			for(int j=0; j!=board.length; j++){
-				s+="|";
-				if(board[i][j]==null){
-					s+="___";
-				}else if(board[i][j].getTeam()==0 && !board[i][j].getBallPossession()){
-					s+="a"+board[i][j].getNum()+".";
-				}else if(board[i][j].getTeam()==1 && !board[i][j].getBallPossession()){
-					s+="b"+board[i][j].getNum()+".";
-				}else if(board[i][j].getTeam()==0 && board[i][j].getBallPossession()){
-					s+="a"+board[i][j].getNum()+"*";
+		String game = "";
+		
+		for(int abscisse = 0; abscisse != board.length; abscisse++){
+			for(int ordonnee = 0; ordonnee != board.length; ordonnee++){
+				game += "|";
+				
+				if(board[abscisse][ordonnee] == null){
+					game += "___";
+					
+				}else if(board[abscisse][ordonnee].getTeam() == 0   &&   !board[abscisse][ordonnee].getBallPossession()){
+					game += "a" + board[abscisse][ordonnee].getNum() + ".";
+					
+				}else if(board[abscisse][ordonnee].getTeam() == 1   &&   !board[abscisse][ordonnee].getBallPossession()){
+					game += "b" + board[abscisse][ordonnee].getNum() + ".";
+					
+				}else if(board[abscisse][ordonnee].getTeam()==0 && board[abscisse][ordonnee].getBallPossession()){
+					game += "a" + board[abscisse][ordonnee].getNum() + "*";
+					
 				}else{
-					s+="b"+board[i][j].getNum()+"*";
+					game += "b" + board[abscisse][ordonnee].getNum() + "*";
 				}
+				
 			}
-			s+="|\n";
+			
+			game += "|\n";
+			
 		}		
-		return s;
+		
+		return game;
 	}
 }
 

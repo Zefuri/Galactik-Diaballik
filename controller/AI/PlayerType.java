@@ -4,15 +4,15 @@ import model.Stadium;
 // Commun class for all player: AI or human
 abstract class PlayerType {
 	Stadium stadium;
-	int num;
+	int equipNum;
 
-	PlayerType(int n, Stadium p) {
-		num = n;
-		stadium = p;
+	PlayerType(int number, Stadium stade) {
+		equipNum = number;
+		stadium = stade;
 	}
 
-	int num() {
-		return num;
+	int equipNumber() {
+		return equipNum;
 	}
 
 	//For AI
@@ -21,7 +21,7 @@ abstract class PlayerType {
 	}
 
 	//For human
-	boolean play(int i, int j) {
+	boolean play(int abs, int ord) {
 		return false;
 	}
 }
