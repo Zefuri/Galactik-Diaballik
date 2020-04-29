@@ -2,6 +2,7 @@ package view;
 
 import javax.swing.JFrame;
 
+import controller.MouseAction;
 import model.Stadium;
 
 public class HoloTV implements Runnable {
@@ -11,14 +12,30 @@ public class HoloTV implements Runnable {
 	private GamePanel gamePanel;
 	
 	public HoloTV(Stadium stadium) {
-		this.frame = new JFrame();
 		this.stadium = stadium;
-		this.gamePanel = new GamePanel(stadium);
+		
 	}
 	
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-	}
+		// Create the main window
+		this.frame = new JFrame("Stadium : Snow Kids VS Shadows !!!!");
+		
+		// Create the GamePanel and himself create and add an ArkadiaNews
+		this.gamePanel = new GamePanel(stadium);
+		
+		// Add the panel to the frame
+		this.frame.add(this.gamePanel);
+		
+		// When red X is clicked
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        // Give it a default size and lets roll
+        frame.setSize(800, 800);
+        frame.setVisible(true);
+	}
+	
+	public void addArkadiaNewsMouseListener(MouseAction mouseAction) {
+		gamePanel.getArkadiaNews().addMouseListener(mouseAction);
+	}
 }

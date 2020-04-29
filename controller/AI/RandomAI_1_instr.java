@@ -1,3 +1,5 @@
+package controller.AI;
+
 import java.util.Random;
 import model.Stadium;
 import model.Player;
