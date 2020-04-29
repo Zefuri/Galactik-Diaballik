@@ -10,7 +10,7 @@ public class Player {
 	public Player(int num, int team) {
 		this.team = team;
 		this.ballPossession = false;
-		number = num;
+		this.number = num;
 	}
 
 	public Player(int num, int team, int x, int y) {
