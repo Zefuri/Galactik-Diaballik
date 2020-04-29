@@ -19,9 +19,9 @@ public class ConsoleView {
 
                 if (player == null) {
                         System.out.print(".");
-                } else if (player.getTeam().equals("Snowkids")) {
+                } else if (player.getTeam() == Stadium.teamOne) {
                         System.out.print(player.getBallPossession() ? "N" : "n");
-                } else if (player.getTeam().equals("Shadows")) {
+                } else if (player.getTeam() == Stadium.teamTwo) {
                         System.out.print(player.getBallPossession() ? "H" : "h");
                 }
             }
