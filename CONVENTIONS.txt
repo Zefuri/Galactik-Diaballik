@@ -2,6 +2,8 @@
 
 public class ClassName {
 
+	/!\ Mettre des noms de variables PARLANT quitte à ce qu'ils soient un peu plus long /!\ 
+
 	private int varName;
 
 	public ClassName(int varName) {
@@ -11,4 +13,12 @@ public class ClassName {
 	public void methodName(int var1, String var2) {
 		...
 	}
+	
+	if (...) {
+	
+	} else {
+	
+	}
+	
+	/!\ Bien séparer tous les éléments par un espace : ==, {, (, <, etc /!\
 }
