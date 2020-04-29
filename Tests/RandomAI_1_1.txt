@@ -1,0 +1,14 @@
+		Stadium stadium = new Stadium();
+		RandomAI_1 test = new RandomAI_1(0,stadium);
+
+		System.out.println(stadium.toString());
+
+		boolean b = test.timeOut();
+		
+		System.out.println("La balle est en position: "+test.ballNumber());
+
+		System.out.println("On peut faire: "+test.passNumber()+" passes");
+
+		System.out.println("On peut bouger: "+test.movePlayerNumber()+" pions");
+
+		System.out.println(stadium.toString());

@@ -1,0 +1,17 @@
+		Stadium stadium = new Stadium();
+		RandomAI_1 player1 = new RandomAI_1(0,stadium);
+		RandomAI_1 player2 = new RandomAI_1(1,stadium);
+
+		System.out.println(stadium.toString());
+		
+		int COUPMAX = 20;
+		Random r = new Random();
+		int coups = r.nextInt(COUPMAX)+1;
+		System.out.println("On va jouer "+coups+" coups");
+		boolean b;
+		for(int i=0; i!=coups; i++){
+			b = player1.timeOut();
+			System.out.println(stadium.toString());
+			b = player2.timeOut();
+			System.out.println(stadium.toString());
+		}
