@@ -1,4 +1,4 @@
-package AI;
+package controller.AI;
 import model.Stadium;
 
 // Commun class for all player: AI or human
