@@ -23,7 +23,7 @@ public class Stadium {
 
     public void initTeam(Player[] team,int nbTeam){
         for (int i = 0; i<7; i++){
-            team[i] = new Player(nbTeam);
+            team[i] = new Player(i, nbTeam);
         }
     }
 
@@ -57,8 +57,8 @@ public class Stadium {
 
     public void resetBoard(){  //initialising board
         for(int i = 0; i < 7; i++){
-            board[0][i] = snowKids[i];
-            snowKids[i].movePlayer(0,i);
+            board[6][i] = snowKids[i];
+            snowKids[i].movePlayer(6,i);
         }
         for (int i = 1; i < 6; i++) {
             for (int j = 0; j < 7; j++) {
@@ -66,8 +66,8 @@ public class Stadium {
             }
         }
         for(int i = 0; i < 7; i++){
-            board[6][i] = shadows[i];
-            shadows[i].movePlayer(6,i);
+            board[0][i] = shadows[i];
+            shadows[i].movePlayer(0,i);
         }
         board[0][3].setBallPossession(true);
         board[6][3].setBallPossession(true);
@@ -248,24 +248,25 @@ public class Stadium {
     }
 /*Benjamin*/
 	public String toString(){
+		//board read
 		String s = "";
 		for(int i=0; i!=board.length; i++){
 			for(int j=0; j!=board.length; j++){
 				s+="|";
 				if(board[i][j]==null){
-					s+="_";
+					s+="___";
 				}else if(board[i][j].getTeam()==0 && !board[i][j].getBallPossession()){
-					s+="6";
+					s+="a"+board[i][j].getNum()+".";
 				}else if(board[i][j].getTeam()==1 && !board[i][j].getBallPossession()){
-					s+="9";
+					s+="b"+board[i][j].getNum()+".";
 				}else if(board[i][j].getTeam()==0 && board[i][j].getBallPossession()){
-					s+="2";
+					s+="a"+board[i][j].getNum()+"*";
 				}else{
-					s+="5";
+					s+="b"+board[i][j].getNum()+"*";
 				}
 			}
 			s+="|\n";
-		}
+		}		
 		return s;
 	}
 }

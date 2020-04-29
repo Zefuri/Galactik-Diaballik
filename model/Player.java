@@ -2,21 +2,26 @@ package model;
 
 public class Player {
 	private int team;
+	private int number;
 	private boolean ballPossession;
 	private int i;
 	private int j;
 
-	public Player(int team) {
+	public Player(int num, int team) {
 		this.team = team;
 		this.ballPossession = false;
+		number = num;
 	}
 
-	public Player(int team, int x, int y) {
+	public Player(int num, int team, int x, int y) {
 		this.team = team;
 		this.ballPossession = false;
 		this.i = x;
 		this.j = y;
+		this.number = num;
 	}
+
+	public int getNum(){return this.number;}
 
 	public int getI(){return this.i;}
 
