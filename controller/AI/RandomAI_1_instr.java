@@ -92,12 +92,7 @@ class RandomAI_1_instr extends PlayerType {
 		if(stadium.move(player,'R')){
 			b=stadium.move(player,'L');
 		}
-		return b;AI_1.java |  2 +-
- controller/MouseAction.java           |  6 +++---
- view/ArkadiaNews.java                 | 23 +++++++++++++++++++++++
- view/ConsoleView.java                 |  4 ++--
- view/GamePanel.java                   | 13 +++++++++++++
- view/GameWindow.java                  | 17 ---------
+		return b;
 	}
 	
 	//return number of moves that can make player
