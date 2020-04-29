@@ -1,6 +1,8 @@
-(Toutes les classes, attributs, variables et méthodes doivent être en anglais et rédigés sous ce format)
+/!\ Toutes les classes, attributs, variables et méthodes doivent être en anglais et rédigés sous ce format /!\
 
 public class ClassName {
+
+	/!\ Mettre des noms de variables PARLANT quitte à ce qu'ils soient un peu plus long /!\ 
 
 	private int varName;
 
@@ -11,4 +13,12 @@ public class ClassName {
 	public void methodName(int var1, String var2) {
 		...
 	}
+	
+	if (...) {
+	
+	} else {
+	
+	}
+	
+	/!\ Bien séparer tous les éléments par un espace : ==, {, (, <, etc /!\
 }

@@ -5,14 +5,14 @@ import java.awt.event.MouseEvent;
 
 import model.Player;
 import model.Stadium;
-import view.GameWindow;
+import view.HoloTV;
 
 public class MouseAction extends MouseAdapter {
-	private GameWindow gameWindow;
+	private HoloTV gameWindow;
 	private Stadium stadium;
 	private Player targetedPlayer;
 	
-	public MouseAction(GameWindow gameWindow, Stadium stadium) {
+	public MouseAction(HoloTV gameWindow, Stadium stadium) {
 		this.gameWindow = gameWindow;
 		this.stadium = stadium;
 		this.targetedPlayer = null;

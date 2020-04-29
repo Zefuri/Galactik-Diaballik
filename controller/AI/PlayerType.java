@@ -1,7 +1,7 @@
-package AI;
+package controller.AI;
 import model.Stadium;
 
-// Commun class for all player : AI or human
+// Commun class for all player: AI or human
 abstract class PlayerType {
 	Stadium stadium;
 	int num;
@@ -20,7 +20,7 @@ abstract class PlayerType {
 		return false;
 	}
 
-	//For humain
+	//For human
 	boolean play(int i, int j) {
 		return false;
 	}
