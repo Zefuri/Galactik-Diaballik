@@ -59,15 +59,13 @@ public class Stadium {
         for(int i = 0; i < 7; i++){
             board[6][i] = snowKids[i];
             snowKids[i].movePlayer(6,i);
+            board[0][i] = shadows[i];
+            shadows[i].movePlayer(0,i);
         }
         for (int i = 1; i < 6; i++) {
             for (int j = 0; j < 7; j++) {
                 board[i][j] = null;
             }
-        }
-        for(int i = 0; i < 7; i++){
-            board[0][i] = shadows[i];
-            shadows[i].movePlayer(0,i);
         }
         board[0][3].setBallPossession(true);
         board[6][3].setBallPossession(true);
@@ -93,42 +91,40 @@ public class Stadium {
     }
 
     public boolean move(Player player, char move) { //this should do a proper move    move piece at i j, with move
-    	boolean b = true;
+    	boolean moved = false;
         int i = player.getI();
         int j = player.getJ();
         if (!this.isABallHere(i, j)) {
             switch (move) {
                 case 'U':
-                    if (i > 0 && this.isEmpty(i - 1, j))
+                    if (i > 0 && this.isEmpty(i - 1, j)) {
                         simpleMove(player, i - 1, j);
-                    else
-                    	b = false;
+                        moved = true;
+                    }
                     break;
                 case 'D':
-                    if (i < 6 && this.isEmpty(i + 1, j))
+                    if (i < 6 && this.isEmpty(i + 1, j)) {
                         simpleMove(player, i + 1, j);
-                    else
-                    	b = false;
+                        moved = true;
+                    }
                     break;
                 case 'L':
-                    if (j > 0 && this.isEmpty(i, j - 1))
+                    if (j > 0 && this.isEmpty(i, j - 1)) {
                         simpleMove(player, i, j - 1);
-                    else
-                    	b = false;
+                        moved = true;
+                    }
                     break;
                 case 'R':
-                    if (j < 6 && this.isEmpty(i, j + 1))
+                    if (j < 6 && this.isEmpty(i, j + 1)) {
                         simpleMove(player, i, j + 1);
-                    else
-                    	b = false;
+                        moved = true;
+                    }
                     break;
                 default:
                     System.out.println("wrong move input in move function");
-                    return false;
             }
-            return b;
         }
-        return false;
+        return moved;
     }
 
     public int direction(Player playerOne, Player playerTwo) {
@@ -181,11 +177,11 @@ public class Stadium {
 
     public boolean pass(Player playerOne, Player playerTwo) { //player at i j pass the ball to nextI nextJ
         boolean intercepted = false;
-        if(playerOne.isATeammate(playerTwo) && (playerOne.getBallPossession()) && !(playerTwo.getBallPossession())){
+        if (playerOne.isATeammate(playerTwo) && (playerOne.getBallPossession()) && !(playerTwo.getBallPossession())){
             int dir = direction(playerOne, playerTwo);
-            if(dir != 0) {
+            if (dir != 0) {
                 Player[] opponent = this.getOpponent(playerOne.getTeam());
-                for(int i = 0;(!intercepted) && i < 7; i++) {
+                for (int i = 0;(!intercepted) && i < 7; i++) {
                     Player checking = opponent[i];
                     if (this.direction(playerOne, checking) == dir){
                          int distFriend = abs(playerTwo.getI() - playerOne.getI()) + abs(playerTwo.getJ() - playerOne.getJ());
@@ -205,48 +201,70 @@ public class Stadium {
 
     public boolean antiplay(int team){
         Player[] playerlist;
-        boolean result = true;
+        boolean result = false;
         if (team == teamOne){
-            playerlist = snowKids;
+            playerlist = this.getSnowKids();
         }
         else{
             if(team == teamTwo){
-                playerlist = shadows;
+                playerlist = this.getShadows();
             }
             else{
                 return false;
             }
         }
-        for(int k = 0; k < 7; k++) { 
-        	/*
-        	 * Variable de la loop changee en k pour pouvoir garder
-        	 * la semantique (i,j) pour les coordonnees d'un joueur
-        	 */
+        int contact = 0;
+        boolean leftFriend;
+        boolean rightFriend;
+        for (int k = 0; k < 7; k++) {
+            leftFriend = false;
+            rightFriend = false;
             Player checking = playerlist[k];
             int i = checking.getI();
             int j = checking.getJ();
-            if (j > 0){
-                if (i > 0){
-
-                }               //TODO
-
-                if (checking.getI() < 6){
-
-                }
+            if (j <= 0 || ((i > 0 && checking.isATeammate(this.whatsInTheBox(i - 1, j - 1))) || checking.isATeammate(this.whatsInTheBox(i, j - 1)) || (i < 6 && checking.isATeammate(this.whatsInTheBox(i + 1, j - 1))))){ //if there is a mate to the left
+                leftFriend = true;
+            }
+            if (j >= 6 || ((i > 0 && checking.isATeammate(this.whatsInTheBox(i - 1, j + 1))) || checking.isATeammate(this.whatsInTheBox(i, j + 1)) || (i < 6 && checking.isATeammate(this.whatsInTheBox(i + 1, j + 1))))){ // if there is a mate to the right
+                rightFriend = true;
+            }
+            if ((i > 0 && (!this.isEmpty(i - 1, j) && !checking.isATeammate(this.whatsInTheBox(i - 1, j + 1)))) || (i < 6 && (!this.isEmpty(i + 1, j) && !checking.isATeammate(this.whatsInTheBox(i + 1, j + 1))))){ //if there is opponent in contact up or down
+                contact++;
+            }
+            if (!(leftFriend && rightFriend)){
+                return false;
             }
         }
-        
+        if (contact >= 3){
+            result = true;
+        }
         return result;
     }
 
-    public void isAWin(){
-        //TODO
+    public boolean isAWin(int team) {
+        Player[] playerlist;
+        int limit;
+        if (team == teamOne) {
+            playerlist = this.getSnowKids();
+            limit = 0;
+        } else {
+            if (team == teamTwo) {
+                playerlist = this.getShadows();
+                limit = 6;
+            } else {
+                return false;
+            }
+        }
+        Player checking;
+        for (int k = 0; k < 6; k++){
+            checking = playerlist[k];
+            if (( checking.getI() == limit ) && checking.getBallPossession()){
+                return true;
+            }
+        }
+        return false;
     }
 
-    public void normalTurn(){
-        //TODO
-    }
-/*Benjamin*/
 	public String toString(){
 		//board read
 		String s = "";
@@ -269,5 +287,9 @@ public class Stadium {
 		}		
 		return s;
 	}
+
+	public int normalTurn(Action action){
+        //TODO
+    }
 }
 
