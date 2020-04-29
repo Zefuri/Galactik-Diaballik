@@ -278,35 +278,35 @@ public class Stadium {
 
 	public String toString(){
 		//board read
-		String game = "";
+		StringBuilder game = new StringBuilder();
 		
 		for(int abscisse = 0; abscisse != board.length; abscisse++){
 			for(int ordonnee = 0; ordonnee != board.length; ordonnee++){
-				game += "|";
+				game.append("|");
 				
 				if(board[abscisse][ordonnee] == null){
-					game += "___";
+					game.append("___");
 					
 				}else if(board[abscisse][ordonnee].getTeam() == 0   &&   !board[abscisse][ordonnee].getBallPossession()){
-					game += "a" + board[abscisse][ordonnee].getNum() + ".";
+					game.append("a").append(board[abscisse][ordonnee].getNum()).append(".");
 					
 				}else if(board[abscisse][ordonnee].getTeam() == 1   &&   !board[abscisse][ordonnee].getBallPossession()){
-					game += "b" + board[abscisse][ordonnee].getNum() + ".";
+					game.append("b").append(board[abscisse][ordonnee].getNum()).append(".");
 					
 				}else if(board[abscisse][ordonnee].getTeam()==0 && board[abscisse][ordonnee].getBallPossession()){
-					game += "a" + board[abscisse][ordonnee].getNum() + "*";
+					game.append("a").append(board[abscisse][ordonnee].getNum()).append("*");
 					
 				}else{
-					game += "b" + board[abscisse][ordonnee].getNum() + "*";
+					game.append("b").append(board[abscisse][ordonnee].getNum()).append("*");
 				}
 				
 			}
 			
-			game += "|\n";
+			game.append("|\n");
 			
 		}		
 		
-		return game;
+		return game.toString();
 	}
 
 	private char getMoveDirection(Player player, int i, int j){
