@@ -9,6 +9,7 @@ import javax.swing.JComponent;
 
 import model.Player;
 import model.Stadium;
+import model.ModelConstants;
 
 public class ArkadiaNews extends JComponent {
 	private Stadium stadium;
@@ -47,12 +48,12 @@ public class ArkadiaNews extends JComponent {
 	                drawable.fillOval(caseSize * j, caseSize * i, caseSize, caseSize);
 	                
 	                switch (p.getTeam()) {
-	                	case Stadium.teamOne:
+	                	case ModelConstants.TEAM_ONE:
 	                		drawable.setColor(Color.RED);
 	                		ball = Color.BLACK;
 	                		break;
 	                		
-	                	case Stadium.teamTwo:
+	                	case ModelConstants.TEAM_TWO:
 	                		drawable.setColor(Color.CYAN);
 	                		ball = Color.WHITE;
 	                		break;

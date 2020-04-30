@@ -1,8 +1,9 @@
 /!\ Toutes les classes, attributs, variables et méthodes doivent être en anglais et rédigés sous ce format /!\
+/!\ Bien séparer tous les éléments par un espace : ==, {, (, <, etc /!\
+/!\ Mettre des noms de variables PARLANT quitte à ce qu'ils soient un peu plus long /!\ 
+/!\ Nom des constantes au format MA_CONSTANTE déclarée avec les attributs "public static final <type>" /!\
 
 public class ClassName {
-
-	/!\ Mettre des noms de variables PARLANT quitte à ce qu'ils soient un peu plus long /!\ 
 
 	private int varName;
 
@@ -19,6 +20,4 @@ public class ClassName {
 	} else {
 	
 	}
-	
-	/!\ Bien séparer tous les éléments par un espace : ==, {, (, <, etc /!\
 }

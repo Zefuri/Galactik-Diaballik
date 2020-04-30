@@ -1,4 +1,4 @@
-package controller.AI;
+package AI;
 import model.Stadium;
 import model.Player;
 

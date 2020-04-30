@@ -1,4 +1,4 @@
-package controller.Listeners;
+package Listeners;
 
 public class Case {
 	private int x, y;

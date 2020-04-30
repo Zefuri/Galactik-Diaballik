@@ -1,10 +1,9 @@
 package model;
 
 import static java.lang.Math.abs;
+import model.ModelConstants;
 
 public class Stadium {
-    public static final int teamOne = 0;
-    public static final int teamTwo = 1;
     Player[][] board = new Player[7][7];
     Player[] snowKids = new Player[7];
     Player[] shadows = new Player[7];
@@ -13,8 +12,8 @@ public class Stadium {
     private int nbMove;
 
     public Stadium(){
-        this.initTeam(snowKids, teamOne);
-        this.initTeam(shadows, teamTwo);
+        this.initTeam(snowKids, ModelConstants.TEAM_ONE);
+        this.initTeam(shadows, ModelConstants.TEAM_TWO);
         this.resetBoard();
         this.turn = 0;
         this.nbMove = 0;
@@ -71,12 +70,12 @@ public class Stadium {
         return this.whatsInTheBox(i, j) == null;
     }
 
-    public Player[] getOpponent(int team){
-        if(team == teamOne){
+    public Player[] getOpponent(int team) {
+        if (team == ModelConstants.TEAM_ONE) {
             return shadows;
         }
-        else{
-            if(team == teamTwo){
+        else {
+            if (team == ModelConstants.TEAM_TWO) {
                 return snowKids;
             }
         }
@@ -86,20 +85,20 @@ public class Stadium {
     //------------------------------------------------------------------------------------------------------------------
 
     public void initTeam(Player[] team,int nbTeam){
-        for (int i = 0; i<7; i++){
+        for (int i = 0; i < ModelConstants.BOARD_SIZE; i++){
             team[i] = new Player(i, nbTeam);
         }
     }
 
     public void resetBoard(){  //initialising board
-        for(int i = 0; i < 7; i++){
+        for(int i = 0; i < ModelConstants.BOARD_SIZE; i++){
             board[6][i] = snowKids[i];
             snowKids[i].movePlayer(6,i);
             board[0][i] = shadows[i];
             shadows[i].movePlayer(0,i);
         }
         for (int i = 1; i < 6; i++) {
-            for (int j = 0; j < 7; j++) {
+            for (int j = 0; j < ModelConstants.BOARD_SIZE; j++) {
                 board[i][j] = null;
             }
         }
@@ -121,28 +120,28 @@ public class Stadium {
         
         if (!this.isABallHere(i, j)) {
             switch (move) {
-                case 'U':
+                case ModelConstants.UP:
                     if (i > 0 && this.isEmpty(i - 1, j)) {
                         simpleMove(player, i - 1, j);
                         moved = true;
                     }
                     break;
                     
-                case 'D':
+                case ModelConstants.DOWN:
                     if (i < 6 && this.isEmpty(i + 1, j)) {
                         simpleMove(player, i + 1, j);
                         moved = true;
                     }
                     break;
                     
-                case 'L':
+                case ModelConstants.LEFT:
                     if (j > 0 && this.isEmpty(i, j - 1)) {
                         simpleMove(player, i, j - 1);
                         moved = true;
                     }
                     break;
                     
-                case 'R':
+                case ModelConstants.RIGHT:
                     if (j < 6 && this.isEmpty(i, j + 1)) {
                         simpleMove(player, i, j + 1);
                         moved = true;
@@ -160,43 +159,44 @@ public class Stadium {
     public int direction(Player playerOne, Player playerTwo) {
         if (playerOne.getI() == playerTwo.getI()) {//same line
             if (playerTwo.getJ() < playerOne.getJ()) {  //left
-                return 1;//same line left
+                return ModelConstants.DIR_LEFT;//same line left
             } else {//right
-                return 2;//same line right
+                return ModelConstants.DIR_RIGHT;//same line right
             }
         } else {
             if (playerOne.getJ() == playerTwo.getJ()) {// same column
                 if (playerTwo.getI() < playerOne.getI()) {  //up
-                    return 3;//same column up
+                    return ModelConstants.DIR_UP;//same column up
                 }
                 else{//down
-                    return 4;//same column down
+                    return ModelConstants.DIR_DOWN;//same column down
                 }
             }
             else{//diag check
                 int diffI = playerOne.getI() - playerTwo.getI();
                 int diffJ = playerOne.getJ() - playerTwo.getJ();
-                if (diffJ == diffI){
-                    if (diffJ > 0){//bottom right
-                        return 5;
+                if (diffJ == diffI) {
+                    if (diffJ > 0) {//bottom right
+                        return ModelConstants.DIR_BOT_RIGHT;
                     }
-                    else{//top left
-                        return 6;
+                    else {//top left
+                        return ModelConstants.DIR_TOP_LEFT;
                     }
                 }
                 else{
-                    if(diffJ == -diffI){
-                        if (diffJ > 0){//top right
-                            return 7;
+                    if(diffJ == -diffI) {
+                        if (diffJ > 0) {//top right
+                            return ModelConstants.DIR_TOP_RIGHT;
                         }
-                        else{//bottom left
-                            return 8;
+                        else {//bottom left
+                            return ModelConstants.DIR_BOT_LEFT;
                         }
                     }
                 }
             }
         }
-        return 0;
+        
+        return ModelConstants.INVALID_DIR;
     }
 
     public void simplePass(Player playerOne, Player playerTwo){ //player at i j pass the ball to nextI nextJ
@@ -214,7 +214,7 @@ public class Stadium {
             if (dir != 0) {
                 Player[] opponent = this.getOpponent(playerOne.getTeam());
                
-                for (int i = 0;(!intercepted) && i < 7; i++) {
+                for (int i = 0;(!intercepted) && i < ModelConstants.BOARD_SIZE; i++) {
                     Player checking = opponent[i];
                     
                     if (this.direction(playerOne, checking) == dir){
@@ -243,11 +243,11 @@ public class Stadium {
     public boolean antiplay(int team){
         Player[] playerlist;
         boolean result = false;
-        if (team == teamOne){
+        if (team == ModelConstants.TEAM_ONE){
             playerlist = this.getSnowKids();
         }
         else{
-            if(team == teamTwo){
+            if(team == ModelConstants.TEAM_TWO){
                 playerlist = this.getShadows();
             }
             else{
@@ -257,7 +257,7 @@ public class Stadium {
         int contact = 0;
         boolean leftFriend;
         boolean rightFriend;
-        for (int k = 0; k < 7; k++) {
+        for (int k = 0; k < ModelConstants.BOARD_SIZE; k++) {
             leftFriend = false;
             rightFriend = false;
             Player checking = playerlist[k];
@@ -285,11 +285,11 @@ public class Stadium {
     public boolean isAWin(int team) {
         Player[] playerlist;
         int limit;
-        if (team == teamOne) {
+        if (team == ModelConstants.TEAM_ONE) {
             playerlist = this.getSnowKids();
             limit = 0;
         } else {
-            if (team == teamTwo) {
+            if (team == ModelConstants.TEAM_TWO) {
                 playerlist = this.getShadows();
                 limit = 6;
             } else {
@@ -342,29 +342,31 @@ public class Stadium {
 	public char getMoveDirection(Player player, int i, int j){
         int playerI = player.getI();
         int playerJ = player.getJ();
-        char result = 'X';
+        char result = ModelConstants.ERROR;
+        
         if (playerJ == j){
             if (playerI == i - 1){
-                result = 'D';
+                result = ModelConstants.DOWN;
             }
             else{
                 if (playerI == i + 1) {
-                    result = 'U';
+                    result = ModelConstants.UP;
                 }
             }
         }
         else{
             if (playerI == i){
                 if (playerJ == j - 1){
-                    result = 'R';
+                    result = ModelConstants.RIGHT;
                 }
                 else{
                     if (playerJ == j + 1) {
-                        result = 'L';
+                        result = ModelConstants.LEFT;
                     }
                 }
             }
         }
+        
         return result;
     }
 
@@ -375,48 +377,61 @@ public class Stadium {
 
 	public int normalTurn(Action action){ //what controller must use
         int result = 0;
+        
         switch(action.getActionType()){
             case 0:
-                if ( this.nbMove == 2 ){
+                if (this.nbMove == ModelConstants.MAX_MOVES_PER_TOUR){
                     result = -1;
                     break;
                 }
-                Player player = whatsInTheBox(action.getFirstI(),action.getFirstJ());
+                
+                Player player = whatsInTheBox(action.getFirstI(), action.getFirstJ());
                 char dir = getMoveDirection(player, action.getSecondI(), action.getSecondJ());
                 move(player, dir);
                 this.nbMove++;
+                
                 break;
+                
             case 1:
-                if ( this.nbPass == 1 ){
+                if (this.nbPass == ModelConstants.MAX_PASSES_PER_TOUR){
                     result = -1;
                     break;
                 }
-                Player firstPlayer = whatsInTheBox(action.getFirstI(),action.getFirstJ());
-                Player secondPlayer = whatsInTheBox(action.getSecondI(),action.getSecondJ());
+                
+                Player firstPlayer = whatsInTheBox(action.getFirstI(), action.getFirstJ());
+                Player secondPlayer = whatsInTheBox(action.getSecondI(), action.getSecondJ());
                 pass(firstPlayer, secondPlayer);
                 this.nbPass++;
+                
                 break;
+                
             case 2:
-                if ((this.nbMove + this.nbPass ) == 0){
+                if ((this.nbMove + this.nbPass) == 0){
                     result = -1;
                     break;
                 }
+                
                 this.resetTurnVariables();
                 this.turn++;
+                
                 break;
+                
             default:
                 result = -1;
                 break;
         }
-        if (this.nbPass == 1 && this.nbMove == 2){
+        
+        if (this.nbPass == ModelConstants.MAX_PASSES_PER_TOUR && this.nbMove == ModelConstants.MAX_MOVES_PER_TOUR){
             this.resetTurnVariables();
             this.turn++;
         }
-        if ( this.isAWin( action.getWhosturn() ) ){
-            result = 1;
+        
+        if (this.isAWin(action.getWhosturn())) {
+            result = ModelConstants.WIN;
         }
-        if ( this.antiplay( action.getWhosturn() ) ){
-            result = 2;
+        
+        if (this.antiplay(action.getWhosturn())) {
+            result = ModelConstants.ANTIPLAY;
         }
 
         return result;
