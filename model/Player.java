@@ -1,8 +1,8 @@
 package model;
 
 public class Player {
-	private int team;
-	private int number;
+	private final int team;
+	private final int number;
 	private boolean ballPossession;
 	private int i;
 	private int j;
@@ -38,10 +38,6 @@ public class Player {
 	
 	public boolean getBallPossession() {
 		return ballPossession;
-	}
-	
-	public void setTeam(int team) {
-		this.team = team;
 	}
 	
 	public void setBallPossession(boolean ballPossession) {
