@@ -2,7 +2,7 @@ package view;
 
 import javax.swing.JFrame;
 
-import controller.MouseAction;
+import Listeners.MouseAction;
 import model.Stadium;
 
 public class HoloTV implements Runnable {
@@ -13,7 +13,6 @@ public class HoloTV implements Runnable {
 	
 	public HoloTV(Stadium stadium) {
 		this.stadium = stadium;
-		
 	}
 	
 	@Override
@@ -36,6 +35,18 @@ public class HoloTV implements Runnable {
 	}
 	
 	public void addArkadiaNewsMouseListener(MouseAction mouseAction) {
-		gamePanel.getArkadiaNews().addMouseListener(mouseAction);
+		this.gamePanel.getArkadiaNews().addMouseListener(mouseAction);
+	}
+	
+	public int getCaseSize() {
+		return this.gamePanel.getArkadiaNews().getCaseSize();
+	}
+	
+	public int getScreenWidth() {
+		return this.frame.getWidth();
+	}
+	
+	public int getScreenHeight() {
+		return this.frame.getHeight();
 	}
 }

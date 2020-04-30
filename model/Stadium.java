@@ -20,6 +20,7 @@ public class Stadium {
         this.nbMove = 0;
         this.nbPass = 0;
     }
+    
     //----------------------------------------------------getters-------------------------------------------------------
 
     public int getNbPass() {
