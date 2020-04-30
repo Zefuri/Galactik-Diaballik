@@ -38,6 +38,10 @@ public class HoloTV implements Runnable {
 		this.gamePanel.getArkadiaNews().addMouseListener(mouseAction);
 	}
 	
+	public ArkadiaNews getArkadiaNews() {
+		return this.gamePanel.getArkadiaNews();
+	}
+	
 	public int getCaseSize() {
 		return this.gamePanel.getArkadiaNews().getCaseSize();
 	}
