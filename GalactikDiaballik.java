@@ -7,7 +7,7 @@ public class GalactikDiaballik {
 		Stadium stadium = new Stadium();
 		HoloTV holoTV = new HoloTV(stadium);
 		MouseAction mouseAction = new MouseAction(holoTV, stadium);
-		
+
 		holoTV.run();
 		holoTV.addArkadiaNewsMouseListener(mouseAction);
 	}

@@ -1,15 +1,23 @@
 package controller.AI;
 import model.Stadium;
+
 import model.Player;
 
-// Commun class for all player: AI or human
-abstract class PlayerType {
+// Common class for all player: AI or human
+public abstract class PlayerType {
+	public enum Position {
+		TOP,
+		BOTTOM,
+	}
+
 	Stadium stadium;
 	int equipNum;
+	Position position;
 
-	PlayerType(int number, Stadium stade) {
+	PlayerType(int number, Stadium stade, Position position) {
 		equipNum = number;
 		stadium = stade;
+		this.position = position;
 	}
 
 	int equipNumber() {

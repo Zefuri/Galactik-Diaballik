@@ -1,4 +1,5 @@
 package controller.AI;
+
 import java.util.Random;
 import model.Stadium;
 import model.Player;
@@ -6,8 +7,8 @@ import model.Player;
 class RandomAI_1 extends PlayerType {
 	Random randomgene;
 
-	RandomAI_1(int numberEquip, Stadium stade) {
-		super(numberEquip, stade);
+	RandomAI_1(int numberEquip, Stadium stade, Position position) {
+		super(numberEquip, stade, position);
 		randomgene = new Random();
 	}
 

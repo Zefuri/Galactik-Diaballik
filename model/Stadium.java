@@ -63,6 +63,10 @@ public class Stadium {
         return (!this.isEmpty(i, j) && this.whatsInTheBox(i, j).getBallPossession());
     }
 
+    public boolean isAPlayerOnly(int i, int j) {
+    	return (!this.isEmpty(i, j) && !isABallHere(i,j));
+    }
+    
     public boolean isEmpty(int i, int j){ //is i j empty
         return this.whatsInTheBox(i, j) == null;
     }
@@ -114,6 +118,7 @@ public class Stadium {
     	boolean moved = false;
         int i = player.getI();
         int j = player.getJ();
+        
         if (!this.isABallHere(i, j)) {
             switch (move) {
                 case 'U':
@@ -122,28 +127,33 @@ public class Stadium {
                         moved = true;
                     }
                     break;
+                    
                 case 'D':
                     if (i < 6 && this.isEmpty(i + 1, j)) {
                         simpleMove(player, i + 1, j);
                         moved = true;
                     }
                     break;
+                    
                 case 'L':
                     if (j > 0 && this.isEmpty(i, j - 1)) {
                         simpleMove(player, i, j - 1);
                         moved = true;
                     }
                     break;
+                    
                 case 'R':
                     if (j < 6 && this.isEmpty(i, j + 1)) {
                         simpleMove(player, i, j + 1);
                         moved = true;
                     }
                     break;
+                    
                 default:
                     System.out.println("wrong move input in move function");
             }
         }
+        
         return moved;
     }
 
@@ -197,25 +207,36 @@ public class Stadium {
 
     public boolean pass(Player playerOne, Player playerTwo) { //player at i j pass the ball to nextI nextJ
         boolean intercepted = false;
+        
         if (playerOne.isATeammate(playerTwo) && (playerOne.getBallPossession()) && !(playerTwo.getBallPossession())){
             int dir = direction(playerOne, playerTwo);
+            
             if (dir != 0) {
                 Player[] opponent = this.getOpponent(playerOne.getTeam());
+               
                 for (int i = 0;(!intercepted) && i < 7; i++) {
                     Player checking = opponent[i];
+                    
                     if (this.direction(playerOne, checking) == dir){
                          int distFriend = abs(playerTwo.getI() - playerOne.getI()) + abs(playerTwo.getJ() - playerOne.getJ());
                          int distOpp = abs(checking.getI() - playerOne.getI()) + abs(checking.getJ() - playerOne.getJ());
+                         
                          if (distFriend > distOpp){
                              intercepted = true;
                          }
                     }
                 }
-                if(!intercepted){
+                
+                if (!intercepted) {
                     simplePass(playerOne, playerTwo);
                 }
-            }else{intercepted = true;}
-        }else{intercepted = true;}
+            } else {
+            	intercepted = true;
+            }
+        } else{
+        	intercepted = true;
+        }
+        
         return !intercepted;
     }
 
@@ -318,28 +339,28 @@ public class Stadium {
 		return game.toString();
 	}
 
-	private char getMoveDirection(Player player, int i, int j){
+	public char getMoveDirection(Player player, int i, int j){
         int playerI = player.getI();
         int playerJ = player.getJ();
         char result = 'X';
         if (playerJ == j){
             if (playerI == i - 1){
-                result = 'U';
+                result = 'D';
             }
             else{
                 if (playerI == i + 1) {
-                    result = 'D';
+                    result = 'U';
                 }
             }
         }
         else{
             if (playerI == i){
                 if (playerJ == j - 1){
-                    result = 'L';
+                    result = 'R';
                 }
                 else{
                     if (playerJ == j + 1) {
-                        result = 'R';
+                        result = 'L';
                     }
                 }
             }
@@ -353,40 +374,58 @@ public class Stadium {
     }
 
 	public int normalTurn(Action action){ //what controller must use
+        int result = 0;
+        int playing = this.whosTurn();
         switch(action.getActionType()){
+
             case 0:
-                if ( this.nbMove == 2 ){
-                    return -1;
-                }
                 Player player = whatsInTheBox(action.getFirstI(),action.getFirstJ());
+                if ( this.nbMove == 2 || (player.getTeam() != playing)){
+                    result = -1;
+                    break;
+                }
                 char dir = getMoveDirection(player, action.getSecondI(), action.getSecondJ());
                 move(player, dir);
                 this.nbMove++;
                 break;
+
             case 1:
-                if ( this.nbPass == 1 ){
-                    return -1;
-                }
                 Player firstPlayer = whatsInTheBox(action.getFirstI(),action.getFirstJ());
                 Player secondPlayer = whatsInTheBox(action.getSecondI(),action.getSecondJ());
+                if ( this.nbPass == 1 || (firstPlayer.getTeam() != playing)|| (secondPlayer.getTeam() != playing)){
+                    result = -1;
+                    break;
+                }
+
                 pass(firstPlayer, secondPlayer);
                 this.nbPass++;
                 break;
+
             case 2:
                 if ((this.nbMove + this.nbPass ) == 0){
-                    return -1;
+                    result = -1;
+                    break;
                 }
                 this.resetTurnVariables();
                 this.turn++;
                 break;
+
             default:
-                return - 1;
+                result = -1;
+                break;
         }
         if (this.nbPass == 1 && this.nbMove == 2){
             this.resetTurnVariables();
             this.turn++;
         }
-        return this.whosTurn();
+        if ( this.isAWin( action.getWhosturn() ) ){
+            result = 1;
+        }
+        if ( this.antiplay( action.getWhosturn() ) ){
+            result = 2;
+        }
+
+        return result;
     }
 }
 
