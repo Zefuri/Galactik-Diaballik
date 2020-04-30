@@ -39,7 +39,7 @@ public class ArkadiaNews extends JComponent {
                 if (p != null) {
                 	// Draw current player
                 	drawable.setColor(Color.BLACK);
-	                drawable.drawOval(caseSize * i, caseSize * j, caseSize, caseSize);
+	                drawable.drawOval(caseSize * j, caseSize * i, caseSize, caseSize);
 	                
 	                switch (p.getTeam()) {
 	                	case Stadium.teamOne:
@@ -54,21 +54,21 @@ public class ArkadiaNews extends JComponent {
 	                }
 	                
 	                // Fill current player with the good color
-	                drawable.fillOval(caseSize * i, caseSize * j, caseSize, caseSize);
+	                drawable.fillOval(caseSize * j, caseSize * i, caseSize, caseSize);
 	                
 	                // Draw the ball if necessary
 	                if (p.getBallPossession()) {
 	                	drawable.setColor(Color.BLACK);
-	                	drawable.drawOval((caseSize * i) + (caseSize/6), (caseSize * j) + (caseSize/6), caseSize - (caseSize/3), caseSize - (caseSize/3));
+	                	drawable.drawOval((caseSize * j) + (caseSize/6), (caseSize * i) + (caseSize/6), caseSize - (caseSize/3), caseSize - (caseSize/3));
 	                	drawable.setColor(ball);
-	                	drawable.fillOval((caseSize * i) + (caseSize/6), (caseSize * j) + (caseSize/6), caseSize - (caseSize/3), caseSize - (caseSize/3));
+	                	drawable.fillOval((caseSize * j) + (caseSize/6), (caseSize * i) + (caseSize/6),caseSize - (caseSize/3), caseSize - (caseSize/3));
 	                }
                 }
                 
                 // Draw outlines
                 drawable.setColor(Color.BLACK);
-                drawable.drawLine(caseSize * i, caseSize * (j + 1), caseSize * (i + 1), caseSize * (j + 1));
-                drawable.drawLine(caseSize * (i + 1), caseSize * j, caseSize * (i + 1), caseSize * (j + 1));
+                drawable.drawLine(caseSize * (j + 1), caseSize * i, caseSize * (j + 1), caseSize * (i + 1));
+                drawable.drawLine(caseSize * j, caseSize * (i + 1), caseSize * (j + 1), caseSize * (i + 1));
             }
         }
 	}
