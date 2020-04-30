@@ -3,7 +3,7 @@ import model.Stadium;
 
 import model.Player;
 
-// Commun class for all player: AI or human
+// Common class for all player: AI or human
 abstract class PlayerType {
 	enum Position {
 		TOP,

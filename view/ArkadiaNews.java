@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -28,7 +29,7 @@ public class ArkadiaNews extends JComponent {
         //To keep squared cases, we take the minimum between screen width and screen height
         this.caseSize = Math.min(windowWidth, windowHeight) / 7;
         
-        // Drawing all players and outlines of the stadiums
+        // Drawing all players and outlines of the stadium
         for (int i = 0; i < 7; i++) {
             for (int j = 0; j < 7; j++) {
             	Color ball = Color.WHITE;
@@ -37,9 +38,13 @@ public class ArkadiaNews extends JComponent {
                 Player p = this.stadium.whatsInTheBox(i, j);
                 
                 if (p != null) {
-                	// Draw current player
-                	drawable.setColor(Color.BLACK);
-	                drawable.drawOval(caseSize * j, caseSize * i, caseSize, caseSize);
+                	// Draw current player (change color if selected)
+                	if (p.playerSelected()) {
+                		drawable.setColor(Color.YELLOW);
+                	} else {
+                		drawable.setColor(Color.BLACK);
+                	}
+	                drawable.fillOval(caseSize * j, caseSize * i, caseSize, caseSize);
 	                
 	                switch (p.getTeam()) {
 	                	case Stadium.teamOne:
@@ -54,7 +59,7 @@ public class ArkadiaNews extends JComponent {
 	                }
 	                
 	                // Fill current player with the good color
-	                drawable.fillOval(caseSize * j, caseSize * i, caseSize, caseSize);
+	                drawable.fillOval(caseSize * j + 3, caseSize * i + 3, caseSize - 6, caseSize - 6);
 	                
 	                // Draw the ball if necessary
 	                if (p.getBallPossession()) {
@@ -69,6 +74,7 @@ public class ArkadiaNews extends JComponent {
                 drawable.setColor(Color.BLACK);
                 drawable.drawLine(caseSize * (j + 1), caseSize * i, caseSize * (j + 1), caseSize * (i + 1));
                 drawable.drawLine(caseSize * j, caseSize * (i + 1), caseSize * (j + 1), caseSize * (i + 1));
+                drawable.setStroke(new BasicStroke(2));
             }
         }
 	}
