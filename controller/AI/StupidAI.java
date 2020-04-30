@@ -92,8 +92,8 @@ public class StupidAI extends PlayerType {
             int dei = e.getI() - p1.getI();
             int dej = e.getJ() - p1.getJ();
 
-            int dLength = vecSquaredLength(di, dj);
-            int deLength = vecSquaredLength(dei, dej);
+            double dLength = vecLength(di, dj);
+            double deLength = vecLength(dei, dej);
 
             // si deux vecteurs pointent dans la meme direction alors (a.b)/(a*b) = cos(0) = 1
             if ((di*dei + dj*dej) / (dLength*deLength) == 1 && deLength < dLength) {
@@ -138,7 +138,7 @@ public class StupidAI extends PlayerType {
         return players;
     }
 
-    private int vecSquaredLength(int i, int j) {
-        return i*i + j*j;
+    private double vecLength(int i, int j) {
+        return Math.sqrt(i*i + j*j);
     }
 }
