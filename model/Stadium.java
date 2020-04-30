@@ -375,27 +375,32 @@ public class Stadium {
 
 	public int normalTurn(Action action){ //what controller must use
         int result = 0;
+        int playing = this.whosTurn();
         switch(action.getActionType()){
+
             case 0:
-                if ( this.nbMove == 2 ){
+                Player player = whatsInTheBox(action.getFirstI(),action.getFirstJ());
+                if ( this.nbMove == 2 || (player.getTeam() != playing)){
                     result = -1;
                     break;
                 }
-                Player player = whatsInTheBox(action.getFirstI(),action.getFirstJ());
                 char dir = getMoveDirection(player, action.getSecondI(), action.getSecondJ());
                 move(player, dir);
                 this.nbMove++;
                 break;
+
             case 1:
-                if ( this.nbPass == 1 ){
+                Player firstPlayer = whatsInTheBox(action.getFirstI(),action.getFirstJ());
+                Player secondPlayer = whatsInTheBox(action.getSecondI(),action.getSecondJ());
+                if ( this.nbPass == 1 || (firstPlayer.getTeam() != playing)|| (secondPlayer.getTeam() != playing)){
                     result = -1;
                     break;
                 }
-                Player firstPlayer = whatsInTheBox(action.getFirstI(),action.getFirstJ());
-                Player secondPlayer = whatsInTheBox(action.getSecondI(),action.getSecondJ());
+
                 pass(firstPlayer, secondPlayer);
                 this.nbPass++;
                 break;
+
             case 2:
                 if ((this.nbMove + this.nbPass ) == 0){
                     result = -1;
@@ -404,6 +409,7 @@ public class Stadium {
                 this.resetTurnVariables();
                 this.turn++;
                 break;
+
             default:
                 result = -1;
                 break;
