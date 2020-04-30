@@ -16,7 +16,6 @@ public class Action {
         this.secondJ = secondJ;
         this.nbTurn = nbTurn;
         this.nbAction = nbAction;
-
     }
 
     public int getActionType(){
