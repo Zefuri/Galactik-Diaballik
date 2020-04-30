@@ -22,12 +22,20 @@ public class Stadium {
     }
     //----------------------------------------------------getters-------------------------------------------------------
 
+    public int getTurn(){
+        return this.turn;
+    }
+
     public int getNbPass() {
-        return nbPass;
+        return this.nbPass;
     }
 
     public int getNbMove() {
-        return nbMove;
+        return this.nbMove;
+    }
+
+    public int getNbAction(){
+        return this.nbMove + this.nbPass;
     }
 
     public Player[] getSnowKids(){
@@ -51,7 +59,7 @@ public class Stadium {
     }
 
     public boolean isABallHere(int i, int j){ //is there a ball in i j
-        return this.whatsInTheBox(i, j).getBallPossession();
+        return (!this.isEmpty(i, j) && this.whatsInTheBox(i, j).getBallPossession());
     }
 
     public boolean isEmpty(int i, int j){ //is i j empty
