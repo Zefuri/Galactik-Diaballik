@@ -8,9 +8,9 @@ public class Stadium {
     Player[][] board = new Player[7][7];
     Player[] snowKids = new Player[7];
     Player[] shadows = new Player[7];
-    int turn;
-    int nbPass;
-    int nbMove;
+    private int turn;
+    private int nbPass;
+    private int nbMove;
 
     public Stadium(){
         this.initTeam(snowKids, teamOne);
@@ -20,11 +20,23 @@ public class Stadium {
         this.nbMove = 0;
         this.nbPass = 0;
     }
+    
+    //----------------------------------------------------getters-------------------------------------------------------
 
-    public void initTeam(Player[] team,int nbTeam){
-        for (int i = 0; i<7; i++){
-            team[i] = new Player(i, nbTeam);
-        }
+    public int getTurn(){
+        return this.turn;
+    }
+
+    public int getNbPass() {
+        return this.nbPass;
+    }
+
+    public int getNbMove() {
+        return this.nbMove;
+    }
+
+    public int getNbAction(){
+        return this.nbMove + this.nbPass;
     }
 
     public Player[] getSnowKids(){
@@ -43,6 +55,18 @@ public class Stadium {
         return (this.turn - 1) % 2;
     }
 
+    public Player whatsInTheBox(int i, int j){ //what's in i j
+        return this.board[i][j];
+    }
+
+    public boolean isABallHere(int i, int j){ //is there a ball in i j
+        return (!this.isEmpty(i, j) && this.whatsInTheBox(i, j).getBallPossession());
+    }
+
+    public boolean isEmpty(int i, int j){ //is i j empty
+        return this.whatsInTheBox(i, j) == null;
+    }
+
     public Player[] getOpponent(int team){
         if(team == teamOne){
             return shadows;
@@ -53,6 +77,14 @@ public class Stadium {
             }
         }
         return null;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    public void initTeam(Player[] team,int nbTeam){
+        for (int i = 0; i<7; i++){
+            team[i] = new Player(i, nbTeam);
+        }
     }
 
     public void resetBoard(){  //initialising board
@@ -69,18 +101,6 @@ public class Stadium {
         }
         board[0][3].setBallPossession(true);
         board[6][3].setBallPossession(true);
-    }
-
-    public Player whatsInTheBox(int i, int j){ //what's in i j
-        return this.board[i][j];
-    }
-
-    public boolean isABallHere(int i, int j){ //is there a ball in i j
-        return this.whatsInTheBox(i, j).getBallPossession();
-    }
-
-    public boolean isEmpty(int i, int j){ //is i j empty
-        return this.whatsInTheBox(i, j) == null;
     }
 
     public void simpleMove(Player player, int nextI, int nextJ){ //move player at i j to nextI nextJ, no matter what
@@ -267,39 +287,106 @@ public class Stadium {
 
 	public String toString(){
 		//board read
-		String game = "";
+		StringBuilder game = new StringBuilder();
 		
 		for(int abscisse = 0; abscisse != board.length; abscisse++){
 			for(int ordonnee = 0; ordonnee != board.length; ordonnee++){
-				game += "|";
+				game.append("|");
 				
 				if(board[abscisse][ordonnee] == null){
-					game += "___";
+					game.append("___");
 					
 				}else if(board[abscisse][ordonnee].getTeam() == 0   &&   !board[abscisse][ordonnee].getBallPossession()){
-					game += "a" + board[abscisse][ordonnee].getNum() + ".";
+					game.append("a").append(board[abscisse][ordonnee].getNum()).append(".");
 					
 				}else if(board[abscisse][ordonnee].getTeam() == 1   &&   !board[abscisse][ordonnee].getBallPossession()){
-					game += "b" + board[abscisse][ordonnee].getNum() + ".";
+					game.append("b").append(board[abscisse][ordonnee].getNum()).append(".");
 					
 				}else if(board[abscisse][ordonnee].getTeam()==0 && board[abscisse][ordonnee].getBallPossession()){
-					game += "a" + board[abscisse][ordonnee].getNum() + "*";
+					game.append("a").append(board[abscisse][ordonnee].getNum()).append("*");
 					
 				}else{
-					game += "b" + board[abscisse][ordonnee].getNum() + "*";
+					game.append("b").append(board[abscisse][ordonnee].getNum()).append("*");
 				}
 				
 			}
 			
-			game += "|\n";
+			game.append("|\n");
 			
 		}		
 		
-		return game;
+		return game.toString();
 	}
 
-	public int normalTurn(Action action){
-        //TODO
+	private char getMoveDirection(Player player, int i, int j){
+        int playerI = player.getI();
+        int playerJ = player.getJ();
+        char result = 'X';
+        if (playerJ == j){
+            if (playerI == i - 1){
+                result = 'U';
+            }
+            else{
+                if (playerI == i + 1) {
+                    result = 'D';
+                }
+            }
+        }
+        else{
+            if (playerI == i){
+                if (playerJ == j - 1){
+                    result = 'L';
+                }
+                else{
+                    if (playerJ == j + 1) {
+                        result = 'R';
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+	private void resetTurnVariables(){
+        this.nbMove = 0;
+        this.nbPass = 0;
+    }
+
+	public int normalTurn(Action action){ //what controller must use
+        switch(action.getActionType()){
+            case 0:
+                if ( this.nbMove == 2 ){
+                    return -1;
+                }
+                Player player = whatsInTheBox(action.getFirstI(),action.getFirstJ());
+                char dir = getMoveDirection(player, action.getSecondI(), action.getSecondJ());
+                move(player, dir);
+                this.nbMove++;
+                break;
+            case 1:
+                if ( this.nbPass == 1 ){
+                    return -1;
+                }
+                Player firstPlayer = whatsInTheBox(action.getFirstI(),action.getFirstJ());
+                Player secondPlayer = whatsInTheBox(action.getSecondI(),action.getSecondJ());
+                pass(firstPlayer, secondPlayer);
+                this.nbPass++;
+                break;
+            case 2:
+                if ((this.nbMove + this.nbPass ) == 0){
+                    return -1;
+                }
+                this.resetTurnVariables();
+                this.turn++;
+                break;
+            default:
+                return - 1;
+        }
+        if (this.nbPass == 1 && this.nbMove == 2){
+            this.resetTurnVariables();
+            this.turn++;
+        }
+        return this.whosTurn();
     }
 }
 
