@@ -124,11 +124,7 @@ abstract class PlayerType {
 	public int moveNumber(){
 		int number = 0;
 		
-		Player[] equip;
-		if(equipNumber() == 0)
-			equip = stadium.getSnowKids();
-		else
-			equip = stadium.getShadows();
+		Player[] equip = equip();
 		
 		int ball = ballNumber();
 		
@@ -149,11 +145,7 @@ abstract class PlayerType {
 	public int movePlayerNumber(){
 		int number = 0;
 		
-		Player[] equip;
-		if(equipNumber() == 0)
-			equip = stadium.getSnowKids();
-		else
-			equip = stadium.getShadows();
+		Player[] equip = equip();
 		
 		int ball = ballNumber();
 		
