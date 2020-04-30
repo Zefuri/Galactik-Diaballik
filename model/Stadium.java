@@ -63,6 +63,10 @@ public class Stadium {
         return (!this.isEmpty(i, j) && this.whatsInTheBox(i, j).getBallPossession());
     }
 
+    public boolean isAPlayerOnly(int i, int j) {
+    	return (!this.isEmpty(i, j) && !isABallHere(i,j));
+    }
+    
     public boolean isEmpty(int i, int j){ //is i j empty
         return this.whatsInTheBox(i, j) == null;
     }
