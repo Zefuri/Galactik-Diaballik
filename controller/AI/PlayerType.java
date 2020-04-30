@@ -1,7 +1,7 @@
-package AI;
+package controller.AI;
 import model.Stadium;
 
-// Commun class for all player: AI or human
+// Common class for all player: AI or human
 abstract class PlayerType {
 	Stadium stadium;
 	int equipNum;

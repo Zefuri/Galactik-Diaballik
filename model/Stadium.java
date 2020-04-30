@@ -345,22 +345,22 @@ public class Stadium {
         char result = 'X';
         if (playerJ == j){
             if (playerI == i - 1){
-                result = 'U';
+                result = 'D';
             }
             else{
                 if (playerI == i + 1) {
-                    result = 'D';
+                    result = 'U';
                 }
             }
         }
         else{
             if (playerI == i){
                 if (playerJ == j - 1){
-                    result = 'L';
+                    result = 'R';
                 }
                 else{
                     if (playerJ == j + 1) {
-                        result = 'R';
+                        result = 'L';
                     }
                 }
             }

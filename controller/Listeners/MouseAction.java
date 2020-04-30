@@ -1,4 +1,5 @@
-package Listeners;
+package controller.Listeners;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -43,6 +44,8 @@ public class MouseAction extends MouseAdapter {
 			//Means that the user performed a doable action but an error occurred
 			ex.printStackTrace();
 		}
+		
+		holoTV.getArkadiaNews().repaint();
 	}
 	
 	private Case getCase(int x, int y) {
@@ -60,17 +63,18 @@ public class MouseAction extends MouseAdapter {
 	private void performRequestedAction() {
 		//Verify if the user click must perform a doable action
 		
-		System.out.println("Joueur avec balle : " + stadium.isABallHere(clickedCase.getX(), clickedCase.getY()));
-		System.out.println("Joueur seul : " + stadium.isAPlayerOnly(clickedCase.getX(), clickedCase.getY()));
-		System.out.println("Case cliquée : " + clickedCase.getX() + "/"  + clickedCase.getY());
-		
 		if (stadium.isABallHere(clickedCase.getX(), clickedCase.getY())) {
 			//There is a player with a ball on the clicked case
 			if (playerWithBallCase != null) {
 				throw new IllegalStateException("You can not pass the ball to yourself.");
 			} else {
 				//Change the actual player
+				if (playerAloneCase != null) {
+					stadium.whatsInTheBox(playerAloneCase.getX(), playerAloneCase.getY()).setPlayerSelected(false);
+				}
+				
 				setPlayerWithBallCase(clickedCase.getX(), clickedCase.getY());
+				stadium.whatsInTheBox(clickedCase.getX(), clickedCase.getY()).setPlayerSelected(true);
 			}
 		} else if (stadium.isAPlayerOnly(clickedCase.getX(), clickedCase.getY())) {
 			//There is a player only on the clicked case
@@ -79,12 +83,23 @@ public class MouseAction extends MouseAdapter {
 				Player previousOwner = stadium.whatsInTheBox(playerWithBallCase.getX(), playerWithBallCase.getY());
 				Player futureOwner = stadium.whatsInTheBox(clickedCase.getX(), clickedCase.getY());
 				
-				if (!stadium.pass(previousOwner, futureOwner)) {
+				if (stadium.pass(previousOwner, futureOwner)) {
+					stadium.whatsInTheBox(playerWithBallCase.getX(), playerWithBallCase.getY()).setPlayerSelected(false);
+					clearPlayers();
+				} else {
 					throw new IllegalStateException("Either the two players are not aligned, or an opponent is between them.");
 				}
 			} else {
-				//Change the actual player
+				//Change the actual player and change the selection value
+				if (playerAloneCase != null) {
+					stadium.whatsInTheBox(playerAloneCase.getX(), playerAloneCase.getY()).setPlayerSelected(false);
+				}
+				if (playerWithBallCase != null) {
+					stadium.whatsInTheBox(playerWithBallCase.getX(), playerWithBallCase.getY()).setPlayerSelected(false);
+				}
+				
 				setPlayerAloneCase(clickedCase.getX(), clickedCase.getY());
+				stadium.whatsInTheBox(clickedCase.getX(), clickedCase.getY()).setPlayerSelected(true);
 			}
 		} else {
 			//The case is empty
@@ -93,21 +108,21 @@ public class MouseAction extends MouseAdapter {
 				Player p = stadium.whatsInTheBox(playerAloneCase.getX(), playerAloneCase.getY());
 				char c = stadium.getMoveDirection(p, clickedCase.getX(), clickedCase.getY());
 				
-				System.out.println("Direction : " + c);
-				System.out.println("Indice joueur seul : " + playerAloneCase.getX() + "/" + playerAloneCase.getY());
-				System.out.println("Indice case cliquée : " + clickedCase.getX() + "/" + clickedCase.getY());
-				
-				if (!stadium.move(p, c)) {
+				if (stadium.move(p, c)) {
+					playerAloneCase = new Case(clickedCase.getX(), clickedCase.getY());
+				} else {
 					throw new IllegalStateException("The selected case is not situated next to the player!");
 				}
 			} else if (playerWithBallCase != null) {
+				stadium.whatsInTheBox(playerWithBallCase.getX(), playerWithBallCase.getY()).setPlayerSelected(false);
+				clearPlayers();
 				throw new IllegalStateException("You can not move a player that has the ball.");
 			} else {
+				stadium.whatsInTheBox(playerAloneCase.getX(), playerAloneCase.getY()).setPlayerSelected(false);
+				clearPlayers();
 				throw new IllegalStateException("You must select a player before selecting an empty case!");
 			}
 		}
-		
-		holoTV.getArkadiaNews().repaint();
 	}
 	
 	private void setPlayerWithBallCase(int x, int y) {
@@ -118,5 +133,10 @@ public class MouseAction extends MouseAdapter {
 	private void setPlayerAloneCase(int x, int y) {
 		this.playerWithBallCase = null;
 		this.playerAloneCase = new Case(x, y);
+	}
+	
+	private void clearPlayers() {
+		this.playerWithBallCase = null;
+		this.playerAloneCase = null;
 	}
 }
