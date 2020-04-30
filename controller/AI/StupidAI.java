@@ -5,33 +5,33 @@ import model.Player;
 
 public class StupidAI extends PlayerType {
 
-    StupidAI(int number, Stadium stade, Position position) {
+    public StupidAI(int number, Stadium stade, Position position) {
         super(number, stade, position);
     }
 
     public void play() {
         Player[] players = equip();
+        Player ballPlayer = null;
+
+        for (Player p : players) {
+            if (p.getBallPossession()) {
+                ballPlayer = p;
+                break;
+            }
+        }
 
         // si le joueur qui a la balle peut faire une passe en avant, alors il la fait
         for (Player p : players) {
-            if (p.getBallPossession()) {
-                for (Player q : players) {
-                    if (isInFrontOf(q, p) && canPass(p, q)) {
-                        // faire la passe
-
-                        return;
-                    }
-                }
-
-                break;
+            if (isInFrontOf(p, ballPlayer) && canPass(ballPlayer, p)) {
+                stadium.pass(ballPlayer, p);
+                return;
             }
         }
 
         // sinon faire avancer un joueur
         for (Player p : players) {
             if (canMoveForward(p)) {
-                // faire avancer
-
+                stadium.move(p, position == Position.BOTTOM ? 'U' : 'D');
                 return;
             }
         }
@@ -80,7 +80,7 @@ public class StupidAI extends PlayerType {
         }
 
         int di = p2.getI() - p1.getI();
-        int dj = p2.getJ() - p2.getJ();
+        int dj = p2.getJ() - p1.getJ();
 
         // la pass est bien orthogonal ou diagonal
         if (!(di == 0 || dj == 0 || Math.abs(di) == Math.abs(dj))) {
