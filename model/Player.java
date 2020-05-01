@@ -1,74 +1,110 @@
 package model;
 
 import model.enums.ActionType;
+import model.enums.MoveDirection;
 
 public class Player {
-	private final Team team;
-	private String name;
+	private final String name;
+	private Team team;
 	private Case position;
 	private boolean ballPossession;
-	private boolean playerSelected;
 
-	public Player(Team team, String name, Case position, boolean ballPossession) {
-		this.team = team;
+	public Player(String name) {
 		this.name = name;
-		this.position = position;
-		this.ballPossession = ballPossession;
+		this.position = new Case(-1, -1);
+		this.ballPossession = false;
 	}
 	
 	public String getName() {
 		return this.name;
 	}
 	
+	void setTeam(Team team) {
+		this.team = team;
+	}
+
 	public Team getTeam() {
 		return this.team;
+	}
+
+	public Stadium getStadium() {
+		return getTeam().getStadium();
+	}
+
+	void setPosition(int x, int y) {
+		this.getPosition().setX(x);
+		this.getPosition().setY(y);
+	}
+
+	void setPosition(Case position) {
+		this.position = position;
 	}
 	
 	public Case getPosition() {
 		return this.position;
 	}
 	
-	public boolean hasBall() {
+	void setBallPossession(boolean ballPossession) {
+		this.ballPossession = ballPossession;
+	}
+
+	public boolean getBallPossession() {
 		return this.ballPossession;
 	}
-	
-	public boolean canMove(char direction) {
-		return team.getStadium().playerCanMove(this, direction);
+
+	Case calculateNewPosition(MoveDirection direction) {
+        int newX = getPosition().getX();
+		int newY = getPosition().getY();
+		
+		switch (direction) {
+			case UP:
+				newY--;
+				break;
+			case DOWN:
+				newY++;
+				break;
+			case LEFT:
+				newX--;
+				break;
+			case RIGHT:
+				newX++;
+				break;
+		}
+
+		return new Case(newX, newY);
 	}
 	
-	public boolean canPass(Player nextPlayer) {
-		return team.getStadium().playerCanPass(this, nextPlayer);
+	public boolean canMove(MoveDirection direction) {
+        if (getBallPossession()) {
+            return false;
+		}
+
+		Case newPosition = calculateNewPosition(direction);
+		
+        if (newPosition.getX() < 0 || newPosition.getX() > 6 || newPosition.getY() < 0 || newPosition.getY() > 6) {
+            return false;
+		}
+		
+		if (getStadium().getPlayerAt(newPosition) != null) {
+			return false;
+		}
+
+        return true;
 	}
 	
-	public Action move(char direction) {
+	public Action move(MoveDirection direction) {
 		if (canMove(direction)) {
-			Case prevPos = this.position;
-			
-			switch (direction) {
-	        	case ModelConstants.UP:
-	        		this.position = new Case(this.position.getX() - 1, this.position.getY());
-	        		break;
-	        		
-	        	case ModelConstants.DOWN:
-	        		this.position = new Case(this.position.getX() + 1, this.position.getY());
-	        		break;
-	        		
-	        	case ModelConstants.RIGHT:
-	        		this.position = new Case(this.position.getX(), this.position.getY() + 1);
-	        		break;
-	        	
-	        	case ModelConstants.LEFT:
-	        		this.position = new Case(this.position.getX(), this.position.getY() - 1);
-	        		break;
-			}
-			
-			team.getStadium().move(this, direction);
-			
-			return new Action(ActionType.MOVE, this, null, prevPos, this.position);
+			Case newPosition = calculateNewPosition(direction);
+			setPosition(newPosition);
+			return getStadium().getLastAction();
 		} else {
 			//Voir si c'est vraiment utile 
 			throw new RuntimeException("You can not move on the clicked case.");
 		}
+	}
+	
+	public boolean canPass(Player nextPlayer) {
+		return team.getStadium().playerCanPass(this, nextPlayer);
 	}
 	
 	public Action pass(Player nextPlayer) {
@@ -82,19 +118,7 @@ public class Player {
 		}
 	}
 
-	public void setBallPossession(boolean ballPossession) {
-		this.ballPossession = ballPossession;
-	}
-
 	public boolean isATeammate(Player player) {
-		return this.team == player.team;
-	}
-	
-	public void setPlayerSelected(boolean selected) {
-		this.playerSelected = selected;
-	}
-	
-	public boolean playerSelected() {
-		return this.playerSelected;
+		return this.getTeam() == player.getTeam();
 	}
 }

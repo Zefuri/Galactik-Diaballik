@@ -43,7 +43,7 @@ public abstract class PlayerType {
 		Player[] equip = equip();
 		
 		for(int check = 0; check != equip.length   &&   number == -1; check++){
-			if(equip[check].hasBall())
+			if(equip[check].getBallPossession())
 				number = check;
 		}
 		

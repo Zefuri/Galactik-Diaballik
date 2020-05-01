@@ -6,117 +6,44 @@ import model.enums.TeamPosition;
 import model.enums.ActionType;
 
 public class Stadium {
-    Player[][] board = new Player[7][7];
-    Player[] snowKids = new Player[7];
-    Player[] shadows = new Player[7];
-    private int turn;
-    private int nbPass;
-    private int nbMove;
+    private Team topTeam;
+    private Team bottomTeam;
 
     public Stadium(){
-        this.initTeam(snowKids, new Team("snowKids", this, TeamPosition.BOTTOM), 6);
-        this.initTeam(shadows, new Team("shadows", this, TeamPosition.TOP), 0);
-        this.resetBoard();
-        this.turn = 0;
-        this.nbMove = 0;
-        this.nbPass = 0;
+        topTeam = null;
+        bottomTeam = null;
     }
     
-    //----------------------------------------------------getters-------------------------------------------------------
+    public void setTeam(TeamPosition position, Team team) {
+        if (position == TeamPosition.TOP) {
+            topTeam = team;
+        } else {
+            bottomTeam = team;
+        }
 
-    public int getTurn(){
-        return this.turn;
+        initTeam(position);
     }
 
-    public int getNbPass() {
-        return this.nbPass;
+    public Team getTeam(TeamPosition position) {
+        return position == TeamPosition.TOP ? topTeam : bottomTeam;
     }
 
-    public int getNbMove() {
-        return this.nbMove;
-    }
-
-    public int getNbAction(){
-        return this.nbMove + this.nbPass;
-    }
-
-    public Player[] getSnowKids(){
-        return this.snowKids;
-    }
-
-    public Player[] getShadows(){
-        return this.shadows;
-    }
-
-    public int whosTurn(){
-        return this.turn % 2;
-    }
-
-    public int whoJustPlayed(){
-        return (this.turn - 1) % 2;
-    }
-
-    public Player whatsInTheBox(int i, int j){ //what's in i j
-        return this.board[i][j];
-    }
-
-    public boolean isABallHere(int i, int j){ //is there a ball in i j
-        return (!this.isEmpty(i, j) && this.whatsInTheBox(i, j).hasBall());
-    }
-
-    public boolean isAPlayerOnly(int i, int j) {
-    	return (!this.isEmpty(i, j) && !isABallHere(i,j));
+    public void reset() {
+        initTeam(TeamPosition.TOP);
+        initTeam(TeamPosition.BOTTOM);
     }
     
-    public boolean isEmpty(int i, int j){ //is i j empty
-        return this.whatsInTheBox(i, j) == null;
-    }
+    private void initTeam(TeamPosition position) {
+        int y = position == TeamPosition.TOP ? 0 : ModelConstants.BOARD_SIZE - 1;
+        int x = 0;
 
-    public Player[] getOpponent(int team) {
-        if (team == ModelConstants.TEAM_ONE) {
-            return shadows;
-        }
-        else {
-            if (team == ModelConstants.TEAM_TWO) {
-                return snowKids;
-            }
-        }
-        
-        return null;
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-
-    public void initTeam(Player[] team, Team t, int x) {
-        for (int i = 0; i < ModelConstants.BOARD_SIZE; i++) {
-        	boolean ballPossession = false;
-        	
-        	if (i == 3) {
-        		ballPossession = true;
-        	}
-        	
-            team[i] = new Player(t, "undefined", new Case(x, i), ballPossession);
+        for (Player p : getTeam(position).getPlayers()) {
+            p.setPosition(x, y);
+            p.setBallPossession(x == 3);
+            x++;
         }
     }
 
-    public void resetBoard() {  //initializing board
-        for(int i = 0; i < ModelConstants.BOARD_SIZE; i++) {
-            board[6][i] = snowKids[i];
-           // snowKids[i].move(6, i);
-            board[0][i] = shadows[i];
-          //  shadows[i].move(0, i);
-        }
-        
-        for (int i = 1; i < 6; i++) {
-            for (int j = 0; j < ModelConstants.BOARD_SIZE; j++) {
-                board[i][j] = null;
-            }
-        }
-        
-        board[0][3].setBallPossession(true);
-        board[6][3].setBallPossession(true);
-    }
-    
     public void move(Player player, char direction) {
     	if (playerCanMove(player, direction)) {
     		simpleMove(player, direction);
@@ -253,7 +180,7 @@ public class Stadium {
     public boolean playerCanPass(Player playerOne, Player playerTwo) { //player at i j pass the ball to nextI nextJ
         boolean canPass = true;
         
-        if (playerOne.isATeammate(playerTwo) && (playerOne.hasBall()) && !(playerTwo.hasBall())){
+        if (playerOne.isATeammate(playerTwo) && (playerOne.getBallPossession()) && !(playerTwo.getBallPossession())){
             int dir = direction(playerOne, playerTwo);
             
             if (dir != 0) {
@@ -362,7 +289,7 @@ public class Stadium {
         for (int k = 0; k < 6; k++) {
             checking = playerlist[k];
             
-            if ((checking.getPosition().getX() == limit) && checking.hasBall()) {
+            if ((checking.getPosition().getX() == limit) && checking.getBallPossession()) {
                 return true;
             }
         }

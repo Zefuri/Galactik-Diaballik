@@ -1,24 +1,23 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.ListIterator;
+import java.util.Collection;
 
 import model.enums.TeamPosition;
 
 public class Team {
-	private Stadium stadium;
 	private String name;
 	private ArrayList<Player> players;
+	private Stadium stadium;
 	private TeamPosition position;
 
-	public Team(String name, Stadium stadium, TeamPosition position) {
+	public Team(String name) {
 		this.name = name;
-		this.stadium = stadium;
-		this.position = position;
 		this.players = new ArrayList<>();
 	}
 	
 	public void addPlayer(Player player) {
+		player.setTeam(this);
 		getPlayers().add(player);
 	}
 	
@@ -34,34 +33,21 @@ public class Team {
 		return this.position;
 	}
 	
-	public ListIterator<Player> getPlayers() {
-		return players.listIterator();
+	public Collection<Player> getPlayers() {
+		return players;
 	}
 	
 	public Player getBallPlayer() throws IllegalStateException {
-		Player playerWithBall = null;
-		
-		while (getPlayers().hasNext()) {
-			if (playerWithBall != null) {
-				break;
-			}
-			
-			Player currPlayer = getPlayers().next();
-			
-			if (currPlayer.hasBall()) {
-				playerWithBall = currPlayer;
+		for (Player p : players) {
+			if (p.getBallPossession()) {
+				return p;
 			}
 		}
-
-		if (playerWithBall == null) {
-			throw new IllegalStateException("No player with ball found!");
-		}
 		
-		return playerWithBall;
+		throw new IllegalStateException("No player with ball found!");
 	}
 	
 	public Team getEnemyTeam() {
-		//TODO
-		return null;
+		return stadium.getTeam(position == TeamPosition.TOP ? TeamPosition.BOTTOM : TeamPosition.TOP);
 	}
 }

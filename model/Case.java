@@ -12,9 +12,17 @@ public class Case {
 		this.x = c.getX();
 		this.y = c.getY();
 	}
+
+	void setX(int x) {
+		this.x = x;
+	}
 	
 	public int getX() {
 		return this.x;
+	}
+	
+	void setY(int y) {
+		this.y = y;
 	}
 	
 	public int getY() {

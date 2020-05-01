@@ -77,7 +77,7 @@ public class ArkadiaNews extends JComponent {
 	                drawable.drawOval(caseSize * j, caseSize * i, caseSize, caseSize);
 	                
 	                // Draw the ball if necessary
-	                if (p.hasBall()) {
+	                if (p.getBallPossession()) {
 	                	drawable.setColor(Color.BLACK);
 	                	drawable.setStroke(new BasicStroke(4));
 	                	drawable.drawOval((caseSize * j) + caseSize/6, (caseSize * i) + caseSize/6, caseSize - (caseSize/3), caseSize - (caseSize/3));
