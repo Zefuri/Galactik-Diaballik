@@ -3,13 +3,15 @@ package model;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
+import model.enums.TeamPosition;
+
 public class Team {
 	private Stadium stadium;
 	private String name;
 	private ArrayList<Player> players;
-	private int position;
+	private TeamPosition position;
 
-	public Team(String name, Stadium stadium, int position) {
+	public Team(String name, Stadium stadium, TeamPosition position) {
 		this.name = name;
 		this.stadium = stadium;
 		this.position = position;
@@ -28,7 +30,7 @@ public class Team {
 		return this.stadium;
 	}
 	
-	public int getPosition() {
+	public TeamPosition getPosition() {
 		return this.position;
 	}
 	

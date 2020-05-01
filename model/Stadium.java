@@ -445,7 +445,7 @@ public class Stadium {
         int playing = this.whosTurn();
 
         switch(action.getType()) {
-            case ActionType.MOVE:
+            case MOVE:
                 Player player = action.getMovedPlayer();
                 
                 if (this.nbMove == ModelConstants.MAX_MOVES_PER_TOUR || (player.getTeam().getPosition() != playing)) {
@@ -459,7 +459,7 @@ public class Stadium {
                 
                 break;
 
-            case ActionType.PASS:
+            case PASS:
                 Player firstPlayer = action.getPreviousPlayer();
                 Player secondPlayer = action.getNextPlayer();
                 
