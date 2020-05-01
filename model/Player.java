@@ -1,7 +1,5 @@
 package model;
 
-import Listeners.Case;
-
 public class Player {
 	private final Team team;
 	private String name;

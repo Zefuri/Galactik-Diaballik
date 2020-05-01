@@ -1,9 +1,9 @@
-package AI;
+package controller.ai;
 import model.Stadium;
 
 import model.Player;
 
-// Common class for all player: AI or human
+// Common class for all player: ai or human
 public abstract class PlayerType {
 	public enum Position {
 		TOP,
@@ -165,7 +165,7 @@ public abstract class PlayerType {
 		return number;
 	}
 
-	//For AI
+	//For ai
 	boolean timeOut() {
 		return false;
 	}

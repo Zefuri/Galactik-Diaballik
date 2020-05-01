@@ -2,9 +2,6 @@ package model;
 
 import static java.lang.Math.abs;
 
-import Listeners.Case;
-import model.ModelConstants;
-
 public class Stadium {
     Player[][] board = new Player[7][7];
     Player[] snowKids = new Player[7];

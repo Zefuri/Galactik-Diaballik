@@ -1,4 +1,4 @@
-package Listeners;
+package model;
 
 public class Case {
 	private int x, y;

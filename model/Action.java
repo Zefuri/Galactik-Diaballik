@@ -1,7 +1,5 @@
 package model;
 
-import Listeners.Case;
-
 public class Action {
     private final int type;
     private Player previousPlayer, nextPlayer;

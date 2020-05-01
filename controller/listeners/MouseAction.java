@@ -1,14 +1,15 @@
-package Listeners;
+package controller.listeners;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import model.Case;
 import model.Player;
 import model.Stadium;
 import view.HoloTV;
 
-import controller.AI.StupidAI;
-import controller.AI.PlayerType.Position;
+import controller.ai.StupidAI;
+import controller.ai.PlayerType.Position;
 
 public class MouseAction extends MouseAdapter {
 	private HoloTV holoTV;
