@@ -61,6 +61,7 @@ public class MouseAction extends MouseAdapter {
 		}
 		
 		holoTV.getArkadiaNews().repaint();
+		holoTV.updateGameInfos();
 	}
 	
 	private Case getCase(int x, int y) {

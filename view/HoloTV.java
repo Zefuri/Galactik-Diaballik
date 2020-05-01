@@ -41,6 +41,10 @@ public class HoloTV implements Runnable {
 		return this.gamePanel.getArkadiaNews();
 	}
 	
+	public void updateGameInfos() {
+		this.gamePanel.updateGamePanelInfos();
+	}
+	
 	public int getCaseSize() {
 		return this.gamePanel.getArkadiaNews().getCaseSize();
 	}
