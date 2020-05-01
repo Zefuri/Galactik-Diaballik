@@ -1,54 +1,87 @@
 package model;
 
+import Listeners.Case;
+
 public class Player {
-	private final int team;
-	private final int number;
+	private final Team team;
+	private String name;
+	private Case position;
 	private boolean ballPossession;
-	private boolean selectedPlayer;
-	private int i;
-	private int j;
+	private boolean playerSelected;
 
-	public Player(int num, int team) {
+	public Player(Team team, String name, Case position, boolean ballPossession) {
 		this.team = team;
-		this.ballPossession = false;
-		this.number = num;
-		this.selectedPlayer = false;
-	}
-
-	public Player(int num, int team, int x, int y) {
-		this.team = team;
-		this.ballPossession = false;
-		this.i = x;
-		this.j = y;
-		this.number = num;
-		this.selectedPlayer = false;
-	}
-
-	public int getNum() {
-		return this.number;
-	}
-
-	public int getI(){
-		return this.i;
-	}
-
-	public int getJ(){
-		return this.j;
-	}
-
-	public void movePlayer(int x, int y){
-		this.i = x;
-		this.j = y;
-	}
-
-	public int getTeam() {
-		return team;
+		this.name = name;
+		this.position = position;
+		this.ballPossession = ballPossession;
 	}
 	
-	public boolean getBallPossession() {
-		return ballPossession;
+	public String getName() {
+		return this.name;
 	}
 	
+	public Team getTeam() {
+		return this.team;
+	}
+	
+	public Case getPosition() {
+		return this.position;
+	}
+	
+	public boolean hasBall() {
+		return this.ballPossession;
+	}
+	
+	public boolean canMove(char direction) {
+		return team.getStadium().playerCanMove(this, direction);
+	}
+	
+	public boolean canPass(Player nextPlayer) {
+		return team.getStadium().playerCanPass(this, nextPlayer);
+	}
+	
+	public Action move(char direction) {
+		if (canMove(direction)) {
+			Case prevPos = this.position;
+			
+			switch (direction) {
+	        	case ModelConstants.UP:
+	        		this.position = new Case(this.position.getX() - 1, this.position.getY());
+	        		break;
+	        		
+	        	case ModelConstants.DOWN:
+	        		this.position = new Case(this.position.getX() + 1, this.position.getY());
+	        		break;
+	        		
+	        	case ModelConstants.RIGHT:
+	        		this.position = new Case(this.position.getX(), this.position.getY() + 1);
+	        		break;
+	        	
+	        	case ModelConstants.LEFT:
+	        		this.position = new Case(this.position.getX(), this.position.getY() - 1);
+	        		break;
+			}
+			
+			team.getStadium().move(this, direction);
+			
+			return new Action(ModelConstants.ACTION_MOVE, this, null, prevPos, this.position);
+		} else {
+			//Voir si c'est vraiment utile 
+			throw new RuntimeException("You can not move on the clicked case.");
+		}
+	}
+	
+	public Action pass(Player nextPlayer) {
+		if (canPass(nextPlayer)) {
+			team.getStadium().pass(this, nextPlayer);
+			
+			return new Action(ModelConstants.ACTION_PASS, this, nextPlayer, this.position, nextPlayer.getPosition());
+		} else {
+			//Voir si c'est vraiment utile
+			throw new RuntimeException("You can not pass the ball to the selected player.");
+		}
+	}
+
 	public void setBallPossession(boolean ballPossession) {
 		this.ballPossession = ballPossession;
 	}
@@ -57,11 +90,11 @@ public class Player {
 		return this.team == player.team;
 	}
 	
-	public void setPlayerSelected(final boolean selected) {
-		this.selectedPlayer = selected;
+	public void setPlayerSelected(boolean selected) {
+		this.playerSelected = selected;
 	}
 	
 	public boolean playerSelected() {
-		return this.selectedPlayer;
+		return this.playerSelected;
 	}
 }

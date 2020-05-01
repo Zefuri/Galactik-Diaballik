@@ -98,7 +98,8 @@ public class MouseAction extends MouseAdapter {
 				Player previousOwner = stadium.whatsInTheBox(playerWithBallCase.getX(), playerWithBallCase.getY());
 				Player futureOwner = stadium.whatsInTheBox(clickedCase.getX(), clickedCase.getY());
 				
-				if (stadium.pass(previousOwner, futureOwner)) {
+				if (previousOwner.canPass(futureOwner)) {
+					previousOwner.pass(futureOwner);
 					stadium.whatsInTheBox(playerWithBallCase.getX(), playerWithBallCase.getY()).setPlayerSelected(false);
 					clearPlayers();
 				} else {
@@ -123,7 +124,8 @@ public class MouseAction extends MouseAdapter {
 				Player p = stadium.whatsInTheBox(playerAloneCase.getX(), playerAloneCase.getY());
 				char c = stadium.getMoveDirection(p, clickedCase.getX(), clickedCase.getY());
 				
-				if (stadium.move(p, c)) {
+				if (p.canMove(c)) {
+					p.move(c);
 					playerAloneCase = new Case(clickedCase.getX(), clickedCase.getY());
 				} else {
 					throw new IllegalStateException("The selected case is not situated next to the player!");

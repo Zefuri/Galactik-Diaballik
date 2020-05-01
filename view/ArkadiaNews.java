@@ -47,7 +47,7 @@ public class ArkadiaNews extends JComponent {
                 	}
 	                drawable.fillOval(caseSize * j, caseSize * i, caseSize, caseSize);
 	                
-	                switch (p.getTeam()) {
+	                switch (p.getTeam().getPosition()) {
 	                	case ModelConstants.TEAM_ONE:
 	                		drawable.setColor(Color.RED);
 	                		ball = Color.BLACK;
@@ -63,7 +63,7 @@ public class ArkadiaNews extends JComponent {
 	                drawable.fillOval(caseSize * j + 3, caseSize * i + 3, caseSize - 6, caseSize - 6);
 	                
 	                // Draw the ball if necessary
-	                if (p.getBallPossession()) {
+	                if (p.hasBall()) {
 	                	drawable.setColor(Color.BLACK);
 	                	drawable.drawOval((caseSize * j) + (caseSize/6), (caseSize * i) + (caseSize/6), caseSize - (caseSize/3), caseSize - (caseSize/3));
 	                	drawable.setColor(ball);

@@ -20,10 +20,10 @@ public class ConsoleView {
 
                 if (player == null) {
                         System.out.print(".");
-                } else if (player.getTeam() == ModelConstants.TEAM_ONE) {
-                        System.out.print(player.getBallPossession() ? "N" : "n");
-                } else if (player.getTeam() == ModelConstants.TEAM_TWO) {
-                        System.out.print(player.getBallPossession() ? "H" : "h");
+                } else if (player.getTeam().getPosition() == ModelConstants.TEAM_ONE) {
+                        System.out.print(player.hasBall() ? "N" : "n");
+                } else if (player.getTeam().getPosition() == ModelConstants.TEAM_TWO) {
+                        System.out.print(player.hasBall() ? "H" : "h");
                 }
             }
 

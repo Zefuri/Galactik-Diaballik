@@ -8,6 +8,11 @@ public class Case {
 		this.y = y;
 	}
 	
+	public Case(Case c) {
+		this.x = c.getX();
+		this.y = c.getY();
+	}
+	
 	public int getX() {
 		return this.x;
 	}
