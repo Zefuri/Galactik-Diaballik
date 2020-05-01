@@ -24,11 +24,17 @@ public class Player {
 		this.selectedPlayer = false;
 	}
 
-	public int getNum(){return this.number;}
+	public int getNum() {
+		return this.number;
+	}
 
-	public int getI(){return this.i;}
+	public int getI(){
+		return this.i;
+	}
 
-	public int getJ(){return this.j;}
+	public int getJ(){
+		return this.j;
+	}
 
 	public void movePlayer(int x, int y){
 		this.i = x;

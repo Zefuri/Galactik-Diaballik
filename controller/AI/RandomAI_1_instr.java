@@ -1,4 +1,4 @@
-package controller.AI;
+package AI;
 import java.util.Random;
 
 import model.Stadium;

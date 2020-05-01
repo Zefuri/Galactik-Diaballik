@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import model.Player;
 import model.Stadium;
+import model.ModelConstants;
 
 public class ConsoleView {
     private Stadium stadium;
@@ -19,9 +20,9 @@ public class ConsoleView {
 
                 if (player == null) {
                         System.out.print(".");
-                } else if (player.getTeam() == Stadium.teamOne) {
+                } else if (player.getTeam() == ModelConstants.TEAM_ONE) {
                         System.out.print(player.getBallPossession() ? "N" : "n");
-                } else if (player.getTeam() == Stadium.teamTwo) {
+                } else if (player.getTeam() == ModelConstants.TEAM_TWO) {
                         System.out.print(player.getBallPossession() ? "H" : "h");
                 }
             }

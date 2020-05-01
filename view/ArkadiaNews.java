@@ -9,6 +9,7 @@ import javax.swing.JComponent;
 
 import model.Player;
 import model.Stadium;
+import model.ModelConstants;
 
 public class ArkadiaNews extends JComponent {
 	private Stadium stadium;
@@ -47,7 +48,7 @@ public class ArkadiaNews extends JComponent {
 	                		ball = Color.BLACK;
 	                		break;
 	                		
-	                	case Stadium.teamTwo:
+	                	case ModelConstants.TEAM_TWO:
 	                		drawable.setColor(Color.CYAN);
 	                		ball = Color.WHITE;
 	                		break;

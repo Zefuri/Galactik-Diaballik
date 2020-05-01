@@ -1,21 +1,24 @@
-package controller.AI;
+package controller/AI;
 import model.Stadium;
 import model.Player;
-import controller.AI.RandomAI_1;
 
 class MinMaxBall {
 	int checkingDepth;
 	Stadium now;
 	
 	String[] one;
+	int[] oneHigh;
 	String[] two;
+	int[] twoHigh;
 	String[] three;
-	int[] avancement;
+	int[] threeHigh;
+	
+	int mustAvancement;
 	
 	RandomAI_1 tools;
 	int ball;
 
-	public MinMaxBall(int depth, Stadium stade) {		
+	public MinMaxBall(int depth, Stadium stade) {
 		checkingDepth = depth;
 		now = stade;
 		
@@ -25,29 +28,31 @@ class MinMaxBall {
 		this.initOne();
 		this.initTwo();
 		this.initThree();
-		this.initAvancement();
+		
+		mustAvancement = this.Progress(depth);
 		
 		
-		System.out.println("ONE:");
+	/**	System.out.println("ONE:");
 		for(int i = 0; i != one.length; i++){
-			System.out.print(one[i]+" - ");
+			System.out.print(one[i]+"_"+oneHigh[i] + " - ");
 		}
 		System.out.println("La taille de one: "+one.length);
 		System.out.println("");
 		
 		System.out.println("TWO:");
 		for(int i = 0; i != two.length; i++){
-			System.out.print(two[i]+" - ");
+			System.out.print(two[i]+"_"+twoHigh[i] + " - ");
 		}
 		System.out.println("La taille de two: "+two.length);
 		System.out.println("");
 		
 		System.out.println("THREE:");
 		for(int i = 0; i != three.length; i++){
-			System.out.print(three[i]+" - ");
+			System.out.print(three[i]+"_"+threeHigh[i] + " - ");
 		}
 		System.out.println("La taille de three: "+three.length);
 		System.out.println("");
+*/
 	}
 	
 	public void exec(String instruction){
@@ -103,27 +108,33 @@ class MinMaxBall {
 	
 	public void initOne(){		
 		one = new String[tools.passNumber() + tools.moveNumber()];
+		oneHigh = new int[tools.passNumber() + tools.moveNumber()];
 		int oneNum = 0;
 		
 		for(int check = 0; check != tools.equip().length; check++){
 			if(check != ball   &&   tools.canPass(tools.equip()[ball], tools.equip()[check])){
 				one[oneNum] = ""+check+"P";
+				oneHigh[oneNum] = tools.equip()[check].getI();
 				oneNum++;
 			}
 			if(check != ball   &&   tools.canUp(tools.equip()[check])){
 				one[oneNum] = ""+check+"U";
+				oneHigh[oneNum] = tools.equip()[ball].getI();
 				oneNum++;
 			}
 			if(check != ball   &&   tools.canDown(tools.equip()[check])){
 				one[oneNum] = ""+check+"D";
+				oneHigh[oneNum] = tools.equip()[ball].getI();
 				oneNum++;
 			}
 			if(check != ball   &&   tools.canLeft(tools.equip()[check])){
 				one[oneNum] = ""+check+"L";
+				oneHigh[oneNum] = tools.equip()[ball].getI();
 				oneNum++;
 			}
 			if(check != ball   &&   tools.canRight(tools.equip()[check])){
 				one[oneNum] = ""+check+"R";
+				oneHigh[oneNum] = tools.equip()[ball].getI();
 				oneNum++;
 			}
 		}
@@ -131,73 +142,135 @@ class MinMaxBall {
 	
 	public void initTwo(){
 		String stockage = "";
+		String stockageHigh = "";
 		int ball2;
+		boolean verif;
 		
 		for(int actLook = 0; actLook != one.length; actLook++){
 		
 			exec(one[actLook]);
 				ball2 = tools.ballNumber();
 				for(int check = 0; check != tools.equip().length; check++){
-					if(one[actLook].charAt(1) != 'P'   &&   check != ball2   &&   tools.canPass(tools.equip()[ball2], tools.equip()[check]))
+				
+					verif = one[actLook].charAt(1) != 'P'; //You can't make two pass
+					if(verif   &&   check != ball2   &&   tools.canPass(tools.equip()[ball2], tools.equip()[check])){
 						stockage += one[actLook]+check+"P";
-						
-					if(check != ball2   &&   tools.canUp(tools.equip()[check]))
+						stockageHigh += tools.equip()[check].getI();
+					}
+					
+					if(check != ball2   &&   tools.canUp(tools.equip()[check])){
 						stockage += one[actLook]+check+"U";
+						stockageHigh += tools.equip()[ball2].getI();
+					}
 						
-					if(check != ball2   &&   tools.canDown(tools.equip()[check]))
+					if(check != ball2   &&   tools.canDown(tools.equip()[check])){
 						stockage += one[actLook]+check+"D";
+						stockageHigh += tools.equip()[ball2].getI();
+					}
 						
-					if(check != ball2   &&   tools.canLeft(tools.equip()[check]))
+					if(check != ball2   &&   tools.canLeft(tools.equip()[check])){
 						stockage += one[actLook]+check+"L";
+						stockageHigh += tools.equip()[ball2].getI();
+					}
 						
-					if(check != ball2   &&   tools.canRight(tools.equip()[check]))
+					if(check != ball2   &&   tools.canRight(tools.equip()[check])){
 						stockage += one[actLook]+check+"R";
+						stockageHigh += tools.equip()[ball2].getI();
+					}
 				}
 			undo(one[actLook]);
 			
 			two = new String[stockage.length()/4];
+			twoHigh = new int[stockageHigh.length()];
 			
-			for(int look = 0; look != stockage.length(); look += 4)
+			for(int look = 0; look != stockage.length(); look += 4){
 				two[look/4] = ""+stockage.charAt(look)+stockage.charAt(look+1)+stockage.charAt(look+2)+stockage.charAt(look+3);
+				twoHigh[look/4] = (int)(stockageHigh.charAt(look/4)-'0');
+			}
 		}
 	}
 	
 	public void initThree(){
 		String stockage = "";
+		String stockageHigh = "";
 		int ball2;
+		boolean verif;
 		
 		for(int actLook = 0; actLook != two.length; actLook++){
 		
 			exec(two[actLook]);
 				ball2 = tools.ballNumber();
 				for(int check = 0; check != tools.equip().length; check++){
-					if(two[actLook].charAt(1) != 'P'   &&   two[actLook].charAt(3) != 'P'   &&   check != ball2   &&   tools.canPass(tools.equip()[ball2], tools.equip()[check]))
+				
+					verif = two[actLook].charAt(1) != 'P'   &&   two[actLook].charAt(3) != 'P'; //You can't make two pass
+					if(verif   &&   check != ball2   &&   tools.canPass(tools.equip()[ball2], tools.equip()[check])){
 						stockage += two[actLook]+check+"P";
-						
-					if((two[actLook].charAt(1) == 'P'   ||   two[actLook].charAt(3) == 'P')   &&   check != ball2   &&   tools.canUp(tools.equip()[check]))
+						stockageHigh += tools.equip()[check].getI();
+					}
+					
+					verif = 	two[actLook].charAt(1) == 'P'   ||   two[actLook].charAt(3) == 'P'; //You can't make three deplacements
+					
+					if(verif   &&   check != ball2   &&   tools.canUp(tools.equip()[check])){
 						stockage += two[actLook]+check+"U";
+						stockageHigh += tools.equip()[ball2].getI();
+					}
 						
-					if((two[actLook].charAt(1) == 'P'   ||   two[actLook].charAt(3) == 'P')   &&   check != ball2   &&   tools.canDown(tools.equip()[check]))
+					if(verif   &&   check != ball2   &&   tools.canDown(tools.equip()[check])){
 						stockage += two[actLook]+check+"D";
+						stockageHigh += tools.equip()[ball2].getI();
+					}
 						
-					if((two[actLook].charAt(1) == 'P'   ||   two[actLook].charAt(3) == 'P')   &&   check != ball2   &&   tools.canLeft(tools.equip()[check]))
+					if(verif   &&   check != ball2   &&   tools.canLeft(tools.equip()[check])){
 						stockage += two[actLook]+check+"L";
+						stockageHigh += tools.equip()[ball2].getI();
+					}
 						
-					if((two[actLook].charAt(1) == 'P'   ||   two[actLook].charAt(3) == 'P')   &&   check != ball2   &&   tools.canRight(tools.equip()[check]))
+					if(verif   &&   check != ball2   &&   tools.canRight(tools.equip()[check])){
 						stockage += two[actLook]+check+"R";
+						stockageHigh += tools.equip()[ball2].getI();
+					}
 				}
 			undo(two[actLook]);
 			
 			three = new String[stockage.length()/6];
+			threeHigh = new int[stockageHigh.length()];
 			
-			for(int look = 0; look != stockage.length(); look += 6)
+			for(int look = 0; look != stockage.length(); look += 6){
 				three[look/6] = ""+stockage.charAt(look)+stockage.charAt(look+1)+stockage.charAt(look+2)+stockage.charAt(look+3)+stockage.charAt(look+4)+stockage.charAt(look+5);
+				threeHigh[look/6] = (int)(stockageHigh.charAt(look/6)-'0');
+			}
 		}
 	}
 	
-	public void initAvancement(){
-		avancement = new int[one.length + two.length + three.length+1];
-		//TODO
+	public int maxList(int[] intList){
+		int max = intList[0];
+		for(int look = 1; look != intList.length; look++){
+			if(max < intList[look])
+				max = intList[look];
+		}
+		return max;
+	}
+	
+	public int max2(int first, int second){
+		if(first > second)
+			return first;
+		return second;
+	}
+	
+	public int max4(int first, int second, int third, int fourth){
+		return max2(max2(first, second), max2(third, fourth));
+	}
+		
+	public int maxAvancement(){
+		return max4(maxList(oneHigh), maxList(twoHigh), maxList(threeHigh), (tools.equip()[ball].getI()));
+	}
+	
+	public int Progress(int repeat){
+		if(repeat != 0){
+			//TODO
+		}
+		
+		return maxAvancement();
 	}
 
 	public static void main(String args[]){
