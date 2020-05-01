@@ -285,6 +285,7 @@ public class Stadium {
     public boolean isAWin(int team) {
         Player[] playerlist;
         int limit;
+        
         if (team == ModelConstants.TEAM_ONE) {
             playerlist = this.getSnowKids();
             limit = 0;
@@ -296,13 +297,17 @@ public class Stadium {
                 return false;
             }
         }
+        
         Player checking;
-        for (int k = 0; k < 6; k++){
+        
+        for (int k = 0; k < 6; k++) {
             checking = playerlist[k];
-            if (( checking.getI() == limit ) && checking.getBallPossession()){
+            
+            if ((checking.getI() == limit) && checking.getBallPossession()) {
                 return true;
             }
         }
+        
         return false;
     }
 
@@ -370,17 +375,17 @@ public class Stadium {
         return result;
     }
 
-	private void resetTurnVariables(){
+	private void resetTurnVariables() {
         this.nbMove = 0;
         this.nbPass = 0;
 	}
 
-	public int normalTurn(Action action){ //what controller must use
+	public int normalTurn(Action action) { //what controller must use
         int result = 0;
 
         int playing = this.whosTurn();
 
-        switch(action.getActionType()){
+        switch(action.getActionType()) {
             case 0:
                 Player player = whatsInTheBox(action.getFirstI(),action.getFirstJ());
                 
@@ -425,7 +430,7 @@ public class Stadium {
                 break;
         }
         
-        if (this.nbPass == ModelConstants.MAX_PASSES_PER_TOUR && this.nbMove == ModelConstants.MAX_MOVES_PER_TOUR){
+        if (this.nbPass == ModelConstants.MAX_PASSES_PER_TOUR && this.nbMove == ModelConstants.MAX_MOVES_PER_TOUR) {
             this.resetTurnVariables();
             this.turn++;
         }
@@ -439,8 +444,6 @@ public class Stadium {
         }
 
         return result;
-                
-        
 	}
 }
 
