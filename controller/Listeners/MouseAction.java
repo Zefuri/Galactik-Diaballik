@@ -7,6 +7,9 @@ import model.Player;
 import model.Stadium;
 import view.HoloTV;
 
+import controller.AI.StupidAI;
+import controller.AI.PlayerType.Position;
+
 public class MouseAction extends MouseAdapter {
 	private HoloTV holoTV;
 	private Stadium stadium;
@@ -14,6 +17,9 @@ public class MouseAction extends MouseAdapter {
 	private Case clickedCase;
 	private Case playerAloneCase;
 	private Case playerWithBallCase;
+
+	private StupidAI ai;
+	private int clickNumber = 0;
 	
 	public MouseAction(HoloTV holoTV, Stadium stadium) {
 		this.holoTV = holoTV;
@@ -21,6 +27,8 @@ public class MouseAction extends MouseAdapter {
 		this.targetedPlayer = null;
 		this.playerAloneCase = null;
 		this.playerWithBallCase = null;
+
+		this.ai = new StupidAI(0, stadium, Position.BOTTOM);
 	}
 	
 	@Override
@@ -43,6 +51,13 @@ public class MouseAction extends MouseAdapter {
 		} catch (RuntimeException ex) {
 			//Means that the user performed a doable action but an error occurred
 			ex.printStackTrace();
+		}
+
+		// provisoir
+		clickNumber++;
+
+		if (clickNumber%3 == 0 && clickNumber != 0) {
+			ai.play();
 		}
 		
 		holoTV.getArkadiaNews().repaint();

@@ -1,15 +1,23 @@
 package AI;
 import model.Stadium;
+
 import model.Player;
 
 // Common class for all player: AI or human
-abstract class PlayerType {
+public abstract class PlayerType {
+	public enum Position {
+		TOP,
+		BOTTOM,
+	}
+
 	Stadium stadium;
 	int equipNum;
+	Position position;
 
-	PlayerType(int number, Stadium stade) {
+	PlayerType(int number, Stadium stade, Position position) {
 		equipNum = number;
 		stadium = stade;
+		this.position = position;
 	}
 
 	int equipNumber() {
@@ -124,11 +132,7 @@ abstract class PlayerType {
 	public int moveNumber(){
 		int number = 0;
 		
-		Player[] equip;
-		if(equipNumber() == 0)
-			equip = stadium.getSnowKids();
-		else
-			equip = stadium.getShadows();
+		Player[] equip = equip();
 		
 		int ball = ballNumber();
 		
@@ -149,11 +153,7 @@ abstract class PlayerType {
 	public int movePlayerNumber(){
 		int number = 0;
 		
-		Player[] equip;
-		if(equipNumber() == 0)
-			equip = stadium.getSnowKids();
-		else
-			equip = stadium.getShadows();
+		Player[] equip = equip();
 		
 		int ball = ballNumber();
 		
