@@ -1,5 +1,7 @@
 package model;
 
+import model.enums.ActionType;
+
 public class Player {
 	private final Team team;
 	private String name;
@@ -62,7 +64,7 @@ public class Player {
 			
 			team.getStadium().move(this, direction);
 			
-			return new Action(ModelConstants.ACTION_MOVE, this, null, prevPos, this.position);
+			return new Action(ActionType.MOVE, this, null, prevPos, this.position);
 		} else {
 			//Voir si c'est vraiment utile 
 			throw new RuntimeException("You can not move on the clicked case.");
@@ -73,7 +75,7 @@ public class Player {
 		if (canPass(nextPlayer)) {
 			team.getStadium().pass(this, nextPlayer);
 			
-			return new Action(ModelConstants.ACTION_PASS, this, nextPlayer, this.position, nextPlayer.getPosition());
+			return new Action(ActionType.PASS, this, nextPlayer, this.position, nextPlayer.getPosition());
 		} else {
 			//Voir si c'est vraiment utile
 			throw new RuntimeException("You can not pass the ball to the selected player.");

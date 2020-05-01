@@ -2,6 +2,9 @@ package model;
 
 import static java.lang.Math.abs;
 
+import model.enums.TeamPosition;
+import model.enums.ActionType;
+
 public class Stadium {
     Player[][] board = new Player[7][7];
     Player[] snowKids = new Player[7];
@@ -11,8 +14,8 @@ public class Stadium {
     private int nbMove;
 
     public Stadium(){
-        this.initTeam(snowKids, new Team("snowKids", this, ModelConstants.TEAM_ON_BOT), 6);
-        this.initTeam(shadows, new Team("shadows", this, ModelConstants.TEAM_ON_TOP), 0);
+        this.initTeam(snowKids, new Team("snowKids", this, TeamPosition.BOTTOM), 6);
+        this.initTeam(shadows, new Team("shadows", this, TeamPosition.TOP), 0);
         this.resetBoard();
         this.turn = 0;
         this.nbMove = 0;
@@ -442,7 +445,7 @@ public class Stadium {
         int playing = this.whosTurn();
 
         switch(action.getType()) {
-            case ModelConstants.ACTION_MOVE:
+            case ActionType.MOVE:
                 Player player = action.getMovedPlayer();
                 
                 if (this.nbMove == ModelConstants.MAX_MOVES_PER_TOUR || (player.getTeam().getPosition() != playing)) {
@@ -456,7 +459,7 @@ public class Stadium {
                 
                 break;
 
-            case ModelConstants.ACTION_PASS:
+            case ActionType.PASS:
                 Player firstPlayer = action.getPreviousPlayer();
                 Player secondPlayer = action.getNextPlayer();
                 

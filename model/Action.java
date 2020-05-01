@@ -1,12 +1,14 @@
 package model;
 
+import model.enums.ActionType;
+
 public class Action {
-    private final int type;
+    private final ActionType type;
     private Player previousPlayer, nextPlayer;
     private Case previousCase, nextCase;
 
     //We remove the "public" attribute in order not to access the constructor from an outer package
-    Action(int actionType, Player previousPlayer, Player nextPlayer, Case previousCase, Case nextCase) {
+    Action(ActionType actionType, Player previousPlayer, Player nextPlayer, Case previousCase, Case nextCase) {
         this.type = actionType;
         this.previousPlayer = previousPlayer;
         this.nextPlayer = nextPlayer;
@@ -14,7 +16,7 @@ public class Action {
         this.nextCase = nextCase;
     }
 
-    public int getType() {
+    public ActionType getType() {
         return this.type;
     }
 
@@ -30,7 +32,7 @@ public class Action {
     
     public Player getMovedPlayer() {
     	//Player which has moved
-    	if (this.type == ModelConstants.ACTION_MOVE) {
+    	if (this.type == ActionType.MOVE) {
     		return previousPlayer;
     	} else {
     		throw new IllegalStateException("Do not call the getMovedPlayer() function if the action type is not \"MOVE\".");
@@ -46,7 +48,7 @@ public class Action {
     }
     
     public char getDirection() {
-    	if (type == ModelConstants.ACTION_MOVE) {
+    	if (type == ActionType.MOVE) {
 	    	char direction = ModelConstants.ERROR;
 	    	
 	    	if (previousCase.getX() < nextCase.getX()) {
