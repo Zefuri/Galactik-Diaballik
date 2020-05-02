@@ -1,4 +1,4 @@
-package AI;
+package controller.AI;
 import model.Stadium;
 
 import model.Player;
@@ -15,6 +15,17 @@ public abstract class PlayerType {
 	Position position;
 
 	PlayerType(int number, Stadium stade, Position position) {
+		equipNum = number;
+		stadium = stade;
+		this.position = position;
+	}
+	
+	PlayerType(int number, Stadium stade) {
+		if(number == 0){
+			position = TOP;
+		}else{
+			position = BOTTOM;
+		}
 		equipNum = number;
 		stadium = stade;
 		this.position = position;
