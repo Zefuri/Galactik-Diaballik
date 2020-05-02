@@ -9,6 +9,7 @@ import javax.swing.JComponent;
 
 import model.Player;
 import model.Stadium;
+import model.ModelConstants;
 
 public class ArkadiaNews extends JComponent {
 	private Stadium stadium;
@@ -37,44 +38,49 @@ public class ArkadiaNews extends JComponent {
             	// Recover the player
                 Player p = this.stadium.whatsInTheBox(i, j);
                 
+             // Draw current player (change color if selected)
                 if (p != null) {
-                	// Draw current player (change color if selected)
-                	if (p.playerSelected()) {
-                		drawable.setColor(Color.YELLOW);
-                	} else {
-                		drawable.setColor(Color.BLACK);
-                	}
-	                drawable.fillOval(caseSize * j, caseSize * i, caseSize, caseSize);
-	                
-	                switch (p.getTeam()) {
+                	drawable.setStroke(new BasicStroke(2));
+                	
+                	switch (p.getTeam()) {
 	                	case Stadium.teamOne:
 	                		drawable.setColor(Color.RED);
 	                		ball = Color.BLACK;
 	                		break;
 	                		
-	                	case Stadium.teamTwo:
+	                	case ModelConstants.TEAM_TWO:
 	                		drawable.setColor(Color.CYAN);
 	                		ball = Color.WHITE;
 	                		break;
 	                }
 	                
 	                // Fill current player with the good color
-	                drawable.fillOval(caseSize * j + 3, caseSize * i + 3, caseSize - 6, caseSize - 6);
+	                drawable.fillOval(caseSize * j, caseSize * i, caseSize, caseSize);
+	                
+	                // Draw the outline of the player                	
+                	if (p.playerSelected()) {
+                		drawable.setColor(Color.YELLOW);
+                	} else {
+                		drawable.setColor(Color.BLACK);
+                	}
+                	
+	                drawable.drawOval(caseSize * j, caseSize * i, caseSize, caseSize);
 	                
 	                // Draw the ball if necessary
 	                if (p.getBallPossession()) {
 	                	drawable.setColor(Color.BLACK);
-	                	drawable.drawOval((caseSize * j) + (caseSize/6), (caseSize * i) + (caseSize/6), caseSize - (caseSize/3), caseSize - (caseSize/3));
+	                	drawable.setStroke(new BasicStroke(4));
+	                	drawable.drawOval((caseSize * j) + caseSize/6, (caseSize * i) + caseSize/6, caseSize - (caseSize/3), caseSize - (caseSize/3));
 	                	drawable.setColor(ball);
-	                	drawable.fillOval((caseSize * j) + (caseSize/6), (caseSize * i) + (caseSize/6),caseSize - (caseSize/3), caseSize - (caseSize/3));
+	                	drawable.fillOval((caseSize * j) + caseSize/6, (caseSize * i) + caseSize/6, caseSize - (caseSize/3), caseSize - (caseSize/3));
 	                }
                 }
                 
                 // Draw outlines
+                drawable.setStroke(new BasicStroke(1));
                 drawable.setColor(Color.BLACK);
                 drawable.drawLine(caseSize * (j + 1), caseSize * i, caseSize * (j + 1), caseSize * (i + 1));
                 drawable.drawLine(caseSize * j, caseSize * (i + 1), caseSize * (j + 1), caseSize * (i + 1));
-                drawable.setStroke(new BasicStroke(2));
             }
         }
 	}

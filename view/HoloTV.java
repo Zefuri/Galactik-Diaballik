@@ -1,7 +1,6 @@
 package view;
 
 import javax.swing.JFrame;
-import controller.Listeners.MouseAction;
 import model.Stadium;
 
 public class HoloTV implements Runnable {
@@ -33,12 +32,16 @@ public class HoloTV implements Runnable {
         frame.setVisible(true);
 	}
 	
-	public void addArkadiaNewsMouseListener(MouseAction mouseAction) {
+	public void addArkadiaNewsMouseListener(Listeners.MouseAction mouseAction) {
 		this.gamePanel.getArkadiaNews().addMouseListener(mouseAction);
 	}
 	
 	public ArkadiaNews getArkadiaNews() {
 		return this.gamePanel.getArkadiaNews();
+	}
+	
+	public void updateGameInfos() {
+		this.gamePanel.updateGamePanelInfos();
 	}
 	
 	public int getCaseSize() {

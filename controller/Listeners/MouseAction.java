@@ -1,4 +1,4 @@
-package controller.Listeners;
+package Listeners;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -61,6 +61,7 @@ public class MouseAction extends MouseAdapter {
 		}
 		
 		holoTV.getArkadiaNews().repaint();
+		holoTV.updateGameInfos();
 	}
 	
 	private Case getCase(int x, int y) {

@@ -2,7 +2,7 @@ package model;
 
 public class Action {
     private final int whosturn;
-    private final int actionType; // 0 move, 1 pass, 2 end of turn
+    private final int actionType;
     private final int firstI, firstJ, secondI, secondJ;
     private final int nbTurn;
     private final int nbAction;
@@ -16,7 +16,6 @@ public class Action {
         this.secondJ = secondJ;
         this.nbTurn = nbTurn;
         this.nbAction = nbAction;
-
     }
 
     public int getActionType(){
