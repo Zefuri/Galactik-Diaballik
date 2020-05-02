@@ -1,7 +1,6 @@
 package controller.AI;
 import model.Stadium;
 import model.Player;
-import controller.AI.RandomAI_1;
 
 class MinMaxBall {
 //--------------------------------------------------- Parametres ---------------------------------------------------
