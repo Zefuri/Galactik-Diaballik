@@ -7,7 +7,11 @@ import model.Stadium;
 public class HoloTV implements Runnable {
 	private JFrame frame;
 	private Stadium stadium;
-	
+
+	public GamePanel getGamePanel() {
+		return gamePanel;
+	}
+
 	private GamePanel gamePanel;
 	
 	public HoloTV(Stadium stadium) {

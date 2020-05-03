@@ -10,12 +10,14 @@ import model.Stadium;
 import model.enums.ActionResult;
 import model.enums.ActionType;
 import model.enums.MoveDirection;
+import patterns.Observable;
+import patterns.Observer;
 import view.HoloTV;
 
 //import ai.StupidAI;
 //import ai.PlayerType.Position;
 
-public class MouseAction extends MouseAdapter {
+public class MouseAction extends MouseAdapter implements Observer {
 	private HoloTV holoTV;
 	private Stadium stadium;
 	private Player targetedPlayer;
@@ -177,5 +179,12 @@ public class MouseAction extends MouseAdapter {
 	private void clearPlayers() {
 		this.playerWithBallCase = null;
 		this.playerAloneCase = null;
+	}
+
+	@Override
+	public void update(Object object) {
+		if(object.equals(ActionType.PASS)) { // following code is executed when the "end of turn" button is pressed
+			System.out.println("LE JOUEUR FINI SON TOUR");
+		}
 	}
 }

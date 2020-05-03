@@ -10,5 +10,6 @@ public class GalactikDiaballik {
 
 		holoTV.run();
 		holoTV.addArkadiaNewsMouseListener(mouseAction);
+		holoTV.getGamePanel().addObserver(mouseAction);
 	}
 }
