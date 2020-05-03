@@ -34,7 +34,7 @@ public class Action {
     public Player getMovedPlayer() {
     	//Player which has moved
     	if (this.type == ActionType.MOVE) {
-    		return previousPlayer;
+    		return nextPlayer;
     	} else {
     		throw new IllegalStateException("Do not call the getMovedPlayer() function if the action type is not \"MOVE\".");
     	}
@@ -61,7 +61,7 @@ public class Action {
 	    	} else if (previousCase.getY() > nextCase.getY()) {
 	    		direction = MoveDirection.LEFT;
 	    	} else {
-	    		throw new IllegalStateException("The selected case is not situated next to the player!");
+	    		throw new IllegalStateException("You did not move!");
 	    	}
 	    	
 	    	return direction;

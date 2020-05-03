@@ -49,10 +49,10 @@ public class MouseAction extends MouseAdapter {
 			performRequestedAction();
 		} catch (IllegalStateException ex) {
 			//Means that the user performed an undoable action
-			ex.printStackTrace();
+			System.out.println(ex.toString());
 		} catch (RuntimeException ex) {
 			//Means that the user performed a doable action but an error occurred
-			ex.printStackTrace();
+			System.out.println(ex.toString());
 		}
 
 		// provisoir
@@ -81,57 +81,57 @@ public class MouseAction extends MouseAdapter {
 	private void performRequestedAction() {
 		//Verify if the user click must perform a doable action
 		
-		if (stadium.hasABall(new Case(clickedCase.getX(), clickedCase.getY()))) {
+		if (stadium.hasABall(clickedCase)) {
 			//There is a player with a ball on the clicked case
 			if (playerWithBallCase != null) {
 				throw new IllegalStateException("You can not pass the ball to yourself.");
 			} else {
 				//Change the actual player
 				if (playerAloneCase != null) {
-					stadium.getPlayer(new Case(playerAloneCase.getX(), playerAloneCase.getY())).setIfSelected(false);
+					stadium.getPlayer(playerAloneCase).setIfSelected(false);
 				}
 				
-				setPlayerWithBallCase(clickedCase.getX(), clickedCase.getY());
-				stadium.getPlayer(new Case(clickedCase.getX(), clickedCase.getY())).setIfSelected(true);
+				setPlayerWithBallCase(clickedCase);
+				stadium.getPlayer(clickedCase).setIfSelected(true);
 			}
-		} else if (stadium.hasAPlayerOnly(new Case(clickedCase.getX(), clickedCase.getY()))) {
+		} else if (stadium.hasAPlayerOnly(clickedCase)) {
 			//There is a player only on the clicked case
 			if (playerWithBallCase != null) {
 				//Do a pass if possible
-				Player previousOwner = stadium.getPlayer(new Case(playerWithBallCase.getX(), playerWithBallCase.getY()));
-				Player futureOwner = stadium.getPlayer(new Case(clickedCase.getX(), clickedCase.getY()));
+				Player previousOwner = stadium.getPlayer(playerWithBallCase);
+				Player futureOwner = stadium.getPlayer(clickedCase);
 				
 				if (previousOwner.canPass(futureOwner)) {
 					previousOwner.pass(futureOwner);
-					stadium.getPlayer(new Case(playerWithBallCase.getX(), playerWithBallCase.getY())).setIfSelected(false);
+					stadium.getPlayer(playerWithBallCase).setIfSelected(false);
 					clearPlayers();
 				} else {
 					throw new IllegalStateException("Either the two players are not aligned, or an opponent is between them.");
 				}
 			} else {
-				//Change the actual player and change the selection value
+				//Change the actual player and change the selection value 
 				if (playerAloneCase != null) {
-					stadium.getPlayer(new Case(playerAloneCase.getX(), playerAloneCase.getY())).setIfSelected(false);
+					stadium.getPlayer(playerAloneCase).setIfSelected(false);
 				}
 			
-				setPlayerAloneCase(clickedCase.getX(), clickedCase.getY());
-				stadium.getPlayer(new Case(clickedCase.getX(), clickedCase.getY())).setIfSelected(true);
+				setPlayerAloneCase(clickedCase);
+				stadium.getPlayer(clickedCase).setIfSelected(true);
 			}
 		} else {
 			//The case is empty
 			if (playerAloneCase != null) {
 				//If the selected case is next to the player case, we move the player
-				Player p = stadium.getPlayer(new Case(playerAloneCase.getX(), playerAloneCase.getY()));
-				MoveDirection dir = stadium.getMoveDirection(p, clickedCase.getX(), clickedCase.getY());
+				Player p = stadium.getPlayer(playerAloneCase);
+				MoveDirection dir = stadium.getMoveDirection(p, clickedCase);
 				
 				if (p.canMove(dir)) {
 					p.move(dir);
-					playerAloneCase = new Case(clickedCase.getX(), clickedCase.getY());
+					setPlayerAloneCase(clickedCase);
 				} else {
 					throw new IllegalStateException("The selected case is not situated next to the player!");
 				}
 			} else if (playerWithBallCase != null) {
-				stadium.getPlayer(new Case(playerWithBallCase.getX(), playerWithBallCase.getY())).setIfSelected(false);
+				stadium.getPlayer(playerWithBallCase).setIfSelected(false);
 				clearPlayers();
 				throw new IllegalStateException("You can not move a player that has the ball.");
 			} else {
@@ -140,14 +140,14 @@ public class MouseAction extends MouseAdapter {
 		}
 	}
 	
-	private void setPlayerWithBallCase(int x, int y) {
-		this.playerWithBallCase = new Case(x, y);
+	private void setPlayerWithBallCase(Case c) {
+		this.playerWithBallCase = new Case(c);
 		this.playerAloneCase = null;
 	}
 	
-	private void setPlayerAloneCase(int x, int y) {
+	private void setPlayerAloneCase(Case c) {
 		this.playerWithBallCase = null;
-		this.playerAloneCase = new Case(x, y);
+		this.playerAloneCase = new Case(c);
 	}
 	
 	private void clearPlayers() {

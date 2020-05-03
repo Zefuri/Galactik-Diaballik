@@ -3,6 +3,7 @@ package model;
 import static java.lang.Math.abs;
 
 import model.enums.TeamPosition;
+import model.enums.ActionResult;
 import model.enums.ActionType;
 import model.enums.MoveDirection;
 
@@ -207,7 +208,7 @@ public class Stadium {
         return canMove;
     }
 
-    public int direction(Player playerOne, Player playerTwo) {
+    public MoveDirection direction(Player playerOne, Player playerTwo) {
     	Case playerOnePos = playerOne.getPosition();
     	Case playerTwoPos = playerTwo.getPosition();
     	int playerOneX = playerOnePos.getX();
@@ -217,17 +218,17 @@ public class Stadium {
     	
         if (playerOneX == playerTwoX) {//same line
             if (playerTwoY < playerOneY) {  //left
-                return ModelConstants.DIR_LEFT;//same line left
+                return MoveDirection.LEFT;//same line left
             } else {//right
-                return ModelConstants.DIR_RIGHT;//same line right
+                return MoveDirection.RIGHT;//same line right
             }
         } else {
             if (playerOneY == playerTwoY) {// same column
                 if (playerTwoX < playerOneX) {  //up
-                    return ModelConstants.DIR_UP;//same column up
+                    return MoveDirection.UP;//same column up
                 }
                 else{//down
-                    return ModelConstants.DIR_DOWN;//same column down
+                    return MoveDirection.DOWN;//same column down
                 }
             }
             else{//diag check
@@ -235,26 +236,26 @@ public class Stadium {
                 int diffJ = playerOneY - playerTwoY;
                 if (diffJ == diffI) {
                     if (diffJ > 0) {//bottom right
-                        return ModelConstants.DIR_BOT_RIGHT;
+                        return MoveDirection.DOWN_RIGHT;
                     }
                     else {//top left
-                        return ModelConstants.DIR_TOP_LEFT;
+                        return MoveDirection.UP_LEFT;
                     }
                 }
                 else{
                     if(diffJ == -diffI) {
                         if (diffJ > 0) {//top right
-                            return ModelConstants.DIR_TOP_RIGHT;
+                            return MoveDirection.UP_RIGHT;
                         }
                         else {//bottom left
-                            return ModelConstants.DIR_BOT_LEFT;
+                            return MoveDirection.DOWN_LEFT;
                         }
                     }
                 }
             }
         }
         
-        return ModelConstants.INVALID_DIR;
+        return null;
     }
 
     private void simplePass(Player playerOne, Player playerTwo){ //player at i j pass the ball to nextI nextJ
@@ -266,9 +267,9 @@ public class Stadium {
         boolean canPass = true;
         
         if (playerOne.isATeammate(playerTwo) && (playerOne.hasBall()) && !(playerTwo.hasBall())){
-            int dir = direction(playerOne, playerTwo);
+            MoveDirection dir = direction(playerOne, playerTwo);
             
-            if (dir != 0) {
+            if (dir != null) {
                 Team opponents = playerOne.getTeam().getEnemyTeam();
                
                 for (Player currOpponent : opponents.getPlayers()){
@@ -492,9 +493,12 @@ public class Stadium {
 		return game.toString();
 	}
 
-	public MoveDirection getMoveDirection(Player player, int i, int j){
+	public MoveDirection getMoveDirection(Player player, Case pos){
         int playerI = player.getPosition().getX();
         int playerJ = player.getPosition().getY();
+        int i = pos.getX();
+        int j = pos.getY();
+        
         MoveDirection result = null;
         
         if (playerJ == j){
@@ -528,7 +532,7 @@ public class Stadium {
         this.nbPasses = 0;
 	}
 	
-	public TeamPosition getTeamPosition() {
+	public TeamPosition getCurrentTeamTurn() {
 		if (this.getTurn() % 2 == 0) {
 			return TeamPosition.TOP;
 		} else {
@@ -540,16 +544,16 @@ public class Stadium {
 		return this.currentTurn;
 	}
 
-	public int normalTurn(Action action) { //what controller must use
-        int result = 0;
-        TeamPosition currentTeam = getTeamPosition();
+	public ActionResult actionPerformed(Action action) { //what controller must use
+        ActionResult done = ActionResult.DONE;
+        TeamPosition currentTeam = getCurrentTeamTurn();
 
         switch(action.getType()) {
             case MOVE:
                 Player player = action.getMovedPlayer();
                 
                 if (this.nbMoves == ModelConstants.MAX_MOVES_PER_TOUR || (player.getTeam().getPosition() != currentTeam)) {
-                    result = -1;
+                    done = ActionResult.ERROR;
                     break;
                 }
 
@@ -564,7 +568,7 @@ public class Stadium {
                 Player secondPlayer = action.getNextPlayer();
                 
                 if (this.nbPasses == ModelConstants.MAX_PASSES_PER_TOUR || (firstPlayer.getTeam().getPosition() != currentTeam) || (secondPlayer.getTeam().getPosition() != currentTeam)) {
-                    result = -1;
+                    done = ActionResult.ERROR;
                     break;
                 }
 
@@ -575,7 +579,8 @@ public class Stadium {
 
             case END_TURN:
                 if ((this.nbMoves + this.nbPasses) == 0) {
-                    result = -1;
+                    //You can not end your turn without performing at least 1 action
+                	done = ActionResult.ERROR;
                     break;
                 }
                 
@@ -585,8 +590,7 @@ public class Stadium {
                 break;
 
             default:
-                result = -1;
-                break;
+                throw new IllegalStateException("Please select a valid action type!");
         }
         
         if (this.nbPasses == ModelConstants.MAX_PASSES_PER_TOUR && this.nbMoves == ModelConstants.MAX_MOVES_PER_TOUR) {
@@ -595,14 +599,14 @@ public class Stadium {
         }
        
         if (this.isAWin(currentTeam)) {
-            result = ModelConstants.WIN;
+        	done = ActionResult.WIN;
         }
         
         if (this.antiplay(currentTeam)) {
-            result = ModelConstants.ANTIPLAY;
+        	done = ActionResult.ANTIPLAY;
         }
 
-        return result;
+        return done;
 	}
 
 	public int getNbPasses() {
