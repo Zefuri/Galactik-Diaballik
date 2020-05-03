@@ -33,4 +33,16 @@ public class Case {
 	public int getY() {
 		return this.y;
 	}
+	
+	public String toString() {
+		StringBuilder s = new StringBuilder();
+		
+		s.append("Case (" + this.x + "," + this.y + ")");
+		
+		return s.toString();
+	}
+	
+	public boolean equals(Case c) {
+		return ((this.x == c.getX()) && this.y == c.getY());
+	}
 }

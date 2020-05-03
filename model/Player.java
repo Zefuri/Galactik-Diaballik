@@ -60,19 +60,19 @@ public class Player {
 		
 		switch (direction) {
 			case UP:
-				newY--;
-				break;
-				
-			case DOWN:
-				newY++;
-				break;
-				
-			case LEFT:
 				newX--;
 				break;
 				
-			case RIGHT:
+			case DOWN:
 				newX++;
+				break;
+				
+			case LEFT:
+				newY--;
+				break;
+				
+			case RIGHT:
+				newY++;
 				break;
 		}
 
@@ -86,6 +86,9 @@ public class Player {
 	public Action move(MoveDirection direction) {
 		if (canMove(direction)) {
 			Case newPosition = calculateNewPosition(direction);
+
+			System.out.println(newPosition.getX() + "/" + newPosition.getY());
+			
 			Action moveAction = new Action(ActionType.MOVE, this, this, this.position, newPosition);
 			setPosition(newPosition);
 			

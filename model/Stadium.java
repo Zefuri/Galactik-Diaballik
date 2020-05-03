@@ -15,53 +15,41 @@ public class Stadium {
     private int currentTurn;
 
     public Stadium() {
-        topTeam = null;
-        bottomTeam = null;
+        topTeam = new Team("snowKids", TeamPosition.TOP, this);
+        bottomTeam = new Team("shadows", TeamPosition.BOTTOM, this);
+      
         nbMoves = 0;
         nbPasses = 0;
         currentTurn = 0;
     }
     
-    public void setTeam(TeamPosition position, Team team) {
-        if (position == TeamPosition.TOP) {
-            topTeam = team;
-        } else {
-            bottomTeam = team;
-        }
-
-        initTeam(position);
-    }
-
     public Team getTeam(TeamPosition position) {
         return position == TeamPosition.TOP ? topTeam : bottomTeam;
     }
 
     public void reset() {
-        initTeam(TeamPosition.TOP);
-        initTeam(TeamPosition.BOTTOM);
-    }
-    
-    private void initTeam(TeamPosition position) {
-        int y = position == TeamPosition.TOP ? 0 : ModelConstants.BOARD_SIZE - 1;
-        int x = 0;
-
-        for (Player p : getTeam(position).getPlayers()) {
-            p.setPosition(x, y);
-            p.setBallPossession(x == 3);
-            x++;
-        }
+        topTeam.initialize();
+        bottomTeam.initialize();
     }
     
     public Player getPlayer(Case position) {
     	for (Player p : topTeam.getPlayers()) {
-    		if (p.getPosition() == position) {
-    			return p;
+    		Case currPos = p.getPosition();
+    		
+    		if (currPos.getX() == position.getX()) {
+    			if (currPos.getY() == position.getY()) {
+    				return p;
+    			}
     		}
     	}
     	
     	for (Player p : bottomTeam.getPlayers()) {
-    		if (p.getPosition() == position) {
-    			return p;
+    		Case currPos = p.getPosition();
+    		
+    		if (currPos.getX() == position.getX()) {
+    			if (currPos.getY() == position.getY()) {
+    				return p;
+    			}
     		}
     	}
     	
@@ -73,6 +61,18 @@ public class Stadium {
 		
     	if ((p = getPlayer(position)) != null) {
     		if (p.hasBall()) {
+    			return true;
+    		}
+    	}
+    	
+    	return false;
+    }
+    
+    public boolean hasAPlayerOnly(Case position) {
+    	Player p ;
+		
+    	if ((p = getPlayer(position)) != null) {
+    		if (!p.hasBall()) {
     			return true;
     		}
     	}
@@ -117,7 +117,7 @@ public class Stadium {
     	}
     }
     
-    public boolean playerCanMove(Player player, MoveDirection move) {
+    public boolean playerCanMove(Player player, MoveDirection direction) {
     	boolean canMove = true;
         int i = player.getPosition().getX();
         int j = player.getPosition().getY();
@@ -125,30 +125,32 @@ public class Stadium {
         if (!player.hasBall()) {
         	for (Player currPlayer : player.getTeam().getPlayers()) {
         		//For each player of the ally team, we check if he is not badly positioned
-	            switch (move) {
+        		System.out.println(currPlayer.getPosition());
+        		
+	            switch (direction) {
 	                case UP:
-	                    if (i <= 0 || currPlayer.getPosition().getX() == i - 1) {
+	                    if (i <= 0 || currPlayer.getPosition().equals(new Case(i - 1, j))) {
 	                        canMove = false;
 	                    }
 	                    
 	                    break;
 	                    
 	                case DOWN:
-	                    if (i >= 6 || currPlayer.getPosition().getX() == i + 1) {
+	                    if (i >= 6 || currPlayer.getPosition().equals(new Case(i + 1, j))) {
 	                        canMove = false;
 	                    }
 	                    
 	                    break;
 	                    
 	                case LEFT:
-	                    if (j <= 0 || currPlayer.getPosition().getY() == j - 1) {
+	                    if (j <= 0 || currPlayer.getPosition().equals(new Case(i, j - 1))) {
 	                        canMove = false;
 	                    }
 	                    
 	                    break;
 	                    
 	                case RIGHT:
-	                    if (j >= 6 || currPlayer.getPosition().getY() == j + 1) {
+	                    if (j >= 6 || currPlayer.getPosition().equals(new Case(i, j + 1))) {
 	                        canMove = false;
 	                    }
 	                    
@@ -158,37 +160,37 @@ public class Stadium {
 	                    System.out.println("wrong move input in move function");
 	            }
 	            
-	            if (!canMove) {
-	            	break;
-	            }
+//	            if (!canMove) {
+//	            	break;
+//	            }
         	}
         	
         	for (Player currPlayer : player.getTeam().getEnemyTeam().getPlayers()) {
         		//For each player of the enemy team, we check if he is not badly positioned
-	            switch (move) {
+        		switch (direction) {
 	                case UP:
-	                    if (i <= 0 || currPlayer.getPosition().getX() == i - 1) {
+	                    if (i <= 0 || currPlayer.getPosition().equals(new Case(i - 1, j))) {
 	                        canMove = false;
 	                    }
 	                    
 	                    break;
 	                    
 	                case DOWN:
-	                    if (i >= 6 || currPlayer.getPosition().getX() == i + 1) {
+	                    if (i >= 6 || currPlayer.getPosition().equals(new Case(i + 1, j))) {
 	                        canMove = false;
 	                    }
 	                    
 	                    break;
 	                    
 	                case LEFT:
-	                    if (j <= 0 || currPlayer.getPosition().getY() == j - 1) {
+	                    if (j <= 0 || currPlayer.getPosition().equals(new Case(i, j - 1))) {
 	                        canMove = false;
 	                    }
 	                    
 	                    break;
 	                    
 	                case RIGHT:
-	                    if (j >= 6 || currPlayer.getPosition().getY() == j + 1) {
+	                    if (j >= 6 || currPlayer.getPosition().equals(new Case(i, j + 1))) {
 	                        canMove = false;
 	                    }
 	                    

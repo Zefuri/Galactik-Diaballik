@@ -11,9 +11,33 @@ public class Team {
 	private Stadium stadium;
 	private TeamPosition position;
 
-	public Team(String name) {
+	public Team(String name, TeamPosition position, Stadium stadium) {
 		this.name = name;
-		this.players = new ArrayList<>();
+		this.position = position;
+		this.stadium = stadium;
+		initialize();
+	}
+	
+	public void initialize() {
+		players = new ArrayList<>();
+		
+		for (int i = 0; i < ModelConstants.BOARD_SIZE; i++) {
+			Player p;
+			
+			if (position == TeamPosition.TOP) {
+				p = new Player("TOP_" + i);
+				p.setPosition(new Case(0, i));
+			} else {
+				p = new Player("BOT_" + i);
+				p.setPosition(new Case(6, i));
+			}
+			
+			if (i == 3) {
+				p.setBallPossession(true);
+			}
+			
+			addPlayer(p);
+		}
 	}
 	
 	public void addPlayer(Player player) {
@@ -34,11 +58,11 @@ public class Team {
 	}
 	
 	public Collection<Player> getPlayers() {
-		return players;
+		return this.players;
 	}
 	
 	public Player getBallPlayer() throws IllegalStateException {
-		for (Player p : players) {
+		for (Player p : this.players) {
 			if (p.hasBall()) {
 				return p;
 			}

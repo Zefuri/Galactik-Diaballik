@@ -94,7 +94,7 @@ public class MouseAction extends MouseAdapter {
 				setPlayerWithBallCase(clickedCase.getX(), clickedCase.getY());
 				stadium.getPlayer(new Case(clickedCase.getX(), clickedCase.getY())).setIfSelected(true);
 			}
-		} else if (!stadium.hasABall(new Case(clickedCase.getX(), clickedCase.getY()))) {
+		} else if (stadium.hasAPlayerOnly(new Case(clickedCase.getX(), clickedCase.getY()))) {
 			//There is a player only on the clicked case
 			if (playerWithBallCase != null) {
 				//Do a pass if possible
@@ -113,10 +113,7 @@ public class MouseAction extends MouseAdapter {
 				if (playerAloneCase != null) {
 					stadium.getPlayer(new Case(playerAloneCase.getX(), playerAloneCase.getY())).setIfSelected(false);
 				}
-				if (playerWithBallCase != null) {
-					stadium.getPlayer(new Case(playerWithBallCase.getX(), playerWithBallCase.getY())).setIfSelected(false);
-				}
-				
+			
 				setPlayerAloneCase(clickedCase.getX(), clickedCase.getY());
 				stadium.getPlayer(new Case(clickedCase.getX(), clickedCase.getY())).setIfSelected(true);
 			}
@@ -138,8 +135,6 @@ public class MouseAction extends MouseAdapter {
 				clearPlayers();
 				throw new IllegalStateException("You can not move a player that has the ball.");
 			} else {
-				stadium.getPlayer(new Case(playerAloneCase.getX(), playerAloneCase.getY())).setIfSelected(false);
-				clearPlayers();
 				throw new IllegalStateException("You must select a player before selecting an empty case!");
 			}
 		}
