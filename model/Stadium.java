@@ -125,8 +125,6 @@ public class Stadium {
         if (!player.hasBall()) {
         	for (Player currPlayer : player.getTeam().getPlayers()) {
         		//For each player of the ally team, we check if he is not badly positioned
-        		System.out.println(currPlayer.getPosition());
-        		
 	            switch (direction) {
 	                case UP:
 	                    if (i <= 0 || currPlayer.getPosition().equals(new Case(i - 1, j))) {
@@ -160,9 +158,9 @@ public class Stadium {
 	                    System.out.println("wrong move input in move function");
 	            }
 	            
-//	            if (!canMove) {
-//	            	break;
-//	            }
+	            if (!canMove) {
+	            	break;
+	            }
         	}
         	
         	for (Player currPlayer : player.getTeam().getEnemyTeam().getPlayers()) {
