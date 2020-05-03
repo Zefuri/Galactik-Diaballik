@@ -9,8 +9,8 @@ import model.Stadium;
 import model.enums.MoveDirection;
 import view.HoloTV;
 
-import ai.StupidAI;
-import ai.PlayerType.Position;
+//import ai.StupidAI;
+//import ai.PlayerType.Position;
 
 public class MouseAction extends MouseAdapter {
 	private HoloTV holoTV;
@@ -20,7 +20,7 @@ public class MouseAction extends MouseAdapter {
 	private Case playerAloneCase;
 	private Case playerWithBallCase;
 
-	private StupidAI ai;
+	//private StupidAI ai;
 	private int clickNumber = 0;
 	
 	public MouseAction(HoloTV holoTV, Stadium stadium) {
@@ -30,7 +30,7 @@ public class MouseAction extends MouseAdapter {
 		this.playerAloneCase = null;
 		this.playerWithBallCase = null;
 
-		this.ai = new StupidAI(0, stadium, Position.BOTTOM);
+		//this.ai = new StupidAI(0, stadium, Position.BOTTOM);
 	}
 	
 	@Override
@@ -56,11 +56,11 @@ public class MouseAction extends MouseAdapter {
 		}
 
 		// provisoir
-		clickNumber++;
-
-		if (clickNumber%3 == 0 && clickNumber != 0) {
-			ai.play();
-		}
+//		clickNumber++;
+//
+//		if (clickNumber%3 == 0 && clickNumber != 0) {
+//			ai.play();
+//		}
 		
 		holoTV.getArkadiaNews().repaint();
 		holoTV.updateGameInfos();

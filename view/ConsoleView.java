@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import model.Player;
 import model.Stadium;
+import model.enums.MoveDirection;
 import model.enums.TeamPosition;
 import model.Case;
 import model.ModelConstants;
@@ -66,7 +67,7 @@ public class ConsoleView {
                 int i = 6 - ((int)position.charAt(1) - (int)'1');
                 int j = (int)position.charAt(0) - (int)'a';
 
-                char direction = scanner.next().toUpperCase().charAt(0);
+                MoveDirection direction = getDirection(scanner.next().toUpperCase().charAt(0));
 
                 Player player = stadium.getPlayer(new Case(i, j));
                 stadium.move(player, direction);
@@ -84,5 +85,24 @@ public class ConsoleView {
                 stadium.pass(fromPlayer, toPlayer);
             }
         }
+    }
+    
+    private static MoveDirection getDirection(char direction) {
+    	switch(direction) {
+    		case 'U':
+    			return MoveDirection.UP;
+    			
+    		case 'D':
+    			return MoveDirection.DOWN;
+    			
+    		case 'L':
+    			return MoveDirection.LEFT;
+    			
+    		case 'R':
+    			return MoveDirection.RIGHT;
+    			
+    		default:
+    			throw new IllegalStateException("Wrong input direction.");
+    	}
     }
 }
