@@ -39,7 +39,7 @@ public class Team {
 	
 	public Player getBallPlayer() throws IllegalStateException {
 		for (Player p : players) {
-			if (p.getBallPossession()) {
+			if (p.hasBall()) {
 				return p;
 			}
 		}

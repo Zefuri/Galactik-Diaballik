@@ -1,6 +1,7 @@
 package model;
 
 import model.enums.ActionType;
+import model.enums.MoveDirection;
 
 public class Action {
     private final ActionType type;
@@ -47,18 +48,18 @@ public class Action {
     	return this.nextCase;
     }
     
-    public char getDirection() {
+    public MoveDirection getDirection() {
     	if (type == ActionType.MOVE) {
-	    	char direction = ModelConstants.ERROR;
+	    	MoveDirection direction;
 	    	
 	    	if (previousCase.getX() < nextCase.getX()) {
-	    		direction = ModelConstants.DOWN;
+	    		direction = MoveDirection.DOWN;
 	    	} else if (previousCase.getX() > nextCase.getX()) {
-	    		direction = ModelConstants.UP;
+	    		direction = MoveDirection.UP;
 	    	} else if (previousCase.getY() < nextCase.getY()) {
-	    		direction = ModelConstants.RIGHT;
+	    		direction = MoveDirection.RIGHT;
 	    	} else if (previousCase.getY() > nextCase.getY()) {
-	    		direction = ModelConstants.LEFT;
+	    		direction = MoveDirection.LEFT;
 	    	} else {
 	    		throw new IllegalStateException("The selected case is not situated next to the player!");
 	    	}

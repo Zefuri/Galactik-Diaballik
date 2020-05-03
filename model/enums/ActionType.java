@@ -3,4 +3,5 @@ package model.enums;
 public enum ActionType {
     MOVE,
     PASS,
+    END_TURN,
 }

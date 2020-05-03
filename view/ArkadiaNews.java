@@ -9,6 +9,7 @@ import javax.swing.JComponent;
 
 import model.Player;
 import model.Stadium;
+import model.Case;
 import model.ModelConstants;
 
 public class ArkadiaNews extends JComponent {
@@ -31,17 +32,17 @@ public class ArkadiaNews extends JComponent {
         this.caseSize = Math.min(windowWidth, windowHeight) / 7;
         
         // Drawing all players and outlines of the stadium
-        for (int i = 0; i < 7; i++) {
-            for (int j = 0; j < 7; j++) {
+        for (int i = 0; i < ModelConstants.BOARD_SIZE; i++) {
+            for (int j = 0; j < ModelConstants.BOARD_SIZE; j++) {
             	Color ball = Color.WHITE;
             	
             	// Recover the player
-                Player p = this.stadium.whatsInTheBox(i, j);
+                Player p = this.stadium.getPlayer(new Case(i, j));
                 
              // Draw current player (change color if selected)
                 if (p != null) {
                 	// Draw current player (change color if selected)
-                	if (p.playerSelected()) {
+                	if (p.isSelected()) {
                 		drawable.setColor(Color.YELLOW);
                 	} else {
                 		drawable.setColor(Color.BLACK);
@@ -52,13 +53,13 @@ public class ArkadiaNews extends JComponent {
                 	drawable.setStroke(new BasicStroke(2));
                 	
                 	switch (p.getTeam().getPosition()) {
-	                	case ModelConstants.TEAM_ONE:
+	                	case TOP:
 
 	                		drawable.setColor(Color.RED);
 	                		ball = Color.BLACK;
 	                		break;
 	                		
-	                	case ModelConstants.TEAM_TWO:
+	                	case BOTTOM:
 	                		drawable.setColor(Color.CYAN);
 	                		ball = Color.WHITE;
 	                		break;
@@ -68,7 +69,7 @@ public class ArkadiaNews extends JComponent {
 	                drawable.fillOval(caseSize * j, caseSize * i, caseSize, caseSize);
 	                
 	                // Draw the outline of the player                	
-                	if (p.playerSelected()) {
+                	if (p.isSelected()) {
                 		drawable.setColor(Color.YELLOW);
                 	} else {
                 		drawable.setColor(Color.BLACK);
@@ -77,7 +78,7 @@ public class ArkadiaNews extends JComponent {
 	                drawable.drawOval(caseSize * j, caseSize * i, caseSize, caseSize);
 	                
 	                // Draw the ball if necessary
-	                if (p.getBallPossession()) {
+	                if (p.hasBall()) {
 	                	drawable.setColor(Color.BLACK);
 	                	drawable.setStroke(new BasicStroke(4));
 	                	drawable.drawOval((caseSize * j) + caseSize/6, (caseSize * i) + caseSize/6, caseSize - (caseSize/3), caseSize - (caseSize/3));

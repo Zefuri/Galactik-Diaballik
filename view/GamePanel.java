@@ -31,13 +31,13 @@ public class GamePanel extends JPanel {
 		this.nbTurn = new JLabel("Tour " + (stadium.getTurn() + 1) + " :");
 		this.gameControlPanel.add(this.nbTurn);
 		
-		this.whosturn = new JLabel("Joueur " + (stadium.whosTurn() + 1) + ", à toi !");
-		this.gameControlPanel.add(this.whosturn);
+		//this.whosturn = new JLabel("Joueur " + (stadium.whosTurn() + 1) + ", à toi !");
+		//this.gameControlPanel.add(this.whosturn);
 		
-		this.nbPassRemaining = new JLabel("Passe : " + (1 - stadium.getNbPass()));
+		this.nbPassRemaining = new JLabel("Passe : " + (1 - stadium.getNbPasses()));
 		this.gameControlPanel.add(this.nbPassRemaining);
 		
-		this.nbMoveRemaining = new JLabel("Déplacements : " + (2 - stadium.getNbMove()));
+		this.nbMoveRemaining = new JLabel("Déplacements : " + (2 - stadium.getNbMoves()));
 		this.gameControlPanel.add(this.nbMoveRemaining);
 		
 		this.endTurnButton = new JButton("Fin du tour !");
@@ -52,8 +52,8 @@ public class GamePanel extends JPanel {
 	
 	public void updateGamePanelInfos() {
 		this.nbTurn.setText("Tour " + (stadium.getTurn() + 1) + " :");
-		this.whosturn.setText("Joueur " + (stadium.whosTurn() + 1) + ", à toi !");
-		this.nbPassRemaining.setText("Passe : " + (1 - stadium.getNbPass()));
-		this.nbMoveRemaining.setText("Déplacements : " + (2 - stadium.getNbMove()));
+		//this.whosturn.setText("Joueur " + (stadium.whosTurn() + 1) + ", à toi !");
+		this.nbPassRemaining.setText("Passe : " + (1 - stadium.getNbPasses()));
+		this.nbMoveRemaining.setText("Déplacements : " + (2 - stadium.getNbMoves()));
 	}
 }

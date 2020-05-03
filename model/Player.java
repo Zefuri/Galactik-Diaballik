@@ -8,11 +8,13 @@ public class Player {
 	private Team team;
 	private Case position;
 	private boolean ballPossession;
+	private boolean selected;
 
 	public Player(String name) {
 		this.name = name;
-		this.position = new Case(-1, -1);
+		this.position = new Case();
 		this.ballPossession = false;
+		this.selected = false;
 	}
 	
 	public String getName() {
@@ -48,7 +50,7 @@ public class Player {
 		this.ballPossession = ballPossession;
 	}
 
-	public boolean getBallPossession() {
+	public boolean hasBall() {
 		return this.ballPossession;
 	}
 
@@ -60,12 +62,15 @@ public class Player {
 			case UP:
 				newY--;
 				break;
+				
 			case DOWN:
 				newY++;
 				break;
+				
 			case LEFT:
 				newX--;
 				break;
+				
 			case RIGHT:
 				newX++;
 				break;
@@ -75,28 +80,16 @@ public class Player {
 	}
 	
 	public boolean canMove(MoveDirection direction) {
-        if (getBallPossession()) {
-            return false;
-		}
-
-		Case newPosition = calculateNewPosition(direction);
-		
-        if (newPosition.getX() < 0 || newPosition.getX() > 6 || newPosition.getY() < 0 || newPosition.getY() > 6) {
-            return false;
-		}
-		
-		if (getStadium().getPlayerAt(newPosition) != null) {
-			return false;
-		}
-
-        return true;
+		return team.getStadium().playerCanMove(this, direction);
 	}
 	
 	public Action move(MoveDirection direction) {
 		if (canMove(direction)) {
 			Case newPosition = calculateNewPosition(direction);
+			Action moveAction = new Action(ActionType.MOVE, this, this, this.position, newPosition);
 			setPosition(newPosition);
-			return getStadium().getLastAction();
+			
+			return moveAction;
 		} else {
 			//Voir si c'est vraiment utile 
 			throw new RuntimeException("You can not move on the clicked case.");
@@ -120,5 +113,13 @@ public class Player {
 
 	public boolean isATeammate(Player player) {
 		return this.getTeam() == player.getTeam();
+	}
+	
+	public boolean isSelected() {
+		return this.selected;
+	}
+	
+	public void setIfSelected(boolean selected) {
+		this.selected = selected;
 	}
 }

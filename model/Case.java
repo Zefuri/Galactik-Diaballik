@@ -3,6 +3,11 @@ package model;
 public class Case {
 	private int x, y;
 	
+	public Case() {
+		this.x = -1;
+		this.y = -1;
+	}
+	
 	public Case(int x, int y) {
 		this.x = x;
 		this.y = y;

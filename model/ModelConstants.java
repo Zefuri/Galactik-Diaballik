@@ -3,7 +3,7 @@ package model;
 public class ModelConstants {
 	public static final int ACTION_MOVE = 0;
 	public static final int ACTION_PASS = 1;
-	public static final int ACTION_END_OF_TURN = 1;
+	public static final int ACTION_END_OF_TURN = 2;
 	public static final int TEAM_ONE = 0;
     public static final int TEAM_TWO = 1;
     public static final int BOARD_SIZE = 7;

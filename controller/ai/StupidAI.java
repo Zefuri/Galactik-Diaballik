@@ -1,6 +1,7 @@
-package controller.ai;
+package ai;
 
 import model.Stadium;
+import model.enums.MoveDirection;
 import model.Player;
 
 public class StupidAI extends PlayerType {
@@ -14,7 +15,7 @@ public class StupidAI extends PlayerType {
         Player ballPlayer = null;
 
         for (Player p : players) {
-            if (p.getBallPossession()) {
+            if (p.hasBall()) {
                 ballPlayer = p;
                 break;
             }
@@ -31,7 +32,7 @@ public class StupidAI extends PlayerType {
         // sinon faire avancer un joueur
         for (Player p : players) {
             if (canMoveForward(p)) {
-                stadium.move(p, position == Position.BOTTOM ? 'U' : 'D');
+                stadium.move(p, position == Position.BOTTOM ? MoveDirection.UP : MoveDirection.DOWN);
                 return;
             }
         }

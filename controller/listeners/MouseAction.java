@@ -1,4 +1,4 @@
-package controller.listeners;
+package listeners;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -6,10 +6,11 @@ import java.awt.event.MouseEvent;
 import model.Case;
 import model.Player;
 import model.Stadium;
+import model.enums.MoveDirection;
 import view.HoloTV;
 
-import controller.ai.StupidAI;
-import controller.ai.PlayerType.Position;
+import ai.StupidAI;
+import ai.PlayerType.Position;
 
 public class MouseAction extends MouseAdapter {
 	private HoloTV holoTV;
@@ -80,29 +81,29 @@ public class MouseAction extends MouseAdapter {
 	private void performRequestedAction() {
 		//Verify if the user click must perform a doable action
 		
-		if (stadium.isABallHere(clickedCase.getX(), clickedCase.getY())) {
+		if (stadium.hasABall(new Case(clickedCase.getX(), clickedCase.getY()))) {
 			//There is a player with a ball on the clicked case
 			if (playerWithBallCase != null) {
 				throw new IllegalStateException("You can not pass the ball to yourself.");
 			} else {
 				//Change the actual player
 				if (playerAloneCase != null) {
-					stadium.whatsInTheBox(playerAloneCase.getX(), playerAloneCase.getY()).setPlayerSelected(false);
+					stadium.getPlayer(new Case(playerAloneCase.getX(), playerAloneCase.getY())).setIfSelected(false);
 				}
 				
 				setPlayerWithBallCase(clickedCase.getX(), clickedCase.getY());
-				stadium.whatsInTheBox(clickedCase.getX(), clickedCase.getY()).setPlayerSelected(true);
+				stadium.getPlayer(new Case(clickedCase.getX(), clickedCase.getY())).setIfSelected(true);
 			}
-		} else if (stadium.isAPlayerOnly(clickedCase.getX(), clickedCase.getY())) {
+		} else if (!stadium.hasABall(new Case(clickedCase.getX(), clickedCase.getY()))) {
 			//There is a player only on the clicked case
 			if (playerWithBallCase != null) {
 				//Do a pass if possible
-				Player previousOwner = stadium.whatsInTheBox(playerWithBallCase.getX(), playerWithBallCase.getY());
-				Player futureOwner = stadium.whatsInTheBox(clickedCase.getX(), clickedCase.getY());
+				Player previousOwner = stadium.getPlayer(new Case(playerWithBallCase.getX(), playerWithBallCase.getY()));
+				Player futureOwner = stadium.getPlayer(new Case(clickedCase.getX(), clickedCase.getY()));
 				
 				if (previousOwner.canPass(futureOwner)) {
 					previousOwner.pass(futureOwner);
-					stadium.whatsInTheBox(playerWithBallCase.getX(), playerWithBallCase.getY()).setPlayerSelected(false);
+					stadium.getPlayer(new Case(playerWithBallCase.getX(), playerWithBallCase.getY())).setIfSelected(false);
 					clearPlayers();
 				} else {
 					throw new IllegalStateException("Either the two players are not aligned, or an opponent is between them.");
@@ -110,34 +111,34 @@ public class MouseAction extends MouseAdapter {
 			} else {
 				//Change the actual player and change the selection value
 				if (playerAloneCase != null) {
-					stadium.whatsInTheBox(playerAloneCase.getX(), playerAloneCase.getY()).setPlayerSelected(false);
+					stadium.getPlayer(new Case(playerAloneCase.getX(), playerAloneCase.getY())).setIfSelected(false);
 				}
 				if (playerWithBallCase != null) {
-					stadium.whatsInTheBox(playerWithBallCase.getX(), playerWithBallCase.getY()).setPlayerSelected(false);
+					stadium.getPlayer(new Case(playerWithBallCase.getX(), playerWithBallCase.getY())).setIfSelected(false);
 				}
 				
 				setPlayerAloneCase(clickedCase.getX(), clickedCase.getY());
-				stadium.whatsInTheBox(clickedCase.getX(), clickedCase.getY()).setPlayerSelected(true);
+				stadium.getPlayer(new Case(clickedCase.getX(), clickedCase.getY())).setIfSelected(true);
 			}
 		} else {
 			//The case is empty
 			if (playerAloneCase != null) {
 				//If the selected case is next to the player case, we move the player
-				Player p = stadium.whatsInTheBox(playerAloneCase.getX(), playerAloneCase.getY());
-				char c = stadium.getMoveDirection(p, clickedCase.getX(), clickedCase.getY());
+				Player p = stadium.getPlayer(new Case(playerAloneCase.getX(), playerAloneCase.getY()));
+				MoveDirection dir = stadium.getMoveDirection(p, clickedCase.getX(), clickedCase.getY());
 				
-				if (p.canMove(c)) {
-					p.move(c);
+				if (p.canMove(dir)) {
+					p.move(dir);
 					playerAloneCase = new Case(clickedCase.getX(), clickedCase.getY());
 				} else {
 					throw new IllegalStateException("The selected case is not situated next to the player!");
 				}
 			} else if (playerWithBallCase != null) {
-				stadium.whatsInTheBox(playerWithBallCase.getX(), playerWithBallCase.getY()).setPlayerSelected(false);
+				stadium.getPlayer(new Case(playerWithBallCase.getX(), playerWithBallCase.getY())).setIfSelected(false);
 				clearPlayers();
 				throw new IllegalStateException("You can not move a player that has the ball.");
 			} else {
-				stadium.whatsInTheBox(playerAloneCase.getX(), playerAloneCase.getY()).setPlayerSelected(false);
+				stadium.getPlayer(new Case(playerAloneCase.getX(), playerAloneCase.getY())).setIfSelected(false);
 				clearPlayers();
 				throw new IllegalStateException("You must select a player before selecting an empty case!");
 			}

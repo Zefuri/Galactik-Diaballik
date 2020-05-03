@@ -4,14 +4,22 @@ import static java.lang.Math.abs;
 
 import model.enums.TeamPosition;
 import model.enums.ActionType;
+import model.enums.MoveDirection;
 
 public class Stadium {
     private Team topTeam;
     private Team bottomTeam;
+    
+    private int nbMoves;
+    private int nbPasses;
+    private int currentTurn;
 
-    public Stadium(){
+    public Stadium() {
         topTeam = null;
         bottomTeam = null;
+        nbMoves = 0;
+        nbPasses = 0;
+        currentTurn = 0;
     }
     
     public void setTeam(TeamPosition position, Team team) {
@@ -43,35 +51,65 @@ public class Stadium {
             x++;
         }
     }
+    
+    public Player getPlayer(Case position) {
+    	for (Player p : topTeam.getPlayers()) {
+    		if (p.getPosition() == position) {
+    			return p;
+    		}
+    	}
+    	
+    	for (Player p : bottomTeam.getPlayers()) {
+    		if (p.getPosition() == position) {
+    			return p;
+    		}
+    	}
+    	
+    	return null;
+    }
+    
+    public boolean hasABall(Case position) {
+    	Player p ;
+		
+    	if ((p = getPlayer(position)) != null) {
+    		if (p.hasBall()) {
+    			return true;
+    		}
+    	}
+    	
+    	return false;
+    }
 
-    public void move(Player player, char direction) {
+    public void move(Player player, MoveDirection direction) {
     	if (playerCanMove(player, direction)) {
     		simpleMove(player, direction);
     	}
     }
 
-    private void simpleMove(Player player, char direction){ //move player at position in the selected direction
+    private void simpleMove(Player player, MoveDirection direction){ //move player at position in the selected direction
     	// /!\ Caution: Please use the playerCanMove() function before using this one/!\
     	if (playerCanMove(player, direction)) {
 	    	Case playerPos = player.getPosition();
 	    	
-	        this.board[playerPos.getX()][playerPos.getY()] = null;
-	        
 	        switch (direction) {
-	        	case ModelConstants.UP:
-	        		this.board[playerPos.getX() - 1][playerPos.getY()] = player;
+	        	case UP:
+	        		player.getPosition().setX(playerPos.getX() - 1);
+	        		player.getPosition().setX(playerPos.getX());
 	        		break;
 	        	
-	        	case ModelConstants.DOWN:
-	        		this.board[playerPos.getX() + 1][playerPos.getY()] = player;
+	        	case DOWN:
+	        		player.getPosition().setX(playerPos.getX() + 1);
+	        		player.getPosition().setX(playerPos.getX());
 	        		break;
 	        		
-	        	case ModelConstants.RIGHT:
-	        		this.board[playerPos.getX()][playerPos.getY() + 1] = player;
+	        	case RIGHT:
+	        		player.getPosition().setX(playerPos.getX());
+	        		player.getPosition().setX(playerPos.getX() + 1);
 	        		break;
 	        	
-	        	case ModelConstants.LEFT:
-	        		this.board[playerPos.getX()][playerPos.getY() - 1] = player;
+	        	case LEFT:
+	        		player.getPosition().setX(playerPos.getX());
+	        		player.getPosition().setX(playerPos.getX() - 1);
 	        		break;
 	        }
     	} else {
@@ -79,44 +117,91 @@ public class Stadium {
     	}
     }
     
-    public boolean playerCanMove(Player player, char move) {
-    	boolean canMove = false;
+    public boolean playerCanMove(Player player, MoveDirection move) {
+    	boolean canMove = true;
         int i = player.getPosition().getX();
         int j = player.getPosition().getY();
         
-        if (!this.isABallHere(i, j)) {
-            switch (move) {
-                case ModelConstants.UP:
-                    if (i > 0 && this.isEmpty(i - 1, j)) {
-                        canMove = true;
-                    }
-                    
-                    break;
-                    
-                case ModelConstants.DOWN:
-                    if (i < 6 && this.isEmpty(i + 1, j)) {
-                        canMove = true;
-                    }
-                    
-                    break;
-                    
-                case ModelConstants.LEFT:
-                    if (j > 0 && this.isEmpty(i, j - 1)) {
-                        canMove = true;
-                    }
-                    
-                    break;
-                    
-                case ModelConstants.RIGHT:
-                    if (j < 6 && this.isEmpty(i, j + 1)) {
-                        canMove = true;
-                    }
-                    
-                    break;
-                    
-                default:
-                    System.out.println("wrong move input in move function");
-            }
+        if (!player.hasBall()) {
+        	for (Player currPlayer : player.getTeam().getPlayers()) {
+        		//For each player of the ally team, we check if he is not badly positioned
+	            switch (move) {
+	                case UP:
+	                    if (i <= 0 || currPlayer.getPosition().getX() == i - 1) {
+	                        canMove = false;
+	                    }
+	                    
+	                    break;
+	                    
+	                case DOWN:
+	                    if (i >= 6 || currPlayer.getPosition().getX() == i + 1) {
+	                        canMove = false;
+	                    }
+	                    
+	                    break;
+	                    
+	                case LEFT:
+	                    if (j <= 0 || currPlayer.getPosition().getY() == j - 1) {
+	                        canMove = false;
+	                    }
+	                    
+	                    break;
+	                    
+	                case RIGHT:
+	                    if (j >= 6 || currPlayer.getPosition().getY() == j + 1) {
+	                        canMove = false;
+	                    }
+	                    
+	                    break;
+	                    
+	                default:
+	                    System.out.println("wrong move input in move function");
+	            }
+	            
+	            if (!canMove) {
+	            	break;
+	            }
+        	}
+        	
+        	for (Player currPlayer : player.getTeam().getEnemyTeam().getPlayers()) {
+        		//For each player of the enemy team, we check if he is not badly positioned
+	            switch (move) {
+	                case UP:
+	                    if (i <= 0 || currPlayer.getPosition().getX() == i - 1) {
+	                        canMove = false;
+	                    }
+	                    
+	                    break;
+	                    
+	                case DOWN:
+	                    if (i >= 6 || currPlayer.getPosition().getX() == i + 1) {
+	                        canMove = false;
+	                    }
+	                    
+	                    break;
+	                    
+	                case LEFT:
+	                    if (j <= 0 || currPlayer.getPosition().getY() == j - 1) {
+	                        canMove = false;
+	                    }
+	                    
+	                    break;
+	                    
+	                case RIGHT:
+	                    if (j >= 6 || currPlayer.getPosition().getY() == j + 1) {
+	                        canMove = false;
+	                    }
+	                    
+	                    break;
+	                    
+	                default:
+	                    System.out.println("wrong move input in move function");
+	            }
+	            
+	            if (!canMove) {
+	            	break;
+	            }
+        	}
         }
         
         return canMove;
@@ -180,18 +265,16 @@ public class Stadium {
     public boolean playerCanPass(Player playerOne, Player playerTwo) { //player at i j pass the ball to nextI nextJ
         boolean canPass = true;
         
-        if (playerOne.isATeammate(playerTwo) && (playerOne.getBallPossession()) && !(playerTwo.getBallPossession())){
+        if (playerOne.isATeammate(playerTwo) && (playerOne.hasBall()) && !(playerTwo.hasBall())){
             int dir = direction(playerOne, playerTwo);
             
             if (dir != 0) {
                 Team opponents = playerOne.getTeam().getEnemyTeam();
                
-                while (opponents.getPlayers().hasNext()) {
+                for (Player currOpponent : opponents.getPlayers()){
                 	if (!canPass) {
                 		break;
                 	}
-                	
-                	Player currOpponent = opponents.getPlayers().next();
                 	
                 	if (this.direction(playerOne, currOpponent) == dir) {
                         int distFriend = abs(playerTwo.getPosition().getX() - playerOne.getPosition().getX()) + abs(playerTwo.getPosition().getY() - playerOne.getPosition().getY());
@@ -212,84 +295,142 @@ public class Stadium {
         return canPass;
     }
 
-    public void pass(Player playerOne, Player playerTwo) { //player at i j pass the ball to nextI nextJ
+    public void pass(Player playerOne, Player playerTwo) { //player playerOne passes the ball to playerTwo
         if (playerCanPass(playerOne, playerTwo)) {
         	simplePass(playerOne, playerTwo);
         }
     }
 
-    public boolean antiplay(int team) {
-        Player[] playerlist;
+    public boolean antiplay(TeamPosition team) {
+        Team playerList = this.getTeam(team);
         boolean result = false;
         
-        if (team == ModelConstants.TEAM_ONE){
-            playerlist = this.getSnowKids();
-        }
-        else {
-            if (team == ModelConstants.TEAM_TWO){
-                playerlist = this.getShadows();
-            }
-            else {
-                return false;
-            }
-        }
-        
         int contact = 0;
-        boolean leftFriend;
-        boolean rightFriend;
         
-        for (int k = 0; k < ModelConstants.BOARD_SIZE; k++) {
-            leftFriend = false;
-            rightFriend = false;
-            Player checking = playerlist[k];
-            int i = checking.getPosition().getX();
-            int j = checking.getPosition().getY();
+        for (Player currPlayer : playerList.getPlayers()) { 
+            boolean leftFriend = allyOnTheLeft(currPlayer);
+            boolean rightFriend = allyOnTheRight(currPlayer);
             
-            if (j <= 0 || ((i > 0 && checking.isATeammate(this.whatsInTheBox(i - 1, j - 1))) || checking.isATeammate(this.whatsInTheBox(i, j - 1)) || (i < 6 && checking.isATeammate(this.whatsInTheBox(i + 1, j - 1))))){ //if there is a mate to the left
-                leftFriend = true;
-            }
-            
-            if (j >= 6 || ((i > 0 && checking.isATeammate(this.whatsInTheBox(i - 1, j + 1))) || checking.isATeammate(this.whatsInTheBox(i, j + 1)) || (i < 6 && checking.isATeammate(this.whatsInTheBox(i + 1, j + 1))))){ // if there is a mate to the right
-                rightFriend = true;
-            }
-            
-            if ((i > 0 && (!this.isEmpty(i - 1, j) && !checking.isATeammate(this.whatsInTheBox(i - 1, j + 1)))) || (i < 6 && (!this.isEmpty(i + 1, j) && !checking.isATeammate(this.whatsInTheBox(i + 1, j + 1))))){ //if there is opponent in contact up or down
-                contact++;
-            }
-            
-            if (!(leftFriend && rightFriend)){
+            //No neighbor on the left nor the right, so no antiplay
+            if (!leftFriend || !rightFriend){
                 return false;
+            }
+            
+            if (inContactWithOpponent(currPlayer)) {
+            	contact++;
             }
         }
         
         if (contact >= 3) {
             result = true;
         }
+        
         return result;
     }
+    
+    private boolean allyOnTheLeft(Player p) {
+    	Case playerPos = p.getPosition();
+    	boolean allyOnTheLeft = false;
+    	
+    	for (Player currPlayer : p.getTeam().getPlayers()) {
+    		Case currPlayerPos = currPlayer.getPosition();
+    		
+    		if (currPlayerPos.getY() <= 0) {
+    			allyOnTheLeft = true;
+    		} else if (currPlayerPos.getX() == playerPos.getX()) {
+    			if (currPlayerPos.getY() == playerPos.getY() - 1) {
+    				allyOnTheLeft = true;
+    			}
+    		} else if (currPlayerPos.getX() == playerPos.getX() - 1) {
+    			if (currPlayerPos.getY() == currPlayerPos.getY() - 1) {
+    				allyOnTheLeft = true;
+    			}
+    		} else if (currPlayerPos.getX() == playerPos.getX() + 1) {
+    			if (currPlayerPos.getY() == currPlayerPos.getY() - 1) {
+    				allyOnTheLeft = true;
+    			}
+    		}
+    		
+    		if (allyOnTheLeft) {
+    			break;
+    		}
+    	}
+    	
+    	return allyOnTheLeft;
+    }
+    
+    private boolean allyOnTheRight(Player p) {
+    	Case playerPos = p.getPosition();
+    	boolean allyOnTheRight = false;
+    	
+    	for (Player currPlayer : p.getTeam().getPlayers()) {
+    		Case currPlayerPos = currPlayer.getPosition();
+    		
+    		if (currPlayerPos.getY() >= 6) {
+    			allyOnTheRight = true;
+    		} else if (currPlayerPos.getX() == playerPos.getX() - 1) {
+    			if (currPlayerPos.getY() == playerPos.getY() + 1) {
+    				allyOnTheRight = true;
+    			}
+    		} else if (currPlayerPos.getX() == playerPos.getX()) {
+    			if (currPlayerPos.getY() == currPlayerPos.getY() + 1) {
+    				allyOnTheRight = true;
+    			}
+    		} else if (currPlayerPos.getX() == playerPos.getX() + 1) {
+    			if (currPlayerPos.getY() == currPlayerPos.getY() + 1) {
+    				allyOnTheRight = true;
+    			}
+    		}
+    		
+    		if (allyOnTheRight) {
+    			break;
+    		}
+    	}
+    	
+    	return allyOnTheRight;
+    }
+    
+    private boolean inContactWithOpponent(Player p) {
+    	Case playerPos = p.getPosition();
+    	boolean contactWithOpponent = false;
+    	
+    	for (Player currPlayer : p.getTeam().getEnemyTeam().getPlayers()) {
+    		Case currPlayerPos = currPlayer.getPosition();
+    		
+    		if (currPlayerPos.getX() == playerPos.getX() - 1) {
+    			if (currPlayerPos.getY() == currPlayerPos.getY() + 1) {
+    				contactWithOpponent = true;
+    			}
+    		} else if (currPlayerPos.getX() == playerPos.getX() + 1) {
+    			if (currPlayerPos.getY() == currPlayerPos.getY() + 1) {
+    				contactWithOpponent = true;
+    			}
+    		}
+    		
+    		if (contactWithOpponent) {
+    			break;
+    		}
+    	}
+    	
+    	return contactWithOpponent;
+    }
 
-    public boolean isAWin(int team) {
-        Player[] playerlist;
+    public boolean isAWin(TeamPosition team) {
+        Team playerList = getTeam(team);
         int limit;
         
-        if (team == ModelConstants.TEAM_ONE) {
-            playerlist = this.getSnowKids();
-            limit = 0;
+        if (team == TeamPosition.TOP) {
+        	limit = 0;
         } else {
-            if (team == ModelConstants.TEAM_TWO) {
-                playerlist = this.getShadows();
+            if (team == TeamPosition.BOTTOM) {
                 limit = 6;
             } else {
                 return false;
             }
         }
         
-        Player checking;
-        
-        for (int k = 0; k < 6; k++) {
-            checking = playerlist[k];
-            
-            if ((checking.getPosition().getX() == limit) && checking.getBallPossession()) {
+        for (Player currPlayer : playerList.getPlayers()) {
+            if ((currPlayer.getPosition().getX() == limit) && currPlayer.hasBall()) {
                 return true;
             }
         }
@@ -301,58 +442,79 @@ public class Stadium {
 		//board read
 		StringBuilder game = new StringBuilder();
 		
-//		for(int abscisse = 0; abscisse != board.length; abscisse++){
-//			for(int ordonnee = 0; ordonnee != board.length; ordonnee++){
-//				game.append("|");
-//				
-//				if(board[abscisse][ordonnee] == null){
-//					game.append("___");
-//					
-//				} else if(board[abscisse][ordonnee].getTeam() == 0   &&   !board[abscisse][ordonnee].hasBall()){
-//					game.append("a").append(board[abscisse][ordonnee].getNum()).append(".");
-//					
-//				} else if(board[abscisse][ordonnee].getTeam() == 1   &&   !board[abscisse][ordonnee].hasBall()){
-//					game.append("b").append(board[abscisse][ordonnee].getNum()).append(".");
-//					
-//				} else if(board[abscisse][ordonnee].getTeam()==0 && board[abscisse][ordonnee].hasBall()){
-//					game.append("a").append(board[abscisse][ordonnee].getNum()).append("*");
-//					
-//				} else{
-//					game.append("b").append(board[abscisse][ordonnee].getNum()).append("*");
-//				}
-//				
-//			}
-//			
-//			game.append("|\n");
-//			
-//		}		
+		for(int abscisse = 0; abscisse != ModelConstants.BOARD_SIZE; abscisse++) {
+			for(int ordonnee = 0; ordonnee != ModelConstants.BOARD_SIZE; ordonnee++) {
+				game.append("|");
+				
+				boolean hasPlayer = false;
+				
+				for (Player currTopPlayer : topTeam.getPlayers()) {
+					Case position = currTopPlayer.getPosition();
+					
+					if (position.getX() == abscisse) {
+						if (position.getY() == ordonnee) {
+							hasPlayer = true;
+							
+							if (currTopPlayer.hasBall()) {
+								game.append("a").append("num(?)").append("*");
+							} else {
+								game.append("a").append("num(?)").append(".");
+							}
+						}
+					}
+				}
+				
+				for (Player currBotPlayer : bottomTeam.getPlayers()) {
+					Case position = currBotPlayer.getPosition();
+					
+					if (position.getX() == abscisse) {
+						if (position.getY() == ordonnee) {
+							hasPlayer = true;
+							
+							if (currBotPlayer.hasBall()) {
+								game.append("b").append("num(?)").append("*");
+							} else {
+								game.append("b").append("num(?)").append(".");
+							}
+						}
+					}
+				}
+				
+				if (!hasPlayer) {
+					game.append("___");
+				}
+			}
+			
+			game.append("|\n");
+			
+		}		
 		
 		return game.toString();
 	}
 
-	public char getMoveDirection(Player player, int i, int j){
+	public MoveDirection getMoveDirection(Player player, int i, int j){
         int playerI = player.getPosition().getX();
         int playerJ = player.getPosition().getY();
-        char result = ModelConstants.ERROR;
+        MoveDirection result = null;
         
         if (playerJ == j){
             if (playerI == i - 1){
-                result = ModelConstants.DOWN;
+                result = MoveDirection.DOWN;
             }
             else{
                 if (playerI == i + 1) {
-                    result = ModelConstants.UP;
+                    result = MoveDirection.UP;
                 }
             }
         }
         else{
             if (playerI == i){
                 if (playerJ == j - 1){
-                    result = ModelConstants.RIGHT;
+                    result = MoveDirection.RIGHT;
                 }
                 else{
                     if (playerJ == j + 1) {
-                        result = ModelConstants.LEFT;
+                        result = MoveDirection.LEFT;
                     }
                 }
             }
@@ -362,27 +524,38 @@ public class Stadium {
     }
 
 	private void resetTurnVariables() {
-        this.nbMove = 0;
-        this.nbPass = 0;
+        this.nbMoves = 0;
+        this.nbPasses = 0;
+	}
+	
+	public TeamPosition getTeamPosition() {
+		if (this.getTurn() % 2 == 0) {
+			return TeamPosition.TOP;
+		} else {
+			return TeamPosition.BOTTOM;
+		}
+	}
+	
+	public int getTurn() {
+		return this.currentTurn;
 	}
 
 	public int normalTurn(Action action) { //what controller must use
         int result = 0;
-
-        int playing = this.whosTurn();
+        TeamPosition currentTeam = getTeamPosition();
 
         switch(action.getType()) {
             case MOVE:
                 Player player = action.getMovedPlayer();
                 
-                if (this.nbMove == ModelConstants.MAX_MOVES_PER_TOUR || (player.getTeam().getPosition() != playing)) {
+                if (this.nbMoves == ModelConstants.MAX_MOVES_PER_TOUR || (player.getTeam().getPosition() != currentTeam)) {
                     result = -1;
                     break;
                 }
 
-                char dir = action.getDirection();
+                MoveDirection dir = action.getDirection();
                 move(player, dir);
-                this.nbMove++;
+                this.nbMoves++;
                 
                 break;
 
@@ -390,24 +563,24 @@ public class Stadium {
                 Player firstPlayer = action.getPreviousPlayer();
                 Player secondPlayer = action.getNextPlayer();
                 
-                if (this.nbPass == ModelConstants.MAX_PASSES_PER_TOUR || (firstPlayer.getTeam().getPosition() != playing)|| (secondPlayer.getTeam().getPosition() != playing)) {
+                if (this.nbPasses == ModelConstants.MAX_PASSES_PER_TOUR || (firstPlayer.getTeam().getPosition() != currentTeam) || (secondPlayer.getTeam().getPosition() != currentTeam)) {
                     result = -1;
                     break;
                 }
 
                 pass(firstPlayer, secondPlayer);
-                this.nbPass++;
+                this.nbPasses++;
                 
                 break;
 
-            case 2:
-                if ((this.nbMove + this.nbPass) == 0) {
+            case END_TURN:
+                if ((this.nbMoves + this.nbPasses) == 0) {
                     result = -1;
                     break;
                 }
                 
                 this.resetTurnVariables();
-                this.turn++;
+                this.currentTurn++;
                 
                 break;
 
@@ -416,22 +589,28 @@ public class Stadium {
                 break;
         }
         
-        if (this.nbPass == ModelConstants.MAX_PASSES_PER_TOUR && this.nbMove == ModelConstants.MAX_MOVES_PER_TOUR) {
+        if (this.nbPasses == ModelConstants.MAX_PASSES_PER_TOUR && this.nbMoves == ModelConstants.MAX_MOVES_PER_TOUR) {
             this.resetTurnVariables();
-            this.turn++;
+            this.currentTurn++;
+        }
+       
+        if (this.isAWin(currentTeam)) {
+            result = ModelConstants.WIN;
         }
         
-        //TODO revoir
-        
-//        if (this.isAWin(action.getWhosturn())) {
-//            result = ModelConstants.WIN;
-//        }
-//        
-//        if (this.antiplay(action.getWhosturn())) {
-//            result = ModelConstants.ANTIPLAY;
-//        }
+        if (this.antiplay(currentTeam)) {
+            result = ModelConstants.ANTIPLAY;
+        }
 
         return result;
+	}
+
+	public int getNbPasses() {
+		return this.nbPasses;
+	}
+	
+	public int getNbMoves() {
+		return this.nbMoves;
 	}
 }
 
