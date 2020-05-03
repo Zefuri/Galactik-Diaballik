@@ -104,14 +104,17 @@ public class Stadium {
 	        		break;
 	        		
 	        	case RIGHT:
-	        		player.getPosition().setX(playerPos.getX());
-	        		player.getPosition().setX(playerPos.getX() + 1);
+	        		player.getPosition().setY(playerPos.getY());
+	        		player.getPosition().setY(playerPos.getY() + 1);
 	        		break;
 	        	
 	        	case LEFT:
-	        		player.getPosition().setX(playerPos.getX());
-	        		player.getPosition().setX(playerPos.getX() - 1);
+	        		player.getPosition().setY(playerPos.getY());
+	        		player.getPosition().setY(playerPos.getY() - 1);
 	        		break;
+	        		
+	        	default:
+	        		throw new IllegalStateException("Wrong input direction");
 	        }
     	} else {
     		throw new RuntimeException("You did not use the playerCanMove() function as mentionned!!!");
@@ -421,10 +424,10 @@ public class Stadium {
         int limit;
         
         if (team == TeamPosition.TOP) {
-        	limit = 0;
+        	limit = 6;
         } else {
             if (team == TeamPosition.BOTTOM) {
-                limit = 6;
+                limit = 0;
             } else {
                 return false;
             }
@@ -524,6 +527,8 @@ public class Stadium {
             }
         }
         
+        System.out.println(result.toString());
+        
         return result;
     }
 
@@ -551,13 +556,15 @@ public class Stadium {
         switch(action.getType()) {
             case MOVE:
                 Player player = action.getMovedPlayer();
+                MoveDirection dir = action.getDirection();
                 
-                if (this.nbMoves == ModelConstants.MAX_MOVES_PER_TOUR || (player.getTeam().getPosition() != currentTeam)) {
+                if (this.nbMoves == ModelConstants.MAX_MOVES_PER_TOUR
+                		|| (player.getTeam().getPosition() != currentTeam)
+                		|| !playerCanMove(player, dir)) {
                     done = ActionResult.ERROR;
                     break;
                 }
 
-                MoveDirection dir = action.getDirection();
                 move(player, dir);
                 this.nbMoves++;
                 
@@ -567,7 +574,10 @@ public class Stadium {
                 Player firstPlayer = action.getPreviousPlayer();
                 Player secondPlayer = action.getNextPlayer();
                 
-                if (this.nbPasses == ModelConstants.MAX_PASSES_PER_TOUR || (firstPlayer.getTeam().getPosition() != currentTeam) || (secondPlayer.getTeam().getPosition() != currentTeam)) {
+                if (this.nbPasses == ModelConstants.MAX_PASSES_PER_TOUR
+                		|| (firstPlayer.getTeam().getPosition() != currentTeam)
+                		|| (secondPlayer.getTeam().getPosition() != currentTeam)
+                		|| !playerCanPass(firstPlayer, secondPlayer)) {
                     done = ActionResult.ERROR;
                     break;
                 }

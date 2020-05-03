@@ -75,7 +75,7 @@ public class Player {
 				newY++;
 				break;
 		}
-
+		
 		return new Case(newX, newY);
 	}
 	
@@ -86,11 +86,11 @@ public class Player {
 	public Action move(MoveDirection direction) {
 		if (canMove(direction)) {
 			Case newPosition = calculateNewPosition(direction);
-
-			System.out.println(newPosition.getX() + "/" + newPosition.getY());
 			
+			System.out.println(newPosition);
+
 			Action moveAction = new Action(ActionType.MOVE, this, this, this.position, newPosition);
-			setPosition(newPosition);
+			//setPosition(newPosition);
 			
 			return moveAction;
 		} else {
@@ -105,7 +105,7 @@ public class Player {
 	
 	public Action pass(Player nextPlayer) {
 		if (canPass(nextPlayer)) {
-			team.getStadium().pass(this, nextPlayer);
+			//team.getStadium().pass(this, nextPlayer);
 			
 			return new Action(ActionType.PASS, this, nextPlayer, this.position, nextPlayer.getPosition());
 		} else {

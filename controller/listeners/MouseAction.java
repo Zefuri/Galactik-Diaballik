@@ -3,9 +3,12 @@ package listeners;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import model.Action;
 import model.Case;
 import model.Player;
 import model.Stadium;
+import model.enums.ActionResult;
+import model.enums.ActionType;
 import model.enums.MoveDirection;
 import view.HoloTV;
 
@@ -49,10 +52,12 @@ public class MouseAction extends MouseAdapter {
 			performRequestedAction();
 		} catch (IllegalStateException ex) {
 			//Means that the user performed an undoable action
-			System.out.println(ex.toString());
+			//System.out.println(ex.toString());
+			ex.printStackTrace();
 		} catch (RuntimeException ex) {
 			//Means that the user performed a doable action but an error occurred
-			System.out.println(ex.toString());
+			//System.out.println(ex.toString());
+			ex.printStackTrace();
 		}
 
 		// provisoir
@@ -100,14 +105,22 @@ public class MouseAction extends MouseAdapter {
 				//Do a pass if possible
 				Player previousOwner = stadium.getPlayer(playerWithBallCase);
 				Player futureOwner = stadium.getPlayer(clickedCase);
+				Action pass = previousOwner.pass(futureOwner);
 				
-				if (previousOwner.canPass(futureOwner)) {
-					previousOwner.pass(futureOwner);
+				if (stadium.actionPerformed(pass) == ActionResult.DONE) {
 					stadium.getPlayer(playerWithBallCase).setIfSelected(false);
 					clearPlayers();
 				} else {
-					throw new IllegalStateException("Either the two players are not aligned, or an opponent is between them.");
+					throw new IllegalStateException("Either it is not your turn, or the two players are not aligned or have an opponent between them.");
 				}
+				
+//				if (previousOwner.canPass(futureOwner)) {
+//					previousOwner.pass(futureOwner);
+//					stadium.getPlayer(playerWithBallCase).setIfSelected(false);
+//					clearPlayers();
+//				} else {
+//					throw new IllegalStateException("Either the two players are not aligned, or an opponent is between them.");
+//				}
 			} else {
 				//Change the actual player and change the selection value 
 				if (playerAloneCase != null) {
@@ -123,13 +136,24 @@ public class MouseAction extends MouseAdapter {
 				//If the selected case is next to the player case, we move the player
 				Player p = stadium.getPlayer(playerAloneCase);
 				MoveDirection dir = stadium.getMoveDirection(p, clickedCase);
+				Action move = p.move(dir);
 				
-				if (p.canMove(dir)) {
-					p.move(dir);
+				ActionResult a;
+				
+				if ((a = stadium.actionPerformed(move)) == ActionResult.DONE) {
 					setPlayerAloneCase(clickedCase);
+					
 				} else {
-					throw new IllegalStateException("The selected case is not situated next to the player!");
+					System.out.println(a.toString());
+					throw new IllegalStateException("Either it is not your turn, or the selected case is not situated next to the player.");
 				}
+				
+//				if (p.canMove(dir)) {
+//					p.move(dir);
+//					setPlayerAloneCase(clickedCase);
+//				} else {
+//					throw new IllegalStateException("The selected case is not situated next to the player!");
+//				}
 			} else if (playerWithBallCase != null) {
 				stadium.getPlayer(playerWithBallCase).setIfSelected(false);
 				clearPlayers();
