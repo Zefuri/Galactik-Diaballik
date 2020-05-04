@@ -34,8 +34,8 @@ public class GamePanel extends JPanel implements Observable {
 		this.nbTurn = new JLabel("Tour " + (stadium.getTurnIndex() + 1) + " :");
 		this.gameControlPanel.add(this.nbTurn);
 		
-		//this.whosturn = new JLabel("Joueur " + (stadium.whosTurn() + 1) + ", ï¿½ toi !");
-		//this.gameControlPanel.add(this.whosturn);
+		this.whosturn = new JLabel("Joueur " + (getNbTeam() + 1) + ", à toi !");
+		this.gameControlPanel.add(this.whosturn);
 		
 		this.nbPassRemaining = new JLabel("Passe : " + (1 - stadium.getNbPassesDone()));
 		this.gameControlPanel.add(this.nbPassRemaining);
@@ -56,7 +56,7 @@ public class GamePanel extends JPanel implements Observable {
 	
 	public void updateGamePanelInfos() {
 		this.nbTurn.setText("Tour " + (stadium.getTurnIndex() + 1) + " :");
-		//this.whosturn.setText("Joueur " + (stadium.whosTurn() + 1) + ", ï¿½ toi !");
+		this.whosturn.setText("Joueur " + (getNbTeam() + 1) + ", à toi !");
 		this.nbPassRemaining.setText("Passe : " + (1 - stadium.getNbPassesDone()));
 		this.nbMoveRemaining.setText("Dï¿½placements : " + (2 - stadium.getNbMovesDone()));
 	}
@@ -71,5 +71,9 @@ public class GamePanel extends JPanel implements Observable {
 		for(Observer observer : observers) {
 			observer.update(object);
 		}
+	}
+	
+	private int getNbTeam() {
+		return this.stadium.getTurnIndex() % 2;
 	}
 }
