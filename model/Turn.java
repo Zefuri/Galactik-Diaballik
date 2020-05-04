@@ -53,7 +53,7 @@ public class Turn {
 	}
 	
 	public int getNbPassLeft() {
-		return 1 - this.nbPass;
+		return ModelConstants.MAX_PASSES_PER_TOUR - this.nbPass;
 	}
 	
 	public int getNbMoveDone() {
@@ -61,6 +61,6 @@ public class Turn {
 	}
 	
 	public int getNbMoveLeft() {
-		return 2 - this.nbMove;
+		return ModelConstants.MAX_MOVES_PER_TOUR - this.nbMove;
 	}
 }
