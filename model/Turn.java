@@ -16,7 +16,7 @@ public class Turn {
 	public void addAction(Action action) {
 		switch(action.getType()) {
 			case PASS:
-				if(this.nbPass < 1) {
+				if(this.nbPass < ModelConstants.MAX_PASSES_PER_TOUR) {
 					this.actions[(this.actions.length) - 1] = action;
 					this.nbPass++;
 				} else {
@@ -24,7 +24,7 @@ public class Turn {
 				}
 				break;
 			case MOVE:
-				if(this.nbMove < 2) {
+				if(this.nbMove < ModelConstants.MAX_MOVES_PER_TOUR) {
 					this.actions[(this.actions.length) - 1] = action;
 					this.nbMove++;
 				} else {
