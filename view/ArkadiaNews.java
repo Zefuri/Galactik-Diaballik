@@ -43,7 +43,7 @@ public class ArkadiaNews extends JComponent {
                 	drawable.setStroke(new BasicStroke(2));
                 	
                 	switch (p.getTeam()) {
-	                	case Stadium.teamOne:
+	                	case ModelConstants.TEAM_ONE:
 	                		drawable.setColor(Color.RED);
 	                		ball = Color.BLACK;
 	                		break;

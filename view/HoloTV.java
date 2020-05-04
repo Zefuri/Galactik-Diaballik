@@ -18,13 +18,15 @@ public class HoloTV implements Runnable {
 	@Override
 	public void run() {
 		// Create the main window
-		this.frame = new JFrame("Stadium : Snow Kids VS Shadows !!!!");
+		this.frame = new JFrame("Galactik Diaballik");
 		
 		// Create the GamePanel and himself create and add an ArkadiaNews
 		this.gamePanel = new GamePanel(stadium);
 		
 		// Add the panel to the frame
-		this.frame.add(this.gamePanel);
+//		this.frame.add(this.gamePanel);
+
+		frame.add(new MainMenuPanel());
 		
 		// When red X is clicked
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
