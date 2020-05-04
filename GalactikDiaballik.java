@@ -1,4 +1,4 @@
-import listeners.MouseAction;
+import controller.listeners.MouseAction;
 import model.Stadium;
 import view.HoloTV;
 

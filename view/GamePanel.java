@@ -31,7 +31,7 @@ public class GamePanel extends JPanel implements Observable {
 		
 		this.gameControlPanel = new JPanel(new GridLayout(5, 0));
 		
-		this.nbTurn = new JLabel("Tour " + (stadium.getTurn() + 1) + " :");
+		this.nbTurn = new JLabel("Tour " + (stadium.getTurnIndex() + 1) + " :");
 		this.gameControlPanel.add(this.nbTurn);
 		
 		//this.whosturn = new JLabel("Joueur " + (stadium.whosTurn() + 1) + ", � toi !");
@@ -55,7 +55,7 @@ public class GamePanel extends JPanel implements Observable {
 	}
 	
 	public void updateGamePanelInfos() {
-		this.nbTurn.setText("Tour " + (stadium.getTurn() + 1) + " :");
+		this.nbTurn.setText("Tour " + (stadium.getTurnIndex() + 1) + " :");
 		//this.whosturn.setText("Joueur " + (stadium.whosTurn() + 1) + ", � toi !");
 		this.nbPassRemaining.setText("Passe : " + (1 - stadium.getNbPasses()));
 		this.nbMoveRemaining.setText("D�placements : " + (2 - stadium.getNbMoves()));
