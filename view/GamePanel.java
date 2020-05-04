@@ -85,4 +85,12 @@ public class GamePanel extends JPanel implements Observable {
 			System.exit(0);
 		}
 	}
+	
+	public void showAntiPlayPopUp(String teamName) {
+		int input = JOptionPane.showOptionDialog(null, "The enemy team made an antiplay: The team \"" + teamName + "\" won the game!", "Game over", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+		
+		if (input == JOptionPane.OK_OPTION || input == JOptionPane.CANCEL_OPTION || input == JOptionPane.CLOSED_OPTION) {
+			System.exit(0);
+		}
+	}
 }
