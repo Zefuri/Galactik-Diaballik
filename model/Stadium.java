@@ -532,7 +532,11 @@ public class Stadium {
         
         return result;
     }
-
+	
+	public ActionResult endTurn() {
+		return actionPerformed(new Action(ActionType.END_TURN, null, null, null, null));
+	}
+	
 	private void newTurn() {
         this.turns.add(new Turn(getCurrentTeamTurn()));
 	}
@@ -594,8 +598,8 @@ public class Stadium {
                     break;
                 }
                 
-                this.newTurn();
                 this.currentTurnIndex++;
+                this.newTurn();
                 
                 break;
 

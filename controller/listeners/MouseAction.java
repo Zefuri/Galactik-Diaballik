@@ -1,5 +1,6 @@
 package controller.listeners;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -183,8 +184,14 @@ public class MouseAction extends MouseAdapter implements Observer {
 
 	@Override
 	public void update(Object object) {
-		if(object.equals(ActionType.PASS)) { // following code is executed when the "end of turn" button is pressed
-			System.out.println("LE JOUEUR FINI SON TOUR");
+		if(object.equals(ActionType.END_TURN)) { // following code is executed when the "end of turn" button is pressed
+			ActionResult res = this.stadium.endTurn();
+			if(res == ActionResult.ERROR) {
+				System.err.println("You cannot end your turn without performing at least one action.");
+			} else {
+				System.out.println("LE JOUEUR A FINI SON TOUR !");
+				this.holoTV.updateGameInfos();
+			}
 		}
 	}
 }
