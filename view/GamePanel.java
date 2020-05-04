@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import model.Stadium;
@@ -75,5 +76,13 @@ public class GamePanel extends JPanel implements Observable {
 	
 	private int getNbTeam() {
 		return this.stadium.getTurnIndex() % 2;
+	}
+	
+	public void showEndGamePopUp(String teamName) {
+		int input = JOptionPane.showOptionDialog(null, "The team \"" + teamName + "\" won the game!", "Game over", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+		
+		if (input == JOptionPane.OK_OPTION || input == JOptionPane.CANCEL_OPTION || input == JOptionPane.CLOSED_OPTION) {
+			System.exit(0);
+		}
 	}
 }

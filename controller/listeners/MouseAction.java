@@ -69,13 +69,14 @@ public class MouseAction extends MouseAdapter implements Observer {
 //			ai.play();
 //		}
 		
+		holoTV.getArkadiaNews().repaint();
+		holoTV.updateGameInfos();
+		
 		if (result == ActionResult.WIN) {
 			//TODO Implémenter le passage à l'écran de fin
 			System.out.println("Team \"" + stadium.getPlayer(playerWithBallCase).getTeam().getName() + "\" have won the match!");
+			holoTV.getGamePanel().showEndGamePopUp(stadium.getPlayer(playerWithBallCase).getTeam().getName());
 		}
-		
-		holoTV.getArkadiaNews().repaint();
-		holoTV.updateGameInfos();
 	}
 	
 	private Case getCase(int x, int y) {
