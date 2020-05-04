@@ -40,6 +40,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		super.mouseClicked(e);
+		ActionResult result = null;
 		
 		//We get the position of the case (meaning its position in the game grid)
 		try {
@@ -50,11 +51,11 @@ public class MouseAction extends MouseAdapter implements Observer {
 		}
 		
 		try {
-			performRequestedAction();
+			result = performRequestedAction();
 		} catch (IllegalStateException ex) {
 			//Means that the user performed an undoable action
 			System.out.println(ex.toString());
-			//ex.printStackTrace());
+			//ex.printStackTrace();
 		} catch (RuntimeException ex) {
 			//Means that the user performed a doable action but an error occurred
 			System.out.println(ex.toString());
@@ -67,6 +68,11 @@ public class MouseAction extends MouseAdapter implements Observer {
 //		if (clickNumber%3 == 0 && clickNumber != 0) {
 //			ai.play();
 //		}
+		
+		if (result == ActionResult.WIN) {
+			//TODO Implémenter le passage à l'écran de fin
+			System.out.println("Team \"" + stadium.getPlayer(playerWithBallCase).getTeam().getName() + "\" have won the match!");
+		}
 		
 		holoTV.getArkadiaNews().repaint();
 		holoTV.updateGameInfos();
@@ -84,8 +90,10 @@ public class MouseAction extends MouseAdapter implements Observer {
 		return new Case(xValue, yValue);
 	}
 	
-	private void performRequestedAction() {
+	private ActionResult performRequestedAction() {
 		//Verify if the user click must perform a doable action
+		ActionResult result = null;
+		
 		if (stadium.hasABall(clickedCase)) {
 			//There is a player with a ball on the clicked case
 			if (playerWithBallCase != null) {
@@ -113,9 +121,13 @@ public class MouseAction extends MouseAdapter implements Observer {
 				Player futureOwner = stadium.getPlayer(clickedCase);
 				Action pass = previousOwner.pass(futureOwner);
 				
-				if (stadium.actionPerformed(pass) == ActionResult.DONE) {
+				//TODO remettre le if / else if en 1 bloc après implémentation de l'écran de fin
+				
+				if (((result = stadium.actionPerformed(pass)) == ActionResult.DONE)) {
 					stadium.getPlayer(playerWithBallCase).setIfSelected(false);
 					clearPlayers();
+				} else if (result == ActionResult.WIN) {
+					stadium.getPlayer(playerWithBallCase).setIfSelected(false);
 				} else {
 					throw new IllegalStateException("Either it is not your turn, or the two players are not aligned or have an opponent between them.");
 				}
@@ -140,17 +152,22 @@ public class MouseAction extends MouseAdapter implements Observer {
 				//If the selected case is next to the player case, we move the player
 				Player p = stadium.getPlayer(playerAloneCase);
 				MoveDirection dir = stadium.getMoveDirection(p, clickedCase);
+				
+				if (dir == null) {
+					throw new IllegalStateException("Either it is not your turn, or the selected case is not situated next to the player.");
+				}
+				
 				Action move = p.move(dir);
 				
-				ActionResult a;
-				
-				if ((a = stadium.actionPerformed(move)) == ActionResult.DONE) {
+				if ((result = stadium.actionPerformed(move)) == ActionResult.DONE) {
 					setPlayerAloneCase(clickedCase);
 					
 					//If this move was the second one, we unselect the current player
 					if (stadium.getNbMovesDone() == 2) {
 						stadium.getPlayer(clickedCase).setIfSelected(false);
 					}
+				} else if (result == ActionResult.ANTIPLAY) {
+					throw new RuntimeException("Antiplay detected!");
 				} else {
 					throw new IllegalStateException("Either it is not your turn, or the selected case is not situated next to the player.");
 				}
@@ -162,6 +179,8 @@ public class MouseAction extends MouseAdapter implements Observer {
 				throw new IllegalStateException("You must select a player before selecting an empty case!");
 			}
 		}
+		
+		return result;
 	}
 	
 	private void setPlayerWithBallCase(Case c) {

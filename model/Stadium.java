@@ -96,21 +96,17 @@ public class Stadium {
 	        switch (direction) {
 	        	case UP:
 	        		player.getPosition().setX(playerPos.getX() - 1);
-	        		player.getPosition().setX(playerPos.getX());
 	        		break;
 	        	
 	        	case DOWN:
 	        		player.getPosition().setX(playerPos.getX() + 1);
-	        		player.getPosition().setX(playerPos.getX());
 	        		break;
 	        		
 	        	case RIGHT:
-	        		player.getPosition().setY(playerPos.getY());
 	        		player.getPosition().setY(playerPos.getY() + 1);
 	        		break;
 	        	
 	        	case LEFT:
-	        		player.getPosition().setY(playerPos.getY());
 	        		player.getPosition().setY(playerPos.getY() - 1);
 	        		break;
 	        		
@@ -161,6 +157,7 @@ public class Stadium {
 	                    
 	                default:
 	                    System.out.println("wrong move input in move function");
+	                    canMove = false;
 	            }
 	            
 	            if (!canMove) {
@@ -201,6 +198,7 @@ public class Stadium {
 	                    
 	                default:
 	                    System.out.println("wrong move input in move function");
+	                    canMove = false;
 	            }
 	            
 	            if (!canMove) {
@@ -306,13 +304,12 @@ public class Stadium {
         }
     }
 
-    public boolean antiplay(TeamPosition team) {
-        Team playerList = this.getTeam(team);
+    public boolean antiplay(Team team) {
         boolean result = false;
         
         int contact = 0;
         
-        for (Player currPlayer : playerList.getPlayers()) { 
+        for (Player currPlayer : team.getPlayers()) { 
             boolean leftFriend = allyOnTheLeft(currPlayer);
             boolean rightFriend = allyOnTheRight(currPlayer);
             
@@ -403,11 +400,11 @@ public class Stadium {
     		Case currPlayerPos = currPlayer.getPosition();
     		
     		if (currPlayerPos.getX() == playerPos.getX() - 1) {
-    			if (currPlayerPos.getY() == currPlayerPos.getY()) {
+    			if (currPlayerPos.getY() == playerPos.getY()) {
     				contactWithOpponent = true;
     			}
     		} else if (currPlayerPos.getX() == playerPos.getX() + 1) {
-    			if (currPlayerPos.getY() == currPlayerPos.getY()) {
+    			if (currPlayerPos.getY() == playerPos.getY()) {
     				contactWithOpponent = true;
     			}
     		}
@@ -616,7 +613,7 @@ public class Stadium {
         	done = ActionResult.WIN;
         }
         
-        if (this.antiplay(currentTurn.getTeam().getPosition())) {
+        if (this.antiplay(currentTurn.getTeam())) {
         	done = ActionResult.ANTIPLAY;
         }
 
