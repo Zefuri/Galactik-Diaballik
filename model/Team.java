@@ -61,6 +61,10 @@ public class Team {
 		return this.players;
 	}
 	
+	public boolean isCurrentlyPlaying() {
+		return this.equals(this.stadium.getCurrentTeamTurn());
+	}
+	
 	public Player getBallPlayer() throws IllegalStateException {
 		for (Player p : this.players) {
 			if (p.hasBall()) {
@@ -73,5 +77,10 @@ public class Team {
 	
 	public Team getEnemyTeam() {
 		return stadium.getTeam(position == TeamPosition.TOP ? TeamPosition.BOTTOM : TeamPosition.TOP);
+	}
+	
+	public boolean equals(Team t) {
+		//Voir si c'est suffisant
+		return this.position == t.getPosition();
 	}
 }

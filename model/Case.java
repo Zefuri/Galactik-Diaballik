@@ -23,6 +23,10 @@ public class Case {
 	}
 	
 	public int getX() {
+		if (this.x == -1 || this.y == -1) {
+			throw new IllegalStateException("Selected case has not been instanciated properly.");
+		}
+		
 		return this.x;
 	}
 	
@@ -31,6 +35,10 @@ public class Case {
 	}
 	
 	public int getY() {
+		if (this.x == -1 || this.y == -1) {
+			throw new IllegalStateException("Selected case has not been instanciated properly.");
+		}
+		
 		return this.y;
 	}
 	
@@ -43,6 +51,6 @@ public class Case {
 	}
 	
 	public boolean equals(Case c) {
-		return ((this.x == c.getX()) && this.y == c.getY());
+		return ((this.x == c.getX()) && (this.y == c.getY()));
 	}
 }

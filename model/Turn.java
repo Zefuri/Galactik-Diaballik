@@ -1,5 +1,7 @@
 package model;
 
+import model.enums.ActionType;
+
 public class Turn {
 	private Action actions[];
 	private Team team;
@@ -14,27 +16,12 @@ public class Turn {
 	}
 	
 	public void addAction(Action action) {
-		switch(action.getType()) {
-			case PASS:
-				if(this.nbPass < 1) {
-					this.actions[(this.actions.length) - 1] = action;
-					this.nbPass++;
-				} else {
-					System.err.println("Pass cannot be done : all the pass for this turn are already done.");
-				}
-				break;
-				
-			case MOVE:
-				if(this.nbMove < 2) {
-					this.actions[(this.actions.length) - 1] = action;
-					this.nbMove++;
-				} else {
-					System.err.println("Move cannot be done : all the move for this turn are already done.");
-				}
-				break;
-				
-			default:
-				System.err.println("Not An Action : this action type is not recognized.");
+		this.actions[this.nbMove + this.nbPass] = action;
+		
+		if (action.getType() == ActionType.PASS) {
+			this.nbPass++;
+		} else if (action.getType() == ActionType.MOVE) {
+			this.nbMove++;
 		}
 	}
 	

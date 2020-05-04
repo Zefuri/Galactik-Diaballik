@@ -30,7 +30,7 @@ public class Player {
 	}
 
 	public Stadium getStadium() {
-		return getTeam().getStadium();
+		return this.team.getStadium();
 	}
 
 	void setPosition(int x, int y) {
@@ -86,11 +86,8 @@ public class Player {
 	public Action move(MoveDirection direction) {
 		if (canMove(direction)) {
 			Case newPosition = calculateNewPosition(direction);
-			
-			System.out.println(newPosition);
 
 			Action moveAction = new Action(ActionType.MOVE, this, this, this.position, newPosition);
-			//setPosition(newPosition);
 			
 			return moveAction;
 		} else {
@@ -105,8 +102,6 @@ public class Player {
 	
 	public Action pass(Player nextPlayer) {
 		if (canPass(nextPlayer)) {
-			//team.getStadium().pass(this, nextPlayer);
-			
 			return new Action(ActionType.PASS, this, nextPlayer, this.position, nextPlayer.getPosition());
 		} else {
 			//Voir si c'est vraiment utile
@@ -124,5 +119,10 @@ public class Player {
 	
 	public void setIfSelected(boolean selected) {
 		this.selected = selected;
+	}
+	
+	public boolean canPlay() {
+		//We return a boolean informing if it is the player current turn
+		return this.team.isCurrentlyPlaying();
 	}
 }

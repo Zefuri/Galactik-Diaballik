@@ -1,5 +1,6 @@
 package listeners;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -20,7 +21,6 @@ import view.HoloTV;
 public class MouseAction extends MouseAdapter implements Observer {
 	private HoloTV holoTV;
 	private Stadium stadium;
-	private Player targetedPlayer;
 	private Case clickedCase;
 	private Case playerAloneCase;
 	private Case playerWithBallCase;
@@ -31,7 +31,6 @@ public class MouseAction extends MouseAdapter implements Observer {
 	public MouseAction(HoloTV holoTV, Stadium stadium) {
 		this.holoTV = holoTV;
 		this.stadium = stadium;
-		this.targetedPlayer = null;
 		this.playerAloneCase = null;
 		this.playerWithBallCase = null;
 
@@ -54,12 +53,12 @@ public class MouseAction extends MouseAdapter implements Observer {
 			performRequestedAction();
 		} catch (IllegalStateException ex) {
 			//Means that the user performed an undoable action
-			//System.out.println(ex.toString());
-			ex.printStackTrace();
+			System.out.println(ex.toString());
+			//ex.printStackTrace());
 		} catch (RuntimeException ex) {
 			//Means that the user performed a doable action but an error occurred
-			//System.out.println(ex.toString());
-			ex.printStackTrace();
+			System.out.println(ex.toString());
+			//ex.printStackTrace();
 		}
 
 		// provisoir
@@ -87,19 +86,24 @@ public class MouseAction extends MouseAdapter implements Observer {
 	
 	private void performRequestedAction() {
 		//Verify if the user click must perform a doable action
-		
 		if (stadium.hasABall(clickedCase)) {
 			//There is a player with a ball on the clicked case
 			if (playerWithBallCase != null) {
-				throw new IllegalStateException("You can not pass the ball to yourself.");
+				throw new IllegalStateException("You can not pass the ball to yourself or an enemy player.");
 			} else {
-				//Change the actual player
-				if (playerAloneCase != null) {
-					stadium.getPlayer(playerAloneCase).setIfSelected(false);
-				}
+				//Change the actual player if possible
+				Player clickedPlayer = stadium.getPlayer(clickedCase);
 				
-				setPlayerWithBallCase(clickedCase);
-				stadium.getPlayer(clickedCase).setIfSelected(true);
+				if (clickedPlayer.canPlay() && this.stadium.getNbPassesDone() != 1) {
+					if (playerAloneCase != null) {
+						stadium.getPlayer(playerAloneCase).setIfSelected(false);
+					}
+					
+					setPlayerWithBallCase(clickedCase);
+					clickedPlayer.setIfSelected(true);
+				} else {
+					throw new IllegalStateException("The chosen player is not in the current playing team, or you have already made a pass this turn.");
+				}
 			}
 		} else if (stadium.hasAPlayerOnly(clickedCase)) {
 			//There is a player only on the clicked case
@@ -115,22 +119,20 @@ public class MouseAction extends MouseAdapter implements Observer {
 				} else {
 					throw new IllegalStateException("Either it is not your turn, or the two players are not aligned or have an opponent between them.");
 				}
-				
-//				if (previousOwner.canPass(futureOwner)) {
-//					previousOwner.pass(futureOwner);
-//					stadium.getPlayer(playerWithBallCase).setIfSelected(false);
-//					clearPlayers();
-//				} else {
-//					throw new IllegalStateException("Either the two players are not aligned, or an opponent is between them.");
-//				}
 			} else {
 				//Change the actual player and change the selection value 
-				if (playerAloneCase != null) {
-					stadium.getPlayer(playerAloneCase).setIfSelected(false);
+				Player clickedPlayer = stadium.getPlayer(clickedCase);
+				
+				if (clickedPlayer.canPlay() && stadium.getNbMovesDone() != 2) {
+					if (playerAloneCase != null) {
+						stadium.getPlayer(playerAloneCase).setIfSelected(false);
+					}
+				
+					setPlayerAloneCase(clickedCase);
+					clickedPlayer.setIfSelected(true);
+				} else {
+					throw new IllegalStateException("The chosen player is not in the current playing team, or you have already made two moves this turn.");
 				}
-			
-				setPlayerAloneCase(clickedCase);
-				stadium.getPlayer(clickedCase).setIfSelected(true);
 			}
 		} else {
 			//The case is empty
@@ -145,17 +147,13 @@ public class MouseAction extends MouseAdapter implements Observer {
 				if ((a = stadium.actionPerformed(move)) == ActionResult.DONE) {
 					setPlayerAloneCase(clickedCase);
 					
+					//If this move was the second one, we unselect the current player
+					if (stadium.getNbMovesDone() == 2) {
+						stadium.getPlayer(clickedCase).setIfSelected(false);
+					}
 				} else {
-					System.out.println(a.toString());
 					throw new IllegalStateException("Either it is not your turn, or the selected case is not situated next to the player.");
 				}
-				
-//				if (p.canMove(dir)) {
-//					p.move(dir);
-//					setPlayerAloneCase(clickedCase);
-//				} else {
-//					throw new IllegalStateException("The selected case is not situated next to the player!");
-//				}
 			} else if (playerWithBallCase != null) {
 				stadium.getPlayer(playerWithBallCase).setIfSelected(false);
 				clearPlayers();
@@ -183,8 +181,27 @@ public class MouseAction extends MouseAdapter implements Observer {
 
 	@Override
 	public void update(Object object) {
-		if(object.equals(ActionType.PASS)) { // following code is executed when the "end of turn" button is pressed
-			System.out.println("LE JOUEUR FINI SON TOUR");
+		if(object.equals(ActionType.END_TURN)) { // following code is executed when the "end of turn" button is pressed
+			ActionResult res = this.stadium.endTurn();
+			
+			if (res == ActionResult.ERROR) {
+				System.err.println("You cannot end your turn without performing at least one action.");
+			} else {
+				this.holoTV.updateGameInfos();
+				clearSelectedPlayer();
+			}
 		}
+	}
+	
+	private void clearSelectedPlayer() {
+		if (playerWithBallCase != null) {
+			stadium.getPlayer(playerWithBallCase).setIfSelected(false);
+		} else if (playerAloneCase != null) {
+			stadium.getPlayer(playerAloneCase).setIfSelected(false);
+		}
+		
+		clearPlayers();
+		
+		holoTV.getArkadiaNews().repaint();
 	}
 }

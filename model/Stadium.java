@@ -2,6 +2,8 @@ package model;
 
 import static java.lang.Math.abs;
 
+import java.util.ArrayList;
+
 import model.enums.TeamPosition;
 import model.enums.ActionResult;
 import model.enums.ActionType;
@@ -11,17 +13,16 @@ public class Stadium {
     private Team topTeam;
     private Team bottomTeam;
     
-    private int nbMoves;
-    private int nbPasses;
-    private int currentTurn;
+    private ArrayList<Turn> turns;
+    private int currentTurnIndex;
 
     public Stadium() {
         topTeam = new Team("snowKids", TeamPosition.TOP, this);
         bottomTeam = new Team("shadows", TeamPosition.BOTTOM, this);
-      
-        nbMoves = 0;
-        nbPasses = 0;
-        currentTurn = 0;
+        
+        currentTurnIndex = 0;
+        this.turns = new ArrayList<>();
+        newTurn();
     }
     
     public Team getTeam(TeamPosition position) {
@@ -526,47 +527,48 @@ public class Stadium {
                 }
             }
         }
-        
-        System.out.println(result.toString());
-        
+     
         return result;
     }
-
-	private void resetTurnVariables() {
-        this.nbMoves = 0;
-        this.nbPasses = 0;
+	
+	public ActionResult endTurn() {
+		return actionPerformed(new Action(ActionType.END_TURN, null, null, null, null));
 	}
 	
-	public TeamPosition getCurrentTeamTurn() {
-		if (this.getTurn() % 2 == 0) {
-			return TeamPosition.TOP;
+	private void newTurn() {
+        this.turns.add(new Turn(getCurrentTeamTurn()));
+	}
+	
+	public Team getCurrentTeamTurn() {
+		if (this.getTurnIndex() % 2 == 0) {
+			return topTeam;
 		} else {
-			return TeamPosition.BOTTOM;
+			return bottomTeam;
 		}
 	}
 	
-	public int getTurn() {
-		return this.currentTurn;
+	public int getTurnIndex() {
+		return this.currentTurnIndex;
 	}
 
 	public ActionResult actionPerformed(Action action) { //what controller must use
         ActionResult done = ActionResult.DONE;
-        TeamPosition currentTeam = getCurrentTeamTurn();
+        Turn currentTurn = this.turns.get(this.currentTurnIndex);
 
         switch(action.getType()) {
             case MOVE:
                 Player player = action.getMovedPlayer();
                 MoveDirection dir = action.getDirection();
                 
-                if (this.nbMoves == ModelConstants.MAX_MOVES_PER_TOUR
-                		|| (player.getTeam().getPosition() != currentTeam)
+                if (currentTurn.getNbMoveDone() >= ModelConstants.MAX_MOVES_PER_TOUR
+                		|| (player.getTeam().getPosition() != currentTurn.getTeam().getPosition())
                 		|| !playerCanMove(player, dir)) {
                     done = ActionResult.ERROR;
                     break;
                 }
 
                 move(player, dir);
-                this.nbMoves++;
+                currentTurn.addAction(action);
                 
                 break;
 
@@ -574,57 +576,59 @@ public class Stadium {
                 Player firstPlayer = action.getPreviousPlayer();
                 Player secondPlayer = action.getNextPlayer();
                 
-                if (this.nbPasses == ModelConstants.MAX_PASSES_PER_TOUR
-                		|| (firstPlayer.getTeam().getPosition() != currentTeam)
-                		|| (secondPlayer.getTeam().getPosition() != currentTeam)
+                if (currentTurn.getNbPassDone() == ModelConstants.MAX_PASSES_PER_TOUR
+                		|| (firstPlayer.getTeam().getPosition() != currentTurn.getTeam().getPosition())
+                		|| (secondPlayer.getTeam().getPosition() != currentTurn.getTeam().getPosition())
                 		|| !playerCanPass(firstPlayer, secondPlayer)) {
                     done = ActionResult.ERROR;
                     break;
                 }
 
                 pass(firstPlayer, secondPlayer);
-                this.nbPasses++;
+                currentTurn.addAction(action);
                 
                 break;
 
             case END_TURN:
-                if ((this.nbMoves + this.nbPasses) == 0) {
+                if ((currentTurn.getNbMoveDone() + currentTurn.getNbPassDone()) == 0) {
                     //You can not end your turn without performing at least 1 action
                 	done = ActionResult.ERROR;
                     break;
                 }
                 
-                this.resetTurnVariables();
-                this.currentTurn++;
+                this.currentTurnIndex++;
+                this.newTurn();
                 
                 break;
 
             default:
                 throw new IllegalStateException("Please select a valid action type!");
         }
-        
+        /*
+         * Certainly useless now
+         * 
         if (this.nbPasses == ModelConstants.MAX_PASSES_PER_TOUR && this.nbMoves == ModelConstants.MAX_MOVES_PER_TOUR) {
             this.resetTurnVariables();
-            this.currentTurn++;
+            this.currentTurnIndex++;
         }
-       
-        if (this.isAWin(currentTeam)) {
+       	*/
+        if (this.isAWin(currentTurn.getTeam().getPosition())) {
         	done = ActionResult.WIN;
         }
         
-        if (this.antiplay(currentTeam)) {
+        if (this.antiplay(currentTurn.getTeam().getPosition())) {
         	done = ActionResult.ANTIPLAY;
         }
 
         return done;
 	}
 
-	public int getNbPasses() {
-		return this.nbPasses;
+	public int getNbPassesDone() {
+		return this.turns.get(currentTurnIndex).getNbPassDone();
 	}
 	
-	public int getNbMoves() {
-		return this.nbMoves;
+	public int getNbMovesDone() {
+		return this.turns.get(currentTurnIndex).getNbMoveDone();
 	}
 }
 

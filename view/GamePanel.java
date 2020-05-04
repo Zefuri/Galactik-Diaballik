@@ -31,21 +31,21 @@ public class GamePanel extends JPanel implements Observable {
 		
 		this.gameControlPanel = new JPanel(new GridLayout(5, 0));
 		
-		this.nbTurn = new JLabel("Tour " + (stadium.getTurn() + 1) + " :");
+		this.nbTurn = new JLabel("Tour " + (stadium.getTurnIndex() + 1) + " :");
 		this.gameControlPanel.add(this.nbTurn);
 		
 		//this.whosturn = new JLabel("Joueur " + (stadium.whosTurn() + 1) + ", � toi !");
 		//this.gameControlPanel.add(this.whosturn);
 		
-		this.nbPassRemaining = new JLabel("Passe : " + (1 - stadium.getNbPasses()));
+		this.nbPassRemaining = new JLabel("Passe : " + (1 - stadium.getNbPassesDone()));
 		this.gameControlPanel.add(this.nbPassRemaining);
 		
-		this.nbMoveRemaining = new JLabel("D�placements : " + (2 - stadium.getNbMoves()));
+		this.nbMoveRemaining = new JLabel("D�placements : " + (2 - stadium.getNbMovesDone()));
 		this.gameControlPanel.add(this.nbMoveRemaining);
 		
 		this.endTurnButton = new JButton("Fin du tour !");
 		this.gameControlPanel.add(this.endTurnButton);
-		endTurnButton.addActionListener(actionEvent -> notify(ActionType.PASS));
+		endTurnButton.addActionListener(actionEvent -> notify(ActionType.END_TURN));
 		
 		this.add(this.gameControlPanel, BorderLayout.EAST);
 	}
@@ -55,10 +55,10 @@ public class GamePanel extends JPanel implements Observable {
 	}
 	
 	public void updateGamePanelInfos() {
-		this.nbTurn.setText("Tour " + (stadium.getTurn() + 1) + " :");
+		this.nbTurn.setText("Tour " + (stadium.getTurnIndex() + 1) + " :");
 		//this.whosturn.setText("Joueur " + (stadium.whosTurn() + 1) + ", � toi !");
-		this.nbPassRemaining.setText("Passe : " + (1 - stadium.getNbPasses()));
-		this.nbMoveRemaining.setText("D�placements : " + (2 - stadium.getNbMoves()));
+		this.nbPassRemaining.setText("Passe : " + (1 - stadium.getNbPassesDone()));
+		this.nbMoveRemaining.setText("D�placements : " + (2 - stadium.getNbMovesDone()));
 	}
 
 	@Override
