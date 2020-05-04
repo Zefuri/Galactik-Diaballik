@@ -402,11 +402,11 @@ public class Stadium {
     		Case currPlayerPos = currPlayer.getPosition();
     		
     		if (currPlayerPos.getX() == playerPos.getX() - 1) {
-    			if (currPlayerPos.getY() == currPlayerPos.getY() + 1) {
+    			if (currPlayerPos.getY() == currPlayerPos.getY()) {
     				contactWithOpponent = true;
     			}
     		} else if (currPlayerPos.getX() == playerPos.getX() + 1) {
-    			if (currPlayerPos.getY() == currPlayerPos.getY() + 1) {
+    			if (currPlayerPos.getY() == currPlayerPos.getY()) {
     				contactWithOpponent = true;
     			}
     		}
