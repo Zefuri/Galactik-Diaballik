@@ -23,6 +23,7 @@ public class Turn {
 					System.err.println("Pass cannot be done : all the pass for this turn are already done.");
 				}
 				break;
+				
 			case MOVE:
 				if(this.nbMove < 2) {
 					this.actions[(this.actions.length) - 1] = action;
@@ -31,6 +32,7 @@ public class Turn {
 					System.err.println("Move cannot be done : all the move for this turn are already done.");
 				}
 				break;
+				
 			default:
 				System.err.println("Not An Action : this action type is not recognized.");
 		}
