@@ -45,7 +45,7 @@ public class GamePanel extends JPanel implements Observable {
 		
 		this.endTurnButton = new JButton("Fin du tour !");
 		this.gameControlPanel.add(this.endTurnButton);
-		endTurnButton.addActionListener(actionEvent -> notify(ActionType.PASS));
+		endTurnButton.addActionListener(actionEvent -> notify(ActionType.END_TURN));
 		
 		this.add(this.gameControlPanel, BorderLayout.EAST);
 	}
@@ -68,7 +68,7 @@ public class GamePanel extends JPanel implements Observable {
 
 	@Override
 	public void notify(Object object) {
-		for(Observer observer : observers) {
+		for (Observer observer : observers) {
 			observer.update(object);
 		}
 	}

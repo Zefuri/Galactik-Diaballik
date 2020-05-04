@@ -183,7 +183,9 @@ public class MouseAction extends MouseAdapter implements Observer {
 
 	@Override
 	public void update(Object object) {
-		if(object.equals(ActionType.PASS)) { // following code is executed when the "end of turn" button is pressed
+		ActionType action = (ActionType) object;
+		
+		if (action.equals(ActionType.END_TURN)) { // following code is executed when the "end of turn" button is pressed
 			System.out.println("LE JOUEUR FINI SON TOUR");
 		}
 	}
