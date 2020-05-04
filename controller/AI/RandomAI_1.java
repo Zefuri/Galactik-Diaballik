@@ -4,15 +4,15 @@ import java.util.Random;
 import model.Stadium;
 import model.Player;
 
-class RandomAI_1 extends PlayerType {
+public class RandomAI_1 extends PlayerType {
 	Random randomgene;
 
-	RandomAI_1(int numberEquip, Stadium stade, Position position) {
+	public RandomAI_1(int numberEquip, Stadium stade, Position position) {
 		super(numberEquip, stade, position);
 		randomgene = new Random();
 	}
 	
-	RandomAI_1(int numberEquip, Stadium stade) {
+	public RandomAI_1(int numberEquip, Stadium stade) {
 		super(numberEquip, stade);
 		randomgene = new Random();
 	}

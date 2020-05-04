@@ -21,17 +21,17 @@ public abstract class PlayerType {
 	}
 	
 	PlayerType(int number, Stadium stade) {
-		if(number == 0){
-			position = TOP;
+/*		if(number == 0){
+			this.position = TOP;
 		}else{
-			position = BOTTOM;
-		}
+			this.position = BOTTOM;
+		}*/
 		equipNum = number;
 		stadium = stade;
 		this.position = position;
 	}
 
-	int equipNumber() {
+	public int equipNumber() {
 		return equipNum;
 	}
 
