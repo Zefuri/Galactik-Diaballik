@@ -346,11 +346,11 @@ public class Stadium {
     				allyOnTheLeft = true;
     			}
     		} else if (currPlayerPos.getX() == playerPos.getX() - 1) {
-    			if (currPlayerPos.getY() == currPlayerPos.getY() - 1) {
+    			if (currPlayerPos.getY() == playerPos.getY() - 1) {
     				allyOnTheLeft = true;
     			}
     		} else if (currPlayerPos.getX() == playerPos.getX() + 1) {
-    			if (currPlayerPos.getY() == currPlayerPos.getY() - 1) {
+    			if (currPlayerPos.getY() == playerPos.getY() - 1) {
     				allyOnTheLeft = true;
     			}
     		}
@@ -377,11 +377,11 @@ public class Stadium {
     				allyOnTheRight = true;
     			}
     		} else if (currPlayerPos.getX() == playerPos.getX()) {
-    			if (currPlayerPos.getY() == currPlayerPos.getY() + 1) {
+    			if (currPlayerPos.getY() == playerPos.getY() + 1) {
     				allyOnTheRight = true;
     			}
     		} else if (currPlayerPos.getX() == playerPos.getX() + 1) {
-    			if (currPlayerPos.getY() == currPlayerPos.getY() + 1) {
+    			if (currPlayerPos.getY() == playerPos.getY() + 1) {
     				allyOnTheRight = true;
     			}
     		}
