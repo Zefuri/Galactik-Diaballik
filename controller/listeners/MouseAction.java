@@ -1,4 +1,4 @@
-package listeners;
+package controller.listeners;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -73,13 +73,13 @@ public class MouseAction extends MouseAdapter implements Observer {
 		holoTV.updateGameInfos();
 		
 		if (result == ActionResult.WIN) {
-			//TODO Implémenter le passage à l'écran de fin
+			//TODO Implï¿½menter le passage ï¿½ l'ï¿½cran de fin
 			System.out.println("Team \"" + stadium.getPlayer(playerWithBallCase).getTeam().getName() + "\" have won the match!");
 			holoTV.getGamePanel().showEndGamePopUp(stadium.getPlayer(playerWithBallCase).getTeam().getName());
 		}
 		
 		if (result == ActionResult.ANTIPLAY) {
-			//TODO Implémenter le passage à l'écran de fin
+			//TODO Implï¿½menter le passage ï¿½ l'ï¿½cran de fin
 			System.out.println("The enemy team made an antiplay: Team \"" + stadium.getPlayer(playerWithBallCase).getTeam().getName() + "\" have won the match!");
 			holoTV.getGamePanel().showAntiPlayPopUp(stadium.getPlayer(playerWithBallCase).getTeam().getName());
 		}
@@ -128,7 +128,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 				Player futureOwner = stadium.getPlayer(clickedCase);
 				Action pass = previousOwner.pass(futureOwner);
 				
-				//TODO remettre le if / else if en 1 bloc après implémentation de l'écran de fin
+				//TODO remettre le if / else if en 1 bloc aprï¿½s implï¿½mentation de l'ï¿½cran de fin
 				
 				if (((result = stadium.actionPerformed(pass)) == ActionResult.DONE)) {
 					stadium.getPlayer(playerWithBallCase).setIfSelected(false);
