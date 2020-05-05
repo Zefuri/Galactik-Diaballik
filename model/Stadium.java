@@ -123,7 +123,9 @@ public class Stadium {
         int i = player.getPosition().getX();
         int j = player.getPosition().getY();
         
-        if (!player.hasBall()) {
+        if (player.hasBall()) {
+			canMove = false;
+		} else {
         	for (Player currPlayer : player.getTeam().getPlayers()) {
         		//For each player of the ally team, we check if he is not badly positioned
 	            switch (direction) {
