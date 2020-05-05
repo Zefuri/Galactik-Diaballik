@@ -13,16 +13,14 @@ public class Stadium {
     private Team topTeam;
     private Team bottomTeam;
     
-    private ArrayList<Turn> turns;
-    private int currentTurnIndex;
+    private Historic history;
 
     public Stadium() {
         topTeam = new Team("snowKids", TeamPosition.TOP, this);
         bottomTeam = new Team("shadows", TeamPosition.BOTTOM, this);
-        
-        currentTurnIndex = 0;
-        this.turns = new ArrayList<>();
-        newTurn();
+
+        this.history = new Historic();
+        this.history.newTurn(getCurrentTeamTurn());
     }
     
     public Team getTeam(TeamPosition position) {
@@ -62,9 +60,7 @@ public class Stadium {
     	Player p ;
 		
     	if ((p = getPlayer(position)) != null) {
-    		if (p.hasBall()) {
-    			return true;
-    		}
+			return p.hasBall();
     	}
     	
     	return false;
@@ -74,9 +70,7 @@ public class Stadium {
     	Player p ;
 		
     	if ((p = getPlayer(position)) != null) {
-    		if (!p.hasBall()) {
-    			return true;
-    		}
+			return !p.hasBall();
     	}
     	
     	return false;
@@ -92,32 +86,57 @@ public class Stadium {
     	// /!\ Caution: Please use the playerCanMove() function before using this one/!\
     	if (playerCanMove(player, direction)) {
 	    	Case playerPos = player.getPosition();
-	    	
-	        switch (direction) {
-	        	case UP:
-	        		player.getPosition().setX(playerPos.getX() - 1);
-	        		break;
-	        	
-	        	case DOWN:
-	        		player.getPosition().setX(playerPos.getX() + 1);
-	        		break;
-	        		
-	        	case RIGHT:
-	        		player.getPosition().setY(playerPos.getY() + 1);
-	        		break;
-	        	
-	        	case LEFT:
-	        		player.getPosition().setY(playerPos.getY() - 1);
-	        		break;
-	        		
-	        	default:
-	        		throw new IllegalStateException("Wrong input direction");
-	        }
+
+			switch (direction) {
+				case UP -> player.getPosition().setX(playerPos.getX() - 1);
+				case DOWN -> player.getPosition().setX(playerPos.getX() + 1);
+				case RIGHT -> player.getPosition().setY(playerPos.getY() + 1);
+				case LEFT -> player.getPosition().setY(playerPos.getY() - 1);
+				default -> throw new IllegalStateException("Wrong input direction");
+			}
     	} else {
     		throw new RuntimeException("You did not use the playerCanMove() function as mentionned!!!");
     	}
     }
-    
+
+
+    public boolean booleanCanMove(MoveDirection direction,Player currPlayer, int i, int j){
+    	boolean canMove = true;
+		switch (direction) {
+			case UP:
+				if (i <= 0 || currPlayer.getPosition().equals(new Case(i - 1, j))) {
+					canMove = false;
+				}
+				break;
+			case DOWN:
+				if (i >= 6 || currPlayer.getPosition().equals(new Case(i + 1, j))) {
+					canMove = false;
+				}
+
+				break;
+
+			case LEFT:
+				if (j <= 0 || currPlayer.getPosition().equals(new Case(i, j - 1))) {
+					canMove = false;
+				}
+
+				break;
+
+			case RIGHT:
+				if (j >= 6 || currPlayer.getPosition().equals(new Case(i, j + 1))) {
+					canMove = false;
+				}
+				break;
+
+			default:
+				System.out.println("wrong move input in move function");
+				canMove = false;
+				break;
+		}
+		return canMove;
+	}
+
+
     public boolean playerCanMove(Player player, MoveDirection direction) {
     	boolean canMove = true;
         int i = player.getPosition().getX();
@@ -128,84 +147,18 @@ public class Stadium {
 		} else {
         	for (Player currPlayer : player.getTeam().getPlayers()) {
         		//For each player of the ally team, we check if he is not badly positioned
-	            switch (direction) {
-	                case UP:
-	                    if (i <= 0 || currPlayer.getPosition().equals(new Case(i - 1, j))) {
-	                        canMove = false;
-	                    }
-	                    
-	                    break;
-	                    
-	                case DOWN:
-	                    if (i >= 6 || currPlayer.getPosition().equals(new Case(i + 1, j))) {
-	                        canMove = false;
-	                    }
-	                    
-	                    break;
-	                    
-	                case LEFT:
-	                    if (j <= 0 || currPlayer.getPosition().equals(new Case(i, j - 1))) {
-	                        canMove = false;
-	                    }
-	                    
-	                    break;
-	                    
-	                case RIGHT:
-	                    if (j >= 6 || currPlayer.getPosition().equals(new Case(i, j + 1))) {
-	                        canMove = false;
-	                    }
-	                    
-	                    break;
-	                    
-	                default:
-	                    System.out.println("wrong move input in move function");
-	                    canMove = false;
-	            }
-	            
-	            if (!canMove) {
-	            	break;
-	            }
+	            canMove = booleanCanMove(direction, currPlayer, i, j);
+				if (!canMove) {
+					break;
+				}
         	}
         	
         	for (Player currPlayer : player.getTeam().getEnemyTeam().getPlayers()) {
         		//For each player of the enemy team, we check if he is not badly positioned
-        		switch (direction) {
-	                case UP:
-	                    if (i <= 0 || currPlayer.getPosition().equals(new Case(i - 1, j))) {
-	                        canMove = false;
-	                    }
-	                    
-	                    break;
-	                    
-	                case DOWN:
-	                    if (i >= 6 || currPlayer.getPosition().equals(new Case(i + 1, j))) {
-	                        canMove = false;
-	                    }
-	                    
-	                    break;
-	                    
-	                case LEFT:
-	                    if (j <= 0 || currPlayer.getPosition().equals(new Case(i, j - 1))) {
-	                        canMove = false;
-	                    }
-	                    
-	                    break;
-	                    
-	                case RIGHT:
-	                    if (j >= 6 || currPlayer.getPosition().equals(new Case(i, j + 1))) {
-	                        canMove = false;
-	                    }
-	                    
-	                    break;
-	                    
-	                default:
-	                    System.out.println("wrong move input in move function");
-	                    canMove = false;
-	            }
-	            
-	            if (!canMove) {
-	            	break;
-	            }
+        		canMove = booleanCanMove(direction, currPlayer, i, j);
+				if (!canMove) {
+					break;
+				}
         	}
         }
         
@@ -534,10 +487,6 @@ public class Stadium {
 		return actionPerformed(new Action(ActionType.END_TURN, null, null, null, null));
 	}
 	
-	private void newTurn() {
-        this.turns.add(new Turn(getCurrentTeamTurn()));
-	}
-	
 	public Team getCurrentTeamTurn() {
 		if (this.getTurnIndex() % 2 == 0) {
 			return topTeam;
@@ -547,62 +496,51 @@ public class Stadium {
 	}
 	
 	public int getTurnIndex() {
-		return this.currentTurnIndex;
+		return this.history.getCurrentTurnIndex();
 	}
 
 	public ActionResult actionPerformed(Action action) { //what controller must use
         ActionResult done = ActionResult.DONE;
-        Turn currentTurn = this.turns.get(this.currentTurnIndex);
+        Turn currentTurn = this.history.getLast();
 
-        switch(action.getType()) {
-            case MOVE:
-                Player player = action.getMovedPlayer();
-                MoveDirection dir = action.getDirection();
-                
-                if (currentTurn.getNbMoveDone() >= ModelConstants.MAX_MOVES_PER_TOUR
-                		|| (player.getTeam().getPosition() != currentTurn.getTeam().getPosition())
-                		|| !playerCanMove(player, dir)) {
-                    done = ActionResult.ERROR;
-                    break;
-                }
+		switch (action.getType()) {
+			case MOVE -> {
+				Player player = action.getMovedPlayer();
+				MoveDirection dir = action.getDirection();
+				if (currentTurn.getNbMoveDone() >= ModelConstants.MAX_MOVES_PER_TOUR
+						|| (player.getTeam().getPosition() != currentTurn.getTeam().getPosition())
+						|| !playerCanMove(player, dir)) {
+					done = ActionResult.ERROR;
+					break;
+				}
+				move(player, dir);
+				currentTurn.addAction(action);
+			}
+			case PASS -> {
+				Player firstPlayer = action.getPreviousPlayer();
+				Player secondPlayer = action.getNextPlayer();
+				if (currentTurn.getNbPassDone() == ModelConstants.MAX_PASSES_PER_TOUR
+						|| (firstPlayer.getTeam().getPosition() != currentTurn.getTeam().getPosition())
+						|| (secondPlayer.getTeam().getPosition() != currentTurn.getTeam().getPosition())
+						|| !playerCanPass(firstPlayer, secondPlayer)) {
+					done = ActionResult.ERROR;
+					break;
+				}
+				pass(firstPlayer, secondPlayer);
+				currentTurn.addAction(action);
+			}
+			case END_TURN -> {
+				if ((currentTurn.getNbMoveDone() + currentTurn.getNbPassDone()) == 0) {
+					//You can not end your turn without performing at least 1 action
+					done = ActionResult.ERROR;
+					break;
+				}
+				this.history.nextTurn();
+				this.history.newTurn(getCurrentTeamTurn());
 
-                move(player, dir);
-                currentTurn.addAction(action);
-                
-                break;
-
-            case PASS:
-                Player firstPlayer = action.getPreviousPlayer();
-                Player secondPlayer = action.getNextPlayer();
-                
-                if (currentTurn.getNbPassDone() == ModelConstants.MAX_PASSES_PER_TOUR
-                		|| (firstPlayer.getTeam().getPosition() != currentTurn.getTeam().getPosition())
-                		|| (secondPlayer.getTeam().getPosition() != currentTurn.getTeam().getPosition())
-                		|| !playerCanPass(firstPlayer, secondPlayer)) {
-                    done = ActionResult.ERROR;
-                    break;
-                }
-
-                pass(firstPlayer, secondPlayer);
-                currentTurn.addAction(action);
-                
-                break;
-
-            case END_TURN:
-                if ((currentTurn.getNbMoveDone() + currentTurn.getNbPassDone()) == 0) {
-                    //You can not end your turn without performing at least 1 action
-                	done = ActionResult.ERROR;
-                    break;
-                }
-                
-                this.currentTurnIndex++;
-                this.newTurn();
-                
-                break;
-
-            default:
-                throw new IllegalStateException("Please select a valid action type!");
-        }
+			}
+			default -> throw new IllegalStateException("Please select a valid action type!");
+		}
         /*
          * Certainly useless now
          * 
@@ -623,11 +561,11 @@ public class Stadium {
 	}
 
 	public int getNbPassesDone() {
-		return this.turns.get(currentTurnIndex).getNbPassDone();
+		return this.history.getLast().getNbPassDone();
 	}
 	
 	public int getNbMovesDone() {
-		return this.turns.get(currentTurnIndex).getNbMoveDone();
+		return this.history.getLast().getNbMoveDone();
 	}
 }
 

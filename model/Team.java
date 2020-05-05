@@ -3,6 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import model.enums.MoveDirection;
 import model.enums.TeamPosition;
 
 public class Team {
