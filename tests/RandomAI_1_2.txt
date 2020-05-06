@@ -1,6 +1,6 @@
 		Stadium stadium = new Stadium();
-		RandomAI_1 player1 = new RandomAI_1(0,stadium);
-		RandomAI_1 player2 = new RandomAI_1(1,stadium);
+		RandomAI_1 player1 = new RandomAI_1(stadium, TeamPosition.BOTTOM);
+		RandomAI_1 player2 = new RandomAI_1(stadium, TeamPosition.TOP);
 
 		System.out.println(stadium.toString());
 		

@@ -136,4 +136,8 @@ public class Player {
 	public boolean canBeSelectedForPass() {
 		return this.canPlay() && (this.getStadium().getNbPassesDone() != ModelConstants.MAX_PASSES_PER_TOUR);
 	}
+	
+	public boolean equals(Player second){
+		return name.equals(second.getName());
+	}
 }

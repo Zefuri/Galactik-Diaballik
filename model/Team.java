@@ -137,6 +137,15 @@ public class Team {
 		
 		return number;
 	}
+
+	//return the player correspondant at numero on the team
+	public Player playerOfInt(int numero) {
+		return players.get(numero);
+	}
+	
+	public int size(){
+		return players.size();
+	}
 	
 	public Team getEnemyTeam() {
 		return stadium.getTeam(position == TeamPosition.TOP ? TeamPosition.BOTTOM : TeamPosition.TOP);
