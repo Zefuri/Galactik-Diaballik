@@ -88,11 +88,20 @@ public class Stadium {
 	    	Case playerPos = player.getPosition();
 
 			switch (direction) {
-				case UP -> player.getPosition().setX(playerPos.getX() - 1);
-				case DOWN -> player.getPosition().setX(playerPos.getX() + 1);
-				case RIGHT -> player.getPosition().setY(playerPos.getY() + 1);
-				case LEFT -> player.getPosition().setY(playerPos.getY() - 1);
-				default -> throw new IllegalStateException("Wrong input direction");
+				case UP:
+					player.getPosition().setX(playerPos.getX() - 1);
+					break;
+				case DOWN:
+					player.getPosition().setX(playerPos.getX() + 1);
+					break;
+				case RIGHT:
+					player.getPosition().setY(playerPos.getY() + 1);
+					break;
+				case LEFT:
+					player.getPosition().setY(playerPos.getY() - 1);
+					break;
+				default:
+					throw new IllegalStateException("Wrong input direction");
 			}
     	} else {
     		throw new RuntimeException("You did not use the playerCanMove() function as mentionned!!!");
@@ -504,19 +513,19 @@ public class Stadium {
         Turn currentTurn = this.history.getLast();
 
 		switch (action.getType()) {
-			case MOVE -> {
+			case MOVE:
 				Player player = action.getMovedPlayer();
 				MoveDirection dir = action.getDirection();
 				if (currentTurn.getNbMoveDone() >= ModelConstants.MAX_MOVES_PER_TOUR
 						|| (player.getTeam().getPosition() != currentTurn.getTeam().getPosition())
 						|| !playerCanMove(player, dir)) {
 					done = ActionResult.ERROR;
-					break;
+				} else {
+					move(player, dir);
+					currentTurn.addAction(action);
 				}
-				move(player, dir);
-				currentTurn.addAction(action);
-			}
-			case PASS -> {
+				break;
+			case PASS:
 				Player firstPlayer = action.getPreviousPlayer();
 				Player secondPlayer = action.getNextPlayer();
 				if (currentTurn.getNbPassDone() == ModelConstants.MAX_PASSES_PER_TOUR
@@ -524,22 +533,22 @@ public class Stadium {
 						|| (secondPlayer.getTeam().getPosition() != currentTurn.getTeam().getPosition())
 						|| !playerCanPass(firstPlayer, secondPlayer)) {
 					done = ActionResult.ERROR;
-					break;
+				} else {
+					pass(firstPlayer, secondPlayer);
+					currentTurn.addAction(action);
 				}
-				pass(firstPlayer, secondPlayer);
-				currentTurn.addAction(action);
-			}
-			case END_TURN -> {
+				break;
+			case END_TURN:
 				if ((currentTurn.getNbMoveDone() + currentTurn.getNbPassDone()) == 0) {
 					//You can not end your turn without performing at least 1 action
 					done = ActionResult.ERROR;
-					break;
+				} else {
+					this.history.nextTurn();
+					this.history.newTurn(getCurrentTeamTurn());
 				}
-				this.history.nextTurn();
-				this.history.newTurn(getCurrentTeamTurn());
-
-			}
-			default -> throw new IllegalStateException("Please select a valid action type!");
+				break;
+			default:
+				throw new IllegalStateException("Please select a valid action type!");
 		}
         /*
          * Certainly useless now
