@@ -1,5 +1,6 @@
 package model;
 
+import model.enums.ActionResult;
 import model.enums.ActionType;
 import model.enums.MoveDirection;
 
@@ -83,13 +84,13 @@ public class Player {
 		return team.getStadium().playerCanMove(this, direction);
 	}
 	
-	public Action move(MoveDirection direction) {
+	public ActionResult move(MoveDirection direction) {
 		if (canMove(direction)) {
 			Case newPosition = calculateNewPosition(direction);
 
 			Action moveAction = new Action(ActionType.MOVE, this, this, this.position, newPosition);
 			
-			return moveAction;
+			return this.getStadium().actionPerformed(moveAction);
 		} else {
 			//Voir si c'est vraiment utile 
 			throw new RuntimeException("You can not move on the clicked case.");
@@ -100,9 +101,11 @@ public class Player {
 		return team.getStadium().playerCanPass(this, nextPlayer);
 	}
 	
-	public Action pass(Player nextPlayer) {
+	public ActionResult pass(Player nextPlayer) {
 		if (canPass(nextPlayer)) {
-			return new Action(ActionType.PASS, this, nextPlayer, this.position, nextPlayer.getPosition());
+			Action passAction = new Action(ActionType.PASS, this, nextPlayer, this.position, nextPlayer.getPosition());
+		
+			return this.getStadium().actionPerformed(passAction);
 		} else {
 			//Voir si c'est vraiment utile
 			throw new RuntimeException("You can not pass the ball to the selected player.");
@@ -124,5 +127,13 @@ public class Player {
 	public boolean canPlay() {
 		//We return a boolean informing if it is the player current turn
 		return this.team.isCurrentlyPlaying();
+	}
+	
+	public boolean canBeSelected() {
+		return this.canPlay() && (this.getStadium().getNbMovesDone() != ModelConstants.MAX_MOVES_PER_TOUR);
+	}
+	
+	public boolean canBeSelectedForPass() {
+		return this.canPlay() && (this.getStadium().getNbPassesDone() != ModelConstants.MAX_PASSES_PER_TOUR);
 	}
 }

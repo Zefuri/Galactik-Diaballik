@@ -1,4 +1,4 @@
-package controller.listeners;
+package listeners;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -109,7 +109,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 				//Change the actual player if possible
 				Player clickedPlayer = stadium.getPlayer(clickedCase);
 				
-				if (clickedPlayer.canPlay() && this.stadium.getNbPassesDone() != 1) {
+				if (clickedPlayer.canBeSelectedForPass()) {
 					if (playerAloneCase != null) {
 						stadium.getPlayer(playerAloneCase).setIfSelected(false);
 					}
@@ -126,11 +126,11 @@ public class MouseAction extends MouseAdapter implements Observer {
 				//Do a pass if possible
 				Player previousOwner = stadium.getPlayer(playerWithBallCase);
 				Player futureOwner = stadium.getPlayer(clickedCase);
-				Action pass = previousOwner.pass(futureOwner);
+				result = previousOwner.pass(futureOwner);
 				
 				//TODO remettre le if / else if en 1 bloc apr�s impl�mentation de l'�cran de fin
 				
-				if (((result = stadium.actionPerformed(pass)) == ActionResult.DONE)) {
+				if (result == ActionResult.DONE) {
 					stadium.getPlayer(playerWithBallCase).setIfSelected(false);
 					clearPlayers();
 				} else if (result == ActionResult.WIN) {
@@ -142,7 +142,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 				//Change the actual player and change the selection value 
 				Player clickedPlayer = stadium.getPlayer(clickedCase);
 				
-				if (clickedPlayer.canPlay() && stadium.getNbMovesDone() != 2) {
+				if (clickedPlayer.canBeSelected()) {
 					if (playerAloneCase != null) {
 						stadium.getPlayer(playerAloneCase).setIfSelected(false);
 					}
@@ -157,30 +157,24 @@ public class MouseAction extends MouseAdapter implements Observer {
 			//The case is empty
 			if (playerAloneCase != null) {
 				//If the selected case is next to the player case, we move the player
-				Player p = stadium.getPlayer(playerAloneCase);
-				MoveDirection dir = stadium.getMoveDirection(p, clickedCase);
+				Player player = stadium.getPlayer(playerAloneCase);
+				MoveDirection direction = stadium.getMoveDirection(player, clickedCase);
 				
-				if (dir == null) {
+				if (direction == null) {
 					throw new IllegalStateException("Either it is not your turn, or the selected case is not situated next to the player.");
 				}
 				
-				Action move = p.move(dir);
+				result = player.move(direction);
 				
-				if ((result = stadium.actionPerformed(move)) == ActionResult.DONE) {
+				if (result == ActionResult.DONE) {
 					setPlayerAloneCase(clickedCase);
-					
-					//If this move was the second one, we unselect the current player
-					if (stadium.getNbMovesDone() == 2) {
-						stadium.getPlayer(clickedCase).setIfSelected(false);
-					}
 				} else if (result == ActionResult.ANTIPLAY) {
 					throw new RuntimeException("Antiplay detected!");
 				} else {
 					throw new IllegalStateException("Either it is not your turn, or the selected case is not situated next to the player.");
 				}
 			} else if (playerWithBallCase != null) {
-				stadium.getPlayer(playerWithBallCase).setIfSelected(false);
-				clearPlayers();
+				clearSelectedPlayer();
 				throw new IllegalStateException("You can not move a player that has the ball.");
 			} else {
 				throw new IllegalStateException("You must select a player before selecting an empty case!");

@@ -109,14 +109,16 @@ public class Stadium {
     }
 
 
-    public boolean booleanCanMove(MoveDirection direction,Player currPlayer, int i, int j){
+    public boolean booleanCanMove(MoveDirection direction, Player currPlayer, int i, int j) {
     	boolean canMove = true;
+    	
 		switch (direction) {
 			case UP:
 				if (i <= 0 || currPlayer.getPosition().equals(new Case(i - 1, j))) {
 					canMove = false;
 				}
 				break;
+				
 			case DOWN:
 				if (i >= 6 || currPlayer.getPosition().equals(new Case(i + 1, j))) {
 					canMove = false;
@@ -142,6 +144,7 @@ public class Stadium {
 				canMove = false;
 				break;
 		}
+		
 		return canMove;
 	}
 
@@ -159,6 +162,7 @@ public class Stadium {
         	for (Player currPlayer : player.getTeam().getPlayers()) {
         		//For each player of the ally team, we check if he is not badly positioned
 	            canMove = booleanCanMove(direction, currPlayer, i, j);
+	            
 				if (!canMove) {
 					break;
 				}
@@ -169,6 +173,7 @@ public class Stadium {
         	for (Player currPlayer : player.getTeam().getEnemyTeam().getPlayers()) {
         		//For each player of the enemy team, we check if he is not badly positioned
         		canMove = booleanCanMove(direction, currPlayer, i, j);
+        		
 				if (!canMove) {
 					break;
 				}
@@ -520,6 +525,7 @@ public class Stadium {
 			case MOVE:
 				Player player = action.getMovedPlayer();
 				MoveDirection dir = action.getDirection();
+				
 				if (currentTurn.getNbMoveDone() >= ModelConstants.MAX_MOVES_PER_TOUR
 						|| (player.getTeam().getPosition() != currentTurn.getTeam().getPosition())
 						|| !playerCanMove(player, dir)) {
@@ -527,11 +533,15 @@ public class Stadium {
 				} else {
 					move(player, dir);
 					currentTurn.addAction(action);
+					unselectPlayerIfNeeded(player);
 				}
+				
 				break;
+				
 			case PASS:
 				Player firstPlayer = action.getPreviousPlayer();
 				Player secondPlayer = action.getNextPlayer();
+				
 				if (currentTurn.getNbPassDone() == ModelConstants.MAX_PASSES_PER_TOUR
 						|| (firstPlayer.getTeam().getPosition() != currentTurn.getTeam().getPosition())
 						|| (secondPlayer.getTeam().getPosition() != currentTurn.getTeam().getPosition())
@@ -541,7 +551,9 @@ public class Stadium {
 					pass(firstPlayer, secondPlayer);
 					currentTurn.addAction(action);
 				}
+				
 				break;
+				
 			case END_TURN:
 				if ((currentTurn.getNbMoveDone() + currentTurn.getNbPassDone()) == 0) {
 					//You can not end your turn without performing at least 1 action
@@ -550,7 +562,9 @@ public class Stadium {
 					this.history.nextTurn();
 					this.history.newTurn(getCurrentTeamTurn());
 				}
+				
 				break;
+				
 			default:
 				throw new IllegalStateException("Please select a valid action type!");
 		}
@@ -571,6 +585,12 @@ public class Stadium {
         }
 
         return done;
+	}
+	
+	private void unselectPlayerIfNeeded(Player p) {
+		if (getNbPassesDone() == ModelConstants.MAX_MOVES_PER_TOUR) {
+			p.setIfSelected(false);
+		}
 	}
 
 	public int getNbPassesDone() {

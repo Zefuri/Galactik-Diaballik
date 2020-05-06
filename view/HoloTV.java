@@ -1,7 +1,7 @@
 package view;
 
 import javax.swing.JFrame;
-import controller.listeners.MouseAction;
+import listeners.MouseAction;
 import model.Stadium;
 
 public class HoloTV implements Runnable {
