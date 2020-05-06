@@ -1,0 +1,15 @@
+		Stadium stadium = new Stadium();
+		RandomAI_1 test = new RandomAI_1(stadium, TeamPosition.BOTTOM);
+		Team teamTest = stadium.getTeam(TeamPosition.BOTTOM);
+
+		System.out.println(stadium.toString());
+
+		boolean b = test.timeOut();
+		
+		System.out.println("Ball Player: "+teamTest.getBallPlayer());
+
+		System.out.println("Can make : "+teamTest.numberOfPossibilityPass()+" passes");
+
+		System.out.println("Can move "+teamTest.movePlayerNumber()+" players");
+
+		System.out.println(stadium.toString());

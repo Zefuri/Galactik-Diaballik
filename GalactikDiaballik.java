@@ -1,4 +1,4 @@
-import controller.Listeners.MouseAction;
+import controller.listeners.MouseAction;
 import model.Stadium;
 import view.HoloTV;
 
@@ -10,5 +10,6 @@ public class GalactikDiaballik {
 
 		holoTV.run();
 		holoTV.addArkadiaNewsMouseListener(mouseAction);
+		holoTV.getGamePanel().addObserver(mouseAction);
 	}
 }

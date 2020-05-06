@@ -4,6 +4,9 @@ import java.util.Scanner;
 
 import model.Player;
 import model.Stadium;
+import model.enums.MoveDirection;
+import model.enums.TeamPosition;
+import model.Case;
 import model.ModelConstants;
 
 public class ConsoleView {
@@ -14,16 +17,16 @@ public class ConsoleView {
     }
 
     public void display() {
-        for (int i = 0; i < 7; i++) {
-            for (int j = 0; j < 7; j++) {
-                Player player = stadium.whatsInTheBox(i, j);
+        for (int i = 0; i < ModelConstants.BOARD_SIZE; i++) {
+            for (int j = 0; j < ModelConstants.BOARD_SIZE; j++) {
+                Player player = stadium.getPlayer(new Case(i, j));
 
                 if (player == null) {
                         System.out.print(".");
-                } else if (player.getTeam() == ModelConstants.TEAM_ONE) {
-                        System.out.print(player.getBallPossession() ? "N" : "n");
-                } else if (player.getTeam() == ModelConstants.TEAM_TWO) {
-                        System.out.print(player.getBallPossession() ? "H" : "h");
+                } else if (player.getTeam().getPosition() == TeamPosition.TOP) {
+                        System.out.print(player.hasBall() ? "N" : "n");
+                } else if (player.getTeam().getPosition() == TeamPosition.BOTTOM) {
+                        System.out.print(player.hasBall() ? "H" : "h");
                 }
             }
 
@@ -64,9 +67,9 @@ public class ConsoleView {
                 int i = 6 - ((int)position.charAt(1) - (int)'1');
                 int j = (int)position.charAt(0) - (int)'a';
 
-                char direction = scanner.next().toUpperCase().charAt(0);
+                MoveDirection direction = getDirection(scanner.next().toUpperCase().charAt(0));
 
-                Player player = stadium.whatsInTheBox(i, j);
+                Player player = stadium.getPlayer(new Case(i, j));
                 stadium.move(player, direction);
             } else if (command.equals("p")) {
                 String from = scanner.next();
@@ -77,10 +80,29 @@ public class ConsoleView {
                 int toI = 6 - ((int)to.charAt(1) - (int)'1');
                 int toJ = (int)to.charAt(0) - (int)'a';
 
-                Player fromPlayer = stadium.whatsInTheBox(fromI, fromJ);
-                Player toPlayer = stadium.whatsInTheBox(toI, toJ);
+                Player fromPlayer = stadium.getPlayer(new Case(fromI, fromJ));
+                Player toPlayer = stadium.getPlayer(new Case(toI, toJ));
                 stadium.pass(fromPlayer, toPlayer);
             }
         }
+    }
+    
+    private static MoveDirection getDirection(char direction) {
+    	switch(direction) {
+    		case 'U':
+    			return MoveDirection.UP;
+    			
+    		case 'D':
+    			return MoveDirection.DOWN;
+    			
+    		case 'L':
+    			return MoveDirection.LEFT;
+    			
+    		case 'R':
+    			return MoveDirection.RIGHT;
+    			
+    		default:
+    			throw new IllegalStateException("Wrong input direction.");
+    	}
     }
 }
