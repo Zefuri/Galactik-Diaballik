@@ -146,6 +146,10 @@ public class Stadium {
 	}
 
 
+	public boolean playerCanMove(Player player){
+		return playerCanMove(player, MoveDirection.UP) || playerCanMove(player, MoveDirection.RIGHT) || playerCanMove(player, MoveDirection.DOWN) || playerCanMove(player, MoveDirection.LEFT);
+	}
+
     public boolean playerCanMove(Player player, MoveDirection direction) {
     	boolean canMove = true;
         int i = player.getPosition().getX();

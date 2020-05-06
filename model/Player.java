@@ -125,4 +125,8 @@ public class Player {
 		//We return a boolean informing if it is the player current turn
 		return this.team.isCurrentlyPlaying();
 	}
+	
+	public boolean equals(Player second){
+		return name.equals(second.getName());
+	}
 }
