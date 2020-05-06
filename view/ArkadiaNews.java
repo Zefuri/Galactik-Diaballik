@@ -54,7 +54,6 @@ public class ArkadiaNews extends JComponent {
                 	
                 	switch (p.getTeam().getPosition()) {
 	                	case TOP:
-
 	                		drawable.setColor(Color.RED);
 	                		ball = Color.BLACK;
 	                		break;
