@@ -1,4 +1,4 @@
-//package controller.ai;
+package controller.ai;
 
 import java.util.Random;
 import model.Stadium;
@@ -118,22 +118,5 @@ class RandomAI_1 extends PlayerType {
 	
 	public static void main(String args[]){
 		//tests
-		Stadium stadium = new Stadium();
-		RandomAI_1 player1 = new RandomAI_1(stadium, TeamPosition.BOTTOM);
-		RandomAI_1 player2 = new RandomAI_1(stadium, TeamPosition.TOP);
-
-		System.out.println(stadium.toString());
-		
-		int COUPMAX = 20;
-		Random r = new Random();
-		int coups = r.nextInt(COUPMAX)+1;
-		System.out.println("On va jouer "+coups+" coups");
-		boolean b;
-		for(int i=0; i!=coups; i++){
-			b = player1.timeOut();
-			System.out.println(stadium.toString());
-			b = player2.timeOut();
-			System.out.println(stadium.toString());
-		}
 	}
 }
