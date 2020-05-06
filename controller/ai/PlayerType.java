@@ -15,8 +15,8 @@ public abstract class PlayerType {
 	public PlayerType(Stadium stadium, TeamPosition position) {
 		this.stadium = stadium;
 		team = this.stadium.getTeam(position);
-	}
-
+	}	
+	
 	//For ai
 	boolean timeOut() {
 		return false;

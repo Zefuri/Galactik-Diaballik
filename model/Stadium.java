@@ -430,9 +430,11 @@ public class Stadium {
 							hasPlayer = true;
 							
 							if (currTopPlayer.hasBall()) {
-								game.append("a").append("num(?)").append("*");
+								//game.append("a").append("num(?)").append("*");
+								game.append(currTopPlayer.getName()).append("*");
 							} else {
-								game.append("a").append("num(?)").append(".");
+								//game.append("a").append("num(?)").append(".");
+								game.append(currTopPlayer.getName()).append(".");
 							}
 						}
 					}
@@ -446,16 +448,18 @@ public class Stadium {
 							hasPlayer = true;
 							
 							if (currBotPlayer.hasBall()) {
-								game.append("b").append("num(?)").append("*");
+								//game.append("b").append("num(?)").append("*");
+								game.append(currBotPlayer.getName()).append("*");
 							} else {
-								game.append("b").append("num(?)").append(".");
+								//game.append("b").append("num(?)").append(".");
+								game.append(currBotPlayer.getName()).append(".");
 							}
 						}
 					}
 				}
 				
 				if (!hasPlayer) {
-					game.append("___");
+					game.append("______");
 				}
 			}
 			

@@ -1,14 +1,15 @@
 		Stadium stadium = new Stadium();
-		RandomAI_1 test = new RandomAI_1(0,stadium);
+		RandomAI_1 test = new RandomAI_1(stadium, TeamPosition.BOTTOM);
+		Team teamTest = stadium.getTeam(TeamPosition.BOTTOM);
 
 		System.out.println(stadium.toString());
 
 		boolean b = test.timeOut();
 		
-		System.out.println("La balle est en position: "+test.ballNumber());
+		System.out.println("Ball Player: "+teamTest.getBallPlayer());
 
-		System.out.println("On peut faire: "+test.passNumber()+" passes");
+		System.out.println("Can make : "+teamTest.numberOfPossibilityPass()+" passes");
 
-		System.out.println("On peut bouger: "+test.movePlayerNumber()+" pions");
+		System.out.println("Can move "+teamTest.movePlayerNumber()+" players");
 
 		System.out.println(stadium.toString());

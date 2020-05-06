@@ -7,7 +7,7 @@ import model.Player;
 import model.enums.MoveDirection;
 import model.enums.TeamPosition;
 
-class RandomAI_1 extends PlayerType {
+public class RandomAI_1 extends PlayerType {
 	Random randomgene;
 
 	public RandomAI_1(Stadium stade, TeamPosition position) {
