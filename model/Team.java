@@ -3,6 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import model.enums.MoveDirection;
 import model.enums.TeamPosition;
 
 public class Team {
@@ -73,6 +74,68 @@ public class Team {
 		}
 		
 		throw new IllegalStateException("No player with ball found!");
+	}
+	
+	//number of possibility pass
+	public int numberOfPossibilityPass(){
+		int number = 0;
+		
+		for(Player p : this.players){
+			if(!p.hasBall()  &&  stadium.playerCanPass(getBallPlayer(), p)){
+				number++;
+			}
+		}
+		
+		return number;
+	}
+	
+	//return number of moves that can make player
+	public int playerMovesNumber(Player player){
+		int number = 0;
+		
+		if(!player.hasBall()){
+			if(stadium.playerCanMove(player, MoveDirection.UP)){
+				number++;
+			}
+			
+			if(stadium.playerCanMove(player, MoveDirection.RIGHT)){
+				number++;
+			}
+			
+			if(stadium.playerCanMove(player, MoveDirection.DOWN)){
+				number++;
+			}
+			
+			if(stadium.playerCanMove(player, MoveDirection.LEFT)){
+				number++;
+			}
+		}
+		
+		return number;
+	}
+	
+	//Return the number of move can execute the team
+	public int movesNumber(){
+		int number = 0;
+		
+		for(Player p : this.players){
+			number += playerMovesNumber(p);
+		}
+		
+		return number;
+	}
+	
+	//return number of players can move
+	public int movePlayerNumber(){
+		int number = 0;
+		
+		for(Player p : this.players){
+			if(playerMovesNumber(p) != 0){
+				number ++;
+			}
+		}
+		
+		return number;
 	}
 	
 	public Team getEnemyTeam() {
