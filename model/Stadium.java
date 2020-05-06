@@ -153,15 +153,19 @@ public class Stadium {
         
         if (player.hasBall()) {
 			canMove = false;
-		} else {
+		} 
+		
+		if (canMove) {
         	for (Player currPlayer : player.getTeam().getPlayers()) {
         		//For each player of the ally team, we check if he is not badly positioned
 	            canMove = booleanCanMove(direction, currPlayer, i, j);
 				if (!canMove) {
 					break;
 				}
-        	}
+			}
+		}
         	
+		if (canMove) {
         	for (Player currPlayer : player.getTeam().getEnemyTeam().getPlayers()) {
         		//For each player of the enemy team, we check if he is not badly positioned
         		canMove = booleanCanMove(direction, currPlayer, i, j);
