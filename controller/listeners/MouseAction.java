@@ -1,4 +1,4 @@
-package listeners;
+package controller.listeners;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
