@@ -1,15 +1,21 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Insets;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 
 import model.Stadium;
 import model.enums.ActionType;
+
 import patterns.Observable;
 import patterns.Observer;
 
@@ -30,7 +36,10 @@ public class GamePanel extends JPanel implements Observable {
 		this.arkadiaNews = new ArkadiaNews(stadium);
 		this.add(this.arkadiaNews, BorderLayout.CENTER);
 		
+		this.setMargin();
+		
 		this.gameControlPanel = new JPanel(new GridLayout(5, 0));
+		
 		
 		this.nbTurn = new JLabel("Tour " + (stadium.getTurnIndex() + 1) + " :");
 		this.gameControlPanel.add(this.nbTurn);
@@ -41,7 +50,7 @@ public class GamePanel extends JPanel implements Observable {
 		this.nbPassRemaining = new JLabel("Passe : " + (1 - stadium.getNbPassesDone()));
 		this.gameControlPanel.add(this.nbPassRemaining);
 		
-		this.nbMoveRemaining = new JLabel("Dï¿½placements : " + (2 - stadium.getNbMovesDone()));
+		this.nbMoveRemaining = new JLabel("Déplacements : " + (2 - stadium.getNbMovesDone()));
 		this.gameControlPanel.add(this.nbMoveRemaining);
 		
 		this.endTurnButton = new JButton("Fin du tour !");
@@ -92,5 +101,11 @@ public class GamePanel extends JPanel implements Observable {
 		if (input == JOptionPane.OK_OPTION || input == JOptionPane.CANCEL_OPTION || input == JOptionPane.CLOSED_OPTION) {
 			System.exit(0);
 		}
+	}
+	
+	private void setMargin() {
+		Border border = this.arkadiaNews.getBorder();
+		Border borderMargin = new EmptyBorder(new Insets(this.getWidth()/5, this.getWidth()/5, this.getWidth()/5, 0));
+		this.arkadiaNews.setBorder(border == null ? borderMargin : new CompoundBorder(borderMargin, border));
 	}
 }
