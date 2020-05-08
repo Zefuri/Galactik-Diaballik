@@ -1,12 +1,21 @@
 package view;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 
 public class MainMenuPanel extends JPanel {
+
+    private static Color backgroundColor;
+    private static JPanel buttonsPanel;
+    private static Font buttonsFont;
+    private static Dimension buttonsDimensions;
+
     public MainMenuPanel() {
-        Color backgroundColor = new Color(27,148,209);
+        backgroundColor = new Color(27,148,209);
         this.setLayout(new GridLayout(2,1)); // upper area for the title, lower area for the buttons
 
         // importing a font to use throughout the game
@@ -20,56 +29,58 @@ public class MainMenuPanel extends JPanel {
             customFont = new Font("Arial", Font.BOLD, 40); // if font isn't imported, use a classic font
         }
 
-        JPanel mainTitlePanel = new JPanel(new GridLayout(2,1)); // panel will hold the title
-        mainTitlePanel.setBackground(backgroundColor); // without this a fine raw will appear
+        JPanel mainTitlePanel = new JPanel();
+        mainTitlePanel.setBackground(backgroundColor); // without this a fine ray will appear
         this.add(mainTitlePanel);
 
         Font titleFont = customFont.deriveFont(100f); // create a font for the title
 
-        // JLabel doesn't do multi line stuff so need for two labels and thus two panels
-        // TODO : Find a way to lower the top label
-        JPanel firstTitlePanel = new JPanel();
-        firstTitlePanel.setBackground(backgroundColor);
-        mainTitlePanel.add(firstTitlePanel);
-        JLabel firstMainTitleLabel = new JLabel("Galactik");
-        firstMainTitleLabel.setFont(titleFont);
-        firstTitlePanel.add(firstMainTitleLabel);
+        JLabel titleLabel = new JLabel("<html>Galactik<br>&emsp;Diaballik"); // html for multi-line label and "&emsp;" for a tab. don't ask.
+        titleLabel.setFont(titleFont);
+        mainTitlePanel.add(titleLabel);
 
-        JPanel secondTitlePanel = new JPanel();
-        secondTitlePanel.setBackground(backgroundColor);
-        mainTitlePanel.add(secondTitlePanel);
-        JLabel secondMainTitleLabel = new JLabel("   Diaballik"); // offset to make it look good
-        secondMainTitleLabel.setFont(titleFont);
-        secondTitlePanel.add(secondMainTitleLabel);
-
-        JPanel buttonsPanel = new JPanel(new GridLayout(3,1)); // panel will hold the buttons. need as many rows as buttons
+        buttonsPanel = new JPanel(new GridLayout(3,1)); // panel will hold the buttons. need as many rows as buttons
         this.add(buttonsPanel);
 
-        Font buttonsFont = customFont.deriveFont(45f); // use the font and set its size
-        Dimension buttonsDimensions = new Dimension(300, 70); // arbitrary button dimension
+        buttonsFont = customFont.deriveFont(45f); // use the font and set its size
+        buttonsDimensions = new Dimension(300, 70); // arbitrary button dimension
 
-        JPanel playPanel = new JPanel(new FlowLayout()); // button needs to be in its own flow layout panel to collapse borders
-        playPanel.setBackground(backgroundColor);
-        buttonsPanel.add(playPanel);
-        JButton playButton = new JButton("Jouer");
-        playButton.setFont(buttonsFont);
-        playButton.setPreferredSize(buttonsDimensions);
-        playPanel.add(playButton);
+        //create the play button
+        JButton playButton = createButton("Jouer");
+        playButton.addActionListener(actionEvent -> System.out.println("clicked on play")); // action listener for when button is clicked
 
-        JPanel settingsPanel = new JPanel(new FlowLayout());
-        settingsPanel.setBackground(backgroundColor);
-        buttonsPanel.add(settingsPanel);
-        JButton settingsButton = new JButton("Option");
-        settingsButton.setFont(buttonsFont);
-        settingsButton.setPreferredSize(buttonsDimensions);
-        settingsPanel.add(settingsButton);
+        // create the settings button
+        JButton settingsButton = createButton("Option");
+        settingsButton.addActionListener(actionEvent -> System.out.println("clicked on settings"));
 
-        JPanel quitPanel = new JPanel(new FlowLayout());
-        quitPanel.setBackground(backgroundColor);
-        buttonsPanel.add(quitPanel);
-        JButton quitButton = new JButton("Quitter");
-        quitButton.setFont(buttonsFont);
-        quitButton.setPreferredSize(buttonsDimensions);
-        quitPanel.add(quitButton);
+        // create the quit button
+        JButton quitButton = createButton("Quitter");
+        quitButton.addActionListener(actionEvent -> System.out.println("clicked on quit"));
+    }
+
+    /*
+    Function creates and sets a button then adds it to the buttons grid layout panel
+     */
+    private JButton createButton(String text) {
+        JPanel currentButtonPanel = new JPanel(new FlowLayout()); // button needs to be in its own flow layout panel to collapse borders
+        currentButtonPanel.setBackground(backgroundColor);
+        buttonsPanel.add(currentButtonPanel);
+        JButton button = new JButton(text);
+        button.setFont(buttonsFont);
+        button.setPreferredSize(buttonsDimensions);
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                button.setBorder(new LineBorder(Color.BLUE));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                button.setBorder(BorderFactory.createEmptyBorder());
+            }
+        });
+        currentButtonPanel.add(button);
+
+        return button;
     }
 }
