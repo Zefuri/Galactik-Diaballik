@@ -31,6 +31,9 @@ public class ArkadiaNews extends JComponent {
         //To keep squared cases, we take the minimum between screen width and screen height
         this.caseSize = Math.min(windowWidth, windowHeight) / 7;
         
+        drawable.drawLine(0, 0, 0, caseSize * 7);
+        drawable.drawLine(0, 0, caseSize * 7, 0);
+        
         // Drawing all players and outlines of the stadium
         for (int i = 0; i < ModelConstants.BOARD_SIZE; i++) {
             for (int j = 0; j < ModelConstants.BOARD_SIZE; j++) {
