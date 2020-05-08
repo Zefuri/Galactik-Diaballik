@@ -81,4 +81,28 @@ public class Action {
 
 		return null;
 	}
+	
+	public String toString(){
+		int numNextPlayer;
+		switch (type) {
+			case MOVE:
+				numNextPlayer = (int)(nextPlayer.getName().charAt(nextPlayer.getName().length()-1) - '0');
+				if(previousCase.getX()+1 == nextCase.getX()) {
+					return ""+numNextPlayer+"D";
+				} else if(previousCase.getX()-1 == nextCase.getX()) {
+					return ""+numNextPlayer+"U";
+				} else if(previousCase.getY()+1 == nextCase.getY()) {
+					return ""+numNextPlayer+"R";
+				} else {
+					return ""+numNextPlayer+"L";
+				}
+			case PASS:
+				numNextPlayer = (int)(nextPlayer.getName().charAt(nextPlayer.getName().length()-1) - '0');
+				return ""+numNextPlayer+"P";
+			case END_TURN:
+				return "END";
+		}
+		
+		return "FAIL";
+	}
 }

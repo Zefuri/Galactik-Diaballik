@@ -82,4 +82,12 @@ public class Turn {
 
 		return res;
 	}
+
+	public String toString(){
+		String acts = "";
+		for(Action a : actions){
+			acts += a.toString();
+		}
+		return acts;
+	}
 }
