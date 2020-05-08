@@ -21,7 +21,7 @@ public class MainMenuPanel extends JPanel {
         // importing a font to use throughout the game
         Font customFont;
         try{
-            customFont = Font.createFont(Font.TRUETYPE_FONT, new File("Fonts/galacticstormsuperital.ttf")).deriveFont(20f);
+            customFont = Font.createFont(Font.TRUETYPE_FONT, new File("fonts/galacticstormsuperital.ttf")).deriveFont(20f);
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ge.registerFont(customFont);
         } catch (Exception e) {

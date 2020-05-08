@@ -1,8 +1,7 @@
-package controller.AI;
+package controller.ai;
 import model.Stadium;
-import model.Player;
 
-class MinMaxBall {
+class MaxMinBall {
 //--------------------------------------------------- Parametres ---------------------------------------------------
 	int checkingDepth;
 	Stadium now;
@@ -16,14 +15,14 @@ class MinMaxBall {
 	String[] three;
 	int[] threeHigh;
 	
-	String[] worstActs;
-	int worstAvancement;
+	String[] mustActs;
+	int mustAvancement;
 	
 	RandomAI_1 tools;
 	int ball;
 
 //---------------------------------------------------------------------------------  Constructeur ------------------------------------------------------------
-	public MinMaxBall(int player, int depth, Stadium stade) {
+	public MaxMinBall(int player, int depth, Stadium stade) {
 		checkingDepth = depth;
 		now = stade;
 		this.player = player;
@@ -36,8 +35,58 @@ class MinMaxBall {
 		this.initTwo();
 		this.initThree();
 		
-		worstAvancement = this.Progress();
-		this.initWorstActs();
+		mustAvancement = this.Progress();
+		this.initMustActs();
+		
+/**		System.out.println("ONE:");
+		for(int i = 0; i != one.length; i++){
+//			System.out.print(one[i]+"_");
+			System.out.print(""+oneHigh[i]);
+			System.out.print(" - ");
+		}*/
+		System.out.println("La taille de one: "+one.length);
+		System.out.println("");
+		
+/**		System.out.println("TWO:");
+		for(int i = 0; i != two.length; i++){
+//			System.out.print(two[i]+"_");
+			System.out.print(""+twoHigh[i]);
+			System.out.print(" - ");
+		}*/
+		System.out.println("La taille de two: "+two.length);
+		System.out.println("");
+		
+/**		System.out.println("THREE:");
+		for(int i = 0; i != three.length; i++){
+//			System.out.print(three[i]+"_");
+			System.out.print(""+threeHigh[i]);
+			System.out.print(" - ");
+		}*/
+		System.out.println("La taille de three: "+three.length);
+		int pdd = 0;
+		int dpd = 0;
+		int ddp = 0;
+		for(int i = 0; i != three.length; i++){
+			if(three[i].charAt(1) == 'P'){
+				pdd++;
+			}else if(three[i].charAt(3) == 'P'){
+				dpd++;
+			}else{
+				ddp++;
+				System.out.print(""+three[i]+" - ");
+			}
+		}
+		System.out.println("");
+		System.out.println("PDD: "+pdd);
+		System.out.println("DPD: "+dpd);
+		System.out.println("DDP: "+ddp);
+		System.out.println("");
+
+		System.out.println(" Mon meilleur coup sur une anticipation de "+depth+" offre une progression de: "+mustAvancement);
+		System.out.println(" Il s'obtient par: ");
+		for(int i = 0; i != mustActs.length; i++)
+			System.out.print(mustActs[i]+" - ");
+		System.out.println("");
 	}
 //--------------------------------------------------- initialisations ----------------------------------------------------------------
 	public void initOne(){		
@@ -253,23 +302,22 @@ class MinMaxBall {
 		}
 	}
 
-
-	public void initWorstActs(){
-		int size = numberOfWorst();
-		worstActs = new String[size];
+	public void initMustActs(){
+		int size = numberOfMust();
+		mustActs = new String[size];
 		size = 0;
-		for(int look = 1; size != worstActs.length   &&   look != 1+one.length+two.length+three.length; look++){
+		for(int look = 1; size != mustActs.length   &&   look != 1+one.length+two.length+three.length; look++){
 		
-			if(look-1 < one.length   &&   worstAvancement == oneHigh[look-1]){
-				worstActs[size] = one[look-1];
+			if(look-1 < one.length   &&   mustAvancement == oneHigh[look-1]){
+				mustActs[size] = one[look-1];
 				size++;
 				
-			}else if(-1 < look-1-one.length   &&   look-1-one.length < two.length   &&   worstAvancement == twoHigh[look-1-one.length]){
-				worstActs[size] = two[look-1-one.length];
+			}else if(-1 < look-1-one.length   &&   look-1-one.length < two.length   &&   mustAvancement == twoHigh[look-1-one.length]){
+				mustActs[size] = two[look-1-one.length];
 				size++;
 				
-			}else if(-1 < look-1-one.length-two.length   &&   worstAvancement == threeHigh[look-1-one.length-two.length]){
-				worstActs[size] = three[look-1-one.length-two.length];
+			}else if(-1 < look-1-one.length-two.length   &&   mustAvancement == threeHigh[look-1-one.length-two.length]){
+				mustActs[size] = three[look-1-one.length-two.length];
 				size++;
 			}
 		}
@@ -316,71 +364,75 @@ class MinMaxBall {
 		}
 	}
 
-//------------------------------------------------------------- Minimum Evaluation -------------------------------------------------------------
+//------------------------------------------------------------- Maximum Evaluation -------------------------------------------------------------
 
-	public int minList(int[] intList){
-		int min = intList[0];
+	public int maxList(int[] intList){
+		int max = intList[0];
 		for(int look = 1; look != intList.length; look++){
-			if(min > intList[look])
-				min = intList[look];
+			if(max < intList[look])
+				max = intList[look];
 		}
-		return min;
+		return max;
 	}
 	
-	public int min2(int first, int second){
-		if(first < second)
+	public int max2(int first, int second){
+		if(first > second)
 			return first;
 		return second;
 	}
 	
-	public int min4(int first, int second, int third, int fourth){
-		return min2(min2(first, second), min2(third, fourth));
+	public int max4(int first, int second, int third, int fourth){
+		return max2(max2(first, second), max2(third, fourth));
 	}
 
 //--------------------------------------------------------- Get --------------------------------------------------------------------
-	public String[] getWorstActs(){
-		return worstActs;
+	public String[] getMustActs(){
+		return mustActs;
 	}
 	
-	public int getWorstAvancement(){
-		return worstAvancement;
+	public int getMustAvancement(){
+		return mustAvancement;
 	}
 	
 //---------------------------------------------------------- Avancement Check -----------------------------------------------------------------
 	
 	public int Progress(){
-		MaxMinBall maxCheck;
-		
-		for(int tester = 0; tester != 1+one.length+two.length+three.length; tester++){
-			if(tester == 0){
-				//you not play
-				maxCheck = new MaxMinBall(1-player, checkingDepth-1, now);
-				zeroHigh = maxCheck.Progress();
+		if(checkingDepth != 0){
+			MinMaxBall minCheck;
+			
+			for(int tester = 0; tester != 1+one.length+two.length+three.length; tester++){
+				if(tester == 0){
+					//you not play
+					minCheck = new MinMaxBall(1-player, checkingDepth, now);
+					zeroHigh = minCheck.Progress();
+					
+				}else if(tester-1 < one.length){
+					//you play one act
+					exec(one[tester-1]);
+					minCheck = new MinMaxBall(1-player, checkingDepth, now);
+					oneHigh[tester-1] = minCheck.Progress();
+					undo(one[tester-1]);
 				
-			}else if(tester-1 < one.length){
-				//you play one act
-				exec(one[tester-1]);
-				maxCheck = new MaxMinBall(1-player, checkingDepth-1, now);
-				oneHigh[tester-1] = maxCheck.Progress();
-				undo(one[tester-1]);
-			
-			}else if(tester-1-one.length < two.length){
-				//you play two act
-				exec(two[tester-1-one.length]);
-				maxCheck = new MaxMinBall(1-player, checkingDepth-1, now);
-				twoHigh[tester-1-one.length] = maxCheck.Progress();
-				undo(two[tester-1-one.length]);
-			
-			}else{
-				//you play three act
-				exec(three[tester-1-one.length-two.length]);
-				maxCheck = new MaxMinBall(1-player, checkingDepth-1, now);
-				threeHigh[tester-1-one.length-two.length] = maxCheck.Progress();
-				undo(three[tester-1-one.length-two.length]);
+				}else if(tester-1-one.length < two.length){
+					//you play two act
+					exec(two[tester-1-one.length]);
+					minCheck = new MinMaxBall(1-player, checkingDepth, now);
+					twoHigh[tester-1-one.length] = minCheck.Progress();
+					undo(two[tester-1-one.length]);
+				
+				}else{
+					//you play three act
+					exec(three[tester-1-one.length-two.length]);
+					minCheck = new MinMaxBall(1-player, checkingDepth, now);
+					threeHigh[tester-1-one.length-two.length] = minCheck.Progress();
+					undo(three[tester-1-one.length-two.length]);
+				}
 			}
+			
 		}
 		
-		return minAvancement();
+		System.out.println(now.toString());
+		return maxAvancement();
 	}
 	
 	//return 6-ballPosition if Player 0 and return 0+ballPosition if Player 1
@@ -392,24 +444,24 @@ class MinMaxBall {
 		return (ballPosition) - (opponentTools.equip().length-1 - opponentBallHigh);
 	}
 
-	public int minAvancement(){
-		return min4(minList(oneHigh), minList(twoHigh), minList(threeHigh), zeroHigh);
+	public int maxAvancement(){
+		return max4(maxList(oneHigh), maxList(twoHigh), maxList(threeHigh), zeroHigh);
 	}
 	
-	public int numberOfWorst(){
+	public int numberOfMust(){
 		int size = 0;
 		
-		if(worstAvancement == zeroHigh)
+		if(mustAvancement == zeroHigh)
 			size++;
 			
 		for(int look = 1; look != 1+one.length+two.length+three.length; look++){
 
-			if(look-1 < one.length   &&   worstAvancement == oneHigh[look-1]){
+			if(look-1 < one.length   &&   mustAvancement == oneHigh[look-1]){
 				size++;
-			}else if(-1 < look-1-one.length   &&   look-1-one.length < two.length   &&   worstAvancement == twoHigh[look-1-one.length]){
+			}else if(-1 < look-1-one.length   &&   look-1-one.length < two.length   &&   mustAvancement == twoHigh[look-1-one.length]){
 				size++;
 				
-			}else if(-1 < look-1-one.length-two.length   &&   worstAvancement == threeHigh[look-1-one.length-two.length]){
+			}else if(-1 < look-1-one.length-two.length   &&   mustAvancement == threeHigh[look-1-one.length-two.length]){
 				size++;
 			}
 		}
@@ -419,5 +471,8 @@ class MinMaxBall {
 //---------------------------------------------------------- Main ---------------------------------------------------------
 	public static void main(String args[]){
 		//tests
+		Stadium stade = new Stadium();
+//		stade.move(stade.getSnowKids()[0],'U');
+		MaxMinBall test = new MaxMinBall(0,0,stade);
 	}
 }
