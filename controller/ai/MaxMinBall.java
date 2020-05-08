@@ -1,4 +1,4 @@
-package controller.ai;
+//package controller.ai;
 
 import model.Stadium;
 import model.Team;
@@ -23,8 +23,8 @@ class MaxMinBall {
 	String[] mustActs;
 	int mustAvancement;
 
-
 	public MaxMinBall(Stadium stadium, Team team, int depth) {
+		System.out.println(stadium.toString());
 		checkingDepth = depth;
 		this.stadium = stadium;
 		this.team = team;
@@ -37,6 +37,13 @@ class MaxMinBall {
 		
 		mustAvancement = this.Progress();
 		this.initMustActs();
+		
+		System.out.println("Avancement Max: "+mustAvancement);
+		System.out.println("En jouant:");
+		for(int i = 0; i != mustActs.length; i++)
+			System.out.print(mustActs[i]+" - ");
+		System.out.println("");
+		
 	}
 	
 	public void initOne(){	
@@ -441,5 +448,7 @@ class MaxMinBall {
 
 	public static void main(String args[]){
 		//tests
+		Stadium stadium = new Stadium();
+		MaxMinBall test = new MaxMinBall(stadium, stadium.getTeam(TeamPosition.BOTTOM), (int)(args[0].charAt(0)-'0'));
 	}
 }

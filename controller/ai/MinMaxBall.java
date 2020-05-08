@@ -1,4 +1,4 @@
-package controller.ai;
+//package controller.ai;
 
 import model.Stadium;
 import model.Team;
@@ -19,9 +19,6 @@ class MinMaxBall {
 	int[] twoHigh;
 	String[] three;
 	int[] threeHigh;
-	
-	String[] worstActs;
-	int worstAvancement;
 
 	public MinMaxBall(Stadium stadium, Team team, int depth) {
 		checkingDepth = depth;
@@ -33,8 +30,6 @@ class MinMaxBall {
 		this.initOne();
 		this.initTwo();
 		this.initThree();
-		worstAvancement = this.Progress();
-		this.initWorstActs();
 	}
 	
 	public void initOne(){		
@@ -49,29 +44,24 @@ class MinMaxBall {
 			//pass
 			if(!p.equals(ballPlayer)   &&   stadium.playerCanPass(ballPlayer, p)) {
 				one[oneNum] = ""+numberOfPlayer+"P";
-				oneHigh[oneNum] = ballAvance(p.getPosition().getX());
 				oneNum++;
 			}
 			
 			//depl
 			if(!p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.UP)) {
 				one[oneNum] = ""+numberOfPlayer+"U";
-				oneHigh[oneNum] = ballAvance(ballPlayer.getPosition().getX());
 				oneNum++;
 			}
 			if(!p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.DOWN)) {
 				one[oneNum] = ""+numberOfPlayer+"D";
-				oneHigh[oneNum] = ballAvance(ballPlayer.getPosition().getX());
 				oneNum++;
 			}
 			if(!p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.LEFT)) {
 				one[oneNum] = ""+numberOfPlayer+"L";
-				oneHigh[oneNum] = ballAvance(ballPlayer.getPosition().getX());
 				oneNum++;
 			}
 			if(!p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.RIGHT)) {
 				one[oneNum] = ""+numberOfPlayer+"R";
-				oneHigh[oneNum] = ballAvance(ballPlayer.getPosition().getX());
 				oneNum++;
 			}
 		}
@@ -79,7 +69,6 @@ class MinMaxBall {
 	
 	public void initTwo(){
 		String stockage = "";
-		String stockageHigh = "";
 		int numberOfPlayer;
 		
 		Player ballPlayer2;
@@ -103,7 +92,6 @@ class MinMaxBall {
 						
 						if(!p.equals(ballPlayer)   &&   stadium.playerCanPass(ballPlayer, p)){
 							stockage += one[actLook]+numberOfPlayer+"P";
-							stockageHigh += p.getPosition().getX();
 						}
 						
 						sameFirstPlayer = numberOfPlayer == (int)(one[actLook].charAt(0)-'0');
@@ -111,25 +99,21 @@ class MinMaxBall {
 						verifBack = !sameFirstPlayer   ||   one[actLook].charAt(1) != reverse('U'); //You can't back
 						if(verifBack   &&   !p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.UP)) {
 							stockage += one[actLook]+numberOfPlayer+"U";
-							stockageHigh += ballPlayer.getPosition().getX();
 						}
 						
 						verifBack = !sameFirstPlayer   ||   one[actLook].charAt(1) != reverse('D'); //You can't back
 						if(verifBack   &&   !p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.DOWN)) {
 							stockage += one[actLook]+numberOfPlayer+"D";
-							stockageHigh += ballPlayer.getPosition().getX();
 						}
 						
 						verifBack = !sameFirstPlayer   ||   one[actLook].charAt(1) != reverse('L');	 //You can't back
 						if(verifBack   &&   !p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.LEFT)) {
 							stockage += one[actLook]+numberOfPlayer+"L";
-							stockageHigh += ballPlayer.getPosition().getX();
 						}
 						
 						verifBack = !sameFirstPlayer   ||   one[actLook].charAt(1) != reverse('R');	 //You can't back
 						if(verifBack   &&   !p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.RIGHT)) {
 							stockage += one[actLook]+numberOfPlayer+"R";
-							stockageHigh += ballPlayer.getPosition().getX();
 						}
 						
 					}
@@ -139,22 +123,18 @@ class MinMaxBall {
 						
 						if(stadium.playerCanMove(ballPlayer, MoveDirection.UP)){
 							stockage += one[actLook]+ballNum+"U";
-							stockageHigh += ballPlayer2.getPosition().getX();
 						}
 						
 						if(stadium.playerCanMove(ballPlayer, MoveDirection.DOWN)){
 							stockage += one[actLook]+ballNum+"D";
-							stockageHigh += ballPlayer2.getPosition().getX();
 						}
 						
 						if(stadium.playerCanMove(ballPlayer, MoveDirection.LEFT)){
 							stockage += one[actLook]+ballNum+"L";
-							stockageHigh += ballPlayer2.getPosition().getX();
 						}
 						
 						if(stadium.playerCanMove(ballPlayer, MoveDirection.RIGHT)){
 							stockage += one[actLook]+ballNum+"R";
-							stockageHigh += ballPlayer2.getPosition().getX();
 						}
 						
 				}
@@ -162,17 +142,15 @@ class MinMaxBall {
 		}
 	
 		two = new String[stockage.length()/4];
-		twoHigh = new int[stockageHigh.length()];
+		twoHigh = new int[two.length];
 		
 		for(int i = 0; i != stockage.length(); i += 4){
 			two[i/4] = ""+stockage.charAt(i)+stockage.charAt(i+1)+stockage.charAt(i+2)+stockage.charAt(i+3);
-			twoHigh[i/4] = ballAvance((int)(stockageHigh.charAt(i/4)-'0'));
 		}
 	}
 	
 	public void initThree() {
 		String stockage = "";
-		String stockageHigh = "";
 		int numberOfPlayer;
 		Player ballPlayer2;
 		boolean verifPass;
@@ -194,7 +172,6 @@ class MinMaxBall {
 						numberOfPlayer++;
 						if(!p.equals(ballPlayer)   &&   stadium.playerCanPass(ballPlayer, p)) {
 							stockage += two[actLook]+numberOfPlayer+"P";
-							stockageHigh += p.getPosition().getX();
 						}
 					}
 				
@@ -210,25 +187,21 @@ class MinMaxBall {
 						verifBack = !sameFirstPlayer   ||   two[actLook].charAt(3) != reverse('U'); //You can't back
 						if(verifBack   &&   !p.equals(ballPlayer2)   &&   stadium.playerCanMove(p, MoveDirection.UP)){
 							stockage += two[actLook]+numberOfPlayer+"U";
-							stockageHigh += ballPlayer2.getPosition().getX();
 						}
 							
 						verifBack = !sameFirstPlayer   ||   two[actLook].charAt(3) != reverse('D'); //You can't back
 						if(verifBack   &&   !p.equals(ballPlayer2)   &&   stadium.playerCanMove(p, MoveDirection.DOWN)){
 							stockage += two[actLook]+numberOfPlayer+"D";
-							stockageHigh += ballPlayer2.getPosition().getX();
 						}
 							
 						verifBack = !sameFirstPlayer   ||   two[actLook].charAt(3) != reverse('L'); //You can't back
 						if(verifBack   &&   !p.equals(ballPlayer2)   &&   stadium.playerCanMove(p, MoveDirection.LEFT)){
 							stockage += two[actLook]+numberOfPlayer+"L";
-							stockageHigh += ballPlayer2.getPosition().getX();
 						}
 							
 						verifBack = !sameFirstPlayer   ||   two[actLook].charAt(3) != reverse('R'); //You can't back
 						if(verifBack   &&   !p.equals(ballPlayer2)   &&   stadium.playerCanMove(p, MoveDirection.RIGHT)){
 							stockage += two[actLook]+numberOfPlayer+"R";
-							stockageHigh += ballPlayer2.getPosition().getX();
 						}
 					}
 					
@@ -241,22 +214,18 @@ class MinMaxBall {
 					
 						if(stadium.playerCanMove(ballPlayer, MoveDirection.UP)){
 							stockage += two[actLook]+ballNum+"U";
-							stockageHigh += ballPlayer2.getPosition().getX();
 						}
 						
 						if(stadium.playerCanMove(ballPlayer, MoveDirection.RIGHT)){
 							stockage += two[actLook]+ballNum+"R";
-							stockageHigh += ballPlayer2.getPosition().getX();
 						}
 						
 						if(stadium.playerCanMove(ballPlayer, MoveDirection.DOWN)){
 							stockage += two[actLook]+ballNum+"D";
-							stockageHigh += ballPlayer2.getPosition().getX();
 						}
 						
 						if(stadium.playerCanMove(ballPlayer, MoveDirection.LEFT)){
 							stockage += two[actLook]+ballNum+"L";
-							stockageHigh += ballPlayer2.getPosition().getX();
 						}
 						
 					}
@@ -266,31 +235,10 @@ class MinMaxBall {
 		}
 		
 		three = new String[stockage.length()/6];
-		threeHigh = new int[stockageHigh.length()];
+		threeHigh = new int[three.length];
 		
 		for(int i = 0; i != stockage.length(); i += 6) {
 			three[i/6] = ""+stockage.charAt(i)+stockage.charAt(i+1)+stockage.charAt(i+2)+stockage.charAt(i+3)+stockage.charAt(i+4)+stockage.charAt(i+5);
-			threeHigh[i/6] = ballAvance((int)(stockageHigh.charAt(i/6)-'0'));
-		}
-	}
-
-	public void initWorstActs(){
-		worstActs = new String[numberOfWorst()];
-		int worstActNumber = 0;
-		for(int i = 0; worstActNumber != worstActs.length   &&   i != one.length+two.length+three.length; i++){
-		
-			if(i < one.length   &&   worstAvancement == oneHigh[i]){
-				worstActs[worstActNumber] = one[i];
-				worstActNumber++;
-				
-			}else if(-1 < i-one.length   &&   i-one.length < two.length   &&   worstAvancement == twoHigh[i-one.length]){
-				worstActs[worstActNumber] = two[i-one.length];
-				worstActNumber++;
-				
-			}else if(-1 < i-one.length-two.length   &&   worstAvancement == threeHigh[i-one.length-two.length]){
-				worstActs[worstActNumber] = three[i-one.length-two.length];
-				worstActNumber++;
-			}
 		}
 	}
 	
@@ -360,14 +308,6 @@ class MinMaxBall {
 	public int min3(int first, int second, int third){
 		return min2(min2(first, second), third);
 	}
-
-	public String[] getWorstActs(){
-		return worstActs;
-	}
-	
-	public int getWorstAvancement(){
-		return worstAvancement;
-	}
 	
 	public int Progress(){
 		MaxMinBall maxCheck;
@@ -400,39 +340,9 @@ class MinMaxBall {
 		
 		return minAvancement();
 	}
-	
-	//return the avancement of team ball (6 - ball position if team bottom and 0 + ball position if team top)
-	public int teamBallAvance(Team team, int ballPosition){
-		if(team.getPosition() == TeamPosition.TOP)
-			return ballPosition;
-		return (ModelConstants.BOARD_SIZE - 1) - ballPosition;
-	}
-	
-	//return the difference between the avancement of two ball
-	public int ballAvance(int ballPosition){
-		return teamBallAvance(team.getEnemyTeam(), team.getEnemyTeam().getBallPlayer().getPosition().getX()) - teamBallAvance(team, ballPosition);
-	}
 
 	public int minAvancement(){
 		return min3(minList(oneHigh), minList(twoHigh), minList(threeHigh));
-	}
-	
-	public int numberOfWorst(){
-		int numberOfWorst = 0;
-			
-		for(int i = 0; i != one.length+two.length+three.length; i++){
-
-			if(i < one.length   &&   worstAvancement == oneHigh[i]){
-				numberOfWorst++;
-			}else if(-1 < i-one.length   &&   i-one.length < two.length   &&   worstAvancement == twoHigh[i-one.length]){
-				numberOfWorst++;
-				
-			}else if(-1 < i-one.length-two.length   &&   worstAvancement == threeHigh[i-one.length-two.length]){
-				numberOfWorst++;
-			}
-		}
-		
-		return numberOfWorst;
 	}
 
 	public static void main(String args[]){
