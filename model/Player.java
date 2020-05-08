@@ -55,7 +55,7 @@ public class Player {
 		return this.ballPossession;
 	}
 
-	Case calculateNewPosition(MoveDirection direction) {
+	public Case calculateNewPosition(MoveDirection direction) {
         int newX = getPosition().getX();
 		int newY = getPosition().getY();
 		

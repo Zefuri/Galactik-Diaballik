@@ -52,4 +52,34 @@ public class Turn {
 	public int getNbMoveLeft() {
 		return ModelConstants.MAX_MOVES_PER_TOUR - this.nbMove;
 	}
+
+	public Turn inverse() {
+		Turn inverseTurn = new Turn(team);
+
+        for (int i = 2; i >= 0; i--) {
+			Action a = actions[i];
+
+			if (a.getType() != ActionType.END_TURN) {
+				inverseTurn.addAction(a.inverse());
+			}
+		}
+
+		if (inverseTurn.nbMove + inverseTurn.nbPass < 3) {
+			inverseTurn.addAction(new Action(ActionType.END_TURN, null, null, null, null));
+		}
+
+		return inverseTurn;
+	}
+
+	public Turn copy() {
+		Turn res = new Turn(team);
+
+		res.actions[0] = actions[0];
+		res.actions[1] = actions[1];
+		res.actions[2] = actions[2];
+		res.nbPass = nbPass;
+		res.nbMove = nbMove;
+
+		return res;
+	}
 }

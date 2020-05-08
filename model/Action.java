@@ -8,8 +8,7 @@ public class Action {
     private Player previousPlayer, nextPlayer;
     private Case previousCase, nextCase;
 
-    //We remove the "public" attribute in order not to access the constructor from an outer package
-    Action(ActionType actionType, Player previousPlayer, Player nextPlayer, Case previousCase, Case nextCase) {
+    public Action(ActionType actionType, Player previousPlayer, Player nextPlayer, Case previousCase, Case nextCase) {
         this.type = actionType;
         this.previousPlayer = previousPlayer;
         this.nextPlayer = nextPlayer;
@@ -68,5 +67,18 @@ public class Action {
     	} else {
     		throw new IllegalStateException("Do not call the getDirection() function if the action type is not \"MOVE\".");
     	}
-    }
+	}
+
+    public Action inverse() {
+		switch (type) {
+			case MOVE:
+				return new Action(ActionType.MOVE, null, nextPlayer, nextCase, previousCase);
+			case PASS:
+				return new Action(ActionType.PASS, nextPlayer, previousPlayer, nextCase, previousCase);
+			case END_TURN:
+				return new Action(ActionType.END_TURN, null, null, null, null);
+		}
+
+		return null;
+	}
 }
