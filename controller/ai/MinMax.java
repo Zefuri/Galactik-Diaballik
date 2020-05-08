@@ -55,6 +55,7 @@ public class MinMax {
 
         for (Turn t : getPossibleTurns(team)) {
             doTurn(t);
+            // changer pour decrementer seulement quand maximizingTeam == true
             int turnValue = minmax(team.getEnemyTeam(), depth-1);
             undoTurn(t);
 
@@ -108,6 +109,8 @@ public class MinMax {
     private void expandPossibleTurns(Team team, Turn currentTurn, Collection<Turn> possibleTurns) {
         Collection<Action> possibleActions = getPossibleActions(team, currentTurn);
 
+        // si la aucune action n'est possible alors le tour est complet
+        // peut etre le ramplacer par un turn.isComplet() pour plus de clairte
         if (possibleActions.isEmpty()) {
             possibleTurns.add(currentTurn);
         } else {
@@ -128,6 +131,8 @@ public class MinMax {
     // attention team != this.team
     private Collection<Action> getPossibleActions(Team team, Turn turn) {
         ArrayList<Action> possibleActions = new ArrayList<>();
+
+        // ! il est possible de faire plusieurs END_TURN, a corriger
 
         if (turn.getNbMoveLeft() > 0 || turn.getNbPassLeft() > 0) {
             Action action = new Action(ActionType.END_TURN, null, null, null, null);
