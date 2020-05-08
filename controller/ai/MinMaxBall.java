@@ -12,7 +12,6 @@ class MinMaxBall {
 	Stadium stadium;
 	Team team;
 	Player ballPlayer;
-	
 	String[] one;
 	int[] oneHigh;
 	String[] two;
@@ -73,7 +72,10 @@ class MinMaxBall {
 		
 		Player ballPlayer2;
 		boolean verifPass;
+		int firstPlayer;
 		boolean sameFirstPlayer;
+		boolean lessPlayer;
+		boolean canRemplace;
 		boolean verifBack;
 		
 		for(int actLook = 0; actLook != one.length; actLook++) {
@@ -81,6 +83,7 @@ class MinMaxBall {
 			numberOfPlayer = -1;
 			exec(one[actLook]);
 			
+				firstPlayer = (int)(one[actLook].charAt(0)-'0');
 				ballPlayer2 = team.getBallPlayer();
 				verifPass = one[actLook].charAt(1) != 'P'; //You can't make two pass
 				
@@ -94,28 +97,54 @@ class MinMaxBall {
 							stockage += one[actLook]+numberOfPlayer+"P";
 						}
 						
-						sameFirstPlayer = numberOfPlayer == (int)(one[actLook].charAt(0)-'0');
+						lessPlayer = numberOfPlayer < firstPlayer;
+						if(!lessPlayer){
 						
-						verifBack = !sameFirstPlayer   ||   one[actLook].charAt(1) != reverse('U'); //You can't back
-						if(verifBack   &&   !p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.UP)) {
-							stockage += one[actLook]+numberOfPlayer+"U";
+							sameFirstPlayer = numberOfPlayer == firstPlayer;
+							
+							verifBack = !sameFirstPlayer   ||   one[actLook].charAt(1) != reverse('U'); //You can't back
+							if(verifBack   &&   !p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.UP)) {
+								stockage += one[actLook]+numberOfPlayer+"U";
+							}
+							
+							verifBack = !sameFirstPlayer   ||   one[actLook].charAt(1) != reverse('D'); //You can't back
+							if(verifBack   &&   !p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.DOWN)) {
+								stockage += one[actLook]+numberOfPlayer+"D";
+							}
+							
+							verifBack = !sameFirstPlayer   ||   one[actLook].charAt(1) != reverse('L');	 //You can't back
+							if(verifBack   &&   !p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.LEFT)) {
+								stockage += one[actLook]+numberOfPlayer+"L";
+							}
+							
+							verifBack = !sameFirstPlayer   ||   one[actLook].charAt(1) != reverse('R');	 //You can't back
+							if(verifBack   &&   !p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.RIGHT)) {
+								stockage += one[actLook]+numberOfPlayer+"R";
+							}
+							
+						}else{
+						
+							canRemplace =  p.getPosition().getX() == team.playerOfInt(firstPlayer).getPosition().getX() + 2;
+							if(one[actLook].charAt(1) == 'U'   &&   canRemplace) {
+								stockage += one[actLook]+numberOfPlayer+"U";
+							}
+							
+							canRemplace =  p.getPosition().getY() == team.playerOfInt(firstPlayer).getPosition().getY() - 2;
+							if(one[actLook].charAt(1) == 'R'   &&   canRemplace) {
+								stockage += one[actLook]+numberOfPlayer+"R";
+							}
+							
+							canRemplace =  p.getPosition().getX() == team.playerOfInt(firstPlayer).getPosition().getX() - 2;
+							if(one[actLook].charAt(1) == 'D'   &&   canRemplace) {
+								stockage += one[actLook]+numberOfPlayer+"D";
+							}
+							
+							canRemplace =  p.getPosition().getY() == team.playerOfInt(firstPlayer).getPosition().getY() + 2;
+							if(one[actLook].charAt(1) == 'L'   &&   canRemplace) {
+								stockage += one[actLook]+numberOfPlayer+"L";
+							}
+							
 						}
-						
-						verifBack = !sameFirstPlayer   ||   one[actLook].charAt(1) != reverse('D'); //You can't back
-						if(verifBack   &&   !p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.DOWN)) {
-							stockage += one[actLook]+numberOfPlayer+"D";
-						}
-						
-						verifBack = !sameFirstPlayer   ||   one[actLook].charAt(1) != reverse('L');	 //You can't back
-						if(verifBack   &&   !p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.LEFT)) {
-							stockage += one[actLook]+numberOfPlayer+"L";
-						}
-						
-						verifBack = !sameFirstPlayer   ||   one[actLook].charAt(1) != reverse('R');	 //You can't back
-						if(verifBack   &&   !p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.RIGHT)) {
-							stockage += one[actLook]+numberOfPlayer+"R";
-						}
-						
 					}
 				}else{
 				//pass + depl: only if depl is to the last player with ball
@@ -155,7 +184,10 @@ class MinMaxBall {
 		Player ballPlayer2;
 		boolean verifPass;
 		boolean verifBack;
+		int firstPlayer;
 		boolean sameFirstPlayer;
+		boolean lessPlayer;
+		boolean canRemplace;
 		boolean verifCondition;
 		
 		for(int actLook = 0; actLook != two.length; actLook++) {
@@ -178,30 +210,58 @@ class MinMaxBall {
 					
 				} else if(two[actLook].charAt(1) == 'P') {
 				//pass + depl +depl: same condition of 2 for
-				
+					firstPlayer = (int)(two[actLook].charAt(2)-'0');
+					
 					for(Player p : team.getPlayers()) {
 						numberOfPlayer++;
 						
-						sameFirstPlayer = numberOfPlayer == (int)(two[actLook].charAt(2)-'0');
+						lessPlayer = numberOfPlayer < firstPlayer;
+						if(!lessPlayer){
+							
+							sameFirstPlayer = numberOfPlayer == firstPlayer;
+
+							verifBack = !sameFirstPlayer   ||   two[actLook].charAt(3) != reverse('U'); //You can't back
+							if(verifBack   &&   !p.equals(ballPlayer2)   &&   stadium.playerCanMove(p, MoveDirection.UP)){
+								stockage += two[actLook]+numberOfPlayer+"U";
+							}
+								
+							verifBack = !sameFirstPlayer   ||   two[actLook].charAt(3) != reverse('D'); //You can't back
+							if(verifBack   &&   !p.equals(ballPlayer2)   &&   stadium.playerCanMove(p, MoveDirection.DOWN)){
+								stockage += two[actLook]+numberOfPlayer+"D";
+							}
+								
+							verifBack = !sameFirstPlayer   ||   two[actLook].charAt(3) != reverse('L'); //You can't back
+							if(verifBack   &&   !p.equals(ballPlayer2)   &&   stadium.playerCanMove(p, MoveDirection.LEFT)){
+								stockage += two[actLook]+numberOfPlayer+"L";
+							}
+								
+							verifBack = !sameFirstPlayer   ||   two[actLook].charAt(3) != reverse('R'); //You can't back
+							if(verifBack   &&   !p.equals(ballPlayer2)   &&   stadium.playerCanMove(p, MoveDirection.RIGHT)){
+								stockage += two[actLook]+numberOfPlayer+"R";
+							}
 						
-						verifBack = !sameFirstPlayer   ||   two[actLook].charAt(3) != reverse('U'); //You can't back
-						if(verifBack   &&   !p.equals(ballPlayer2)   &&   stadium.playerCanMove(p, MoveDirection.UP)){
-							stockage += two[actLook]+numberOfPlayer+"U";
-						}
+						} else {
+						
+							canRemplace =  p.getPosition().getX() == team.playerOfInt(firstPlayer).getPosition().getX() + 2;
+							if(two[actLook].charAt(3) == 'U'   &&   canRemplace) {
+								stockage += two[actLook]+numberOfPlayer+"U";
+							}
 							
-						verifBack = !sameFirstPlayer   ||   two[actLook].charAt(3) != reverse('D'); //You can't back
-						if(verifBack   &&   !p.equals(ballPlayer2)   &&   stadium.playerCanMove(p, MoveDirection.DOWN)){
-							stockage += two[actLook]+numberOfPlayer+"D";
-						}
+							canRemplace =  p.getPosition().getY() == team.playerOfInt(firstPlayer).getPosition().getY() - 2;
+							if(two[actLook].charAt(3) == 'R'   &&   canRemplace) {
+								stockage += two[actLook]+numberOfPlayer+"R";
+							}
 							
-						verifBack = !sameFirstPlayer   ||   two[actLook].charAt(3) != reverse('L'); //You can't back
-						if(verifBack   &&   !p.equals(ballPlayer2)   &&   stadium.playerCanMove(p, MoveDirection.LEFT)){
-							stockage += two[actLook]+numberOfPlayer+"L";
-						}
+							canRemplace =  p.getPosition().getX() == team.playerOfInt(firstPlayer).getPosition().getX() - 2;
+							if(two[actLook].charAt(3) == 'D'   &&   canRemplace) {
+								stockage += two[actLook]+numberOfPlayer+"D";
+							}
 							
-						verifBack = !sameFirstPlayer   ||   two[actLook].charAt(3) != reverse('R'); //You can't back
-						if(verifBack   &&   !p.equals(ballPlayer2)   &&   stadium.playerCanMove(p, MoveDirection.RIGHT)){
-							stockage += two[actLook]+numberOfPlayer+"R";
+							canRemplace =  p.getPosition().getY() == team.playerOfInt(firstPlayer).getPosition().getY() + 2;
+							if(two[actLook].charAt(3) == 'L'   &&   canRemplace) {
+								stockage += two[actLook]+numberOfPlayer+"L";
+							}
+							
 						}
 					}
 					
