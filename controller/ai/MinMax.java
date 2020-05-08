@@ -127,7 +127,6 @@ public class MinMax {
         }
     }
    
-    // turn est uniquement utilise pour savoir le nombre de deplacements de passes restants
     // attention team != this.team
     private Collection<Action> getPossibleActions(Team team, Turn turn) {
         ArrayList<Action> possibleActions = new ArrayList<>();
