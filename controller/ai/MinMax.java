@@ -6,6 +6,7 @@ import java.util.Collection;
 import model.*;
 import model.enums.ActionType;
 import model.enums.MoveDirection;
+import model.enums.TeamPosition;
 
 public class MinMax {
     Stadium stadium;
@@ -71,9 +72,18 @@ public class MinMax {
 
     // guillaume dit que l'heuristic pourait etre approfondie
     private int heuristic() {
-        int allyBallProgression = team.getBallPlayer().getPosition().getX();
-        int enemyBallProgression = 6 - team.getEnemyTeam().getBallPlayer().getPosition().getX();
+        int allyBallProgression = ballProgression(team);
+        int enemyBallProgression = ballProgression(team.getEnemyTeam());
         return allyBallProgression - enemyBallProgression;
+    }
+
+    // devrait etre deplace dans le model
+    private int ballProgression(Team team) {
+        if (team.getPosition() == TeamPosition.TOP) {
+            return team.getBallPlayer().getPosition().getX();
+        } else {
+            return 6 - team.getBallPlayer().getPosition().getX();
+        }
     }
 
     // devrait etre deplace dans le model
