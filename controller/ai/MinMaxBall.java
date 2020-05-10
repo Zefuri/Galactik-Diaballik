@@ -1,4 +1,4 @@
-package controller.ai;
+//package controller.ai;
 
 import model.Stadium;
 import model.Team;
@@ -98,50 +98,118 @@ class MinMaxBall {
 						}
 						
 						lessPlayer = numberOfPlayer < firstPlayer;
-						if(!lessPlayer){
+						if(!lessPlayer   &&   !p.equals(ballPlayer)){
 						
 							sameFirstPlayer = numberOfPlayer == firstPlayer;
 							
 							verifBack = !sameFirstPlayer   ||   one[actLook].charAt(1) != reverse('U'); //You can't back
-							if(verifBack   &&   !p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.UP)) {
+							if(verifBack   &&   stadium.playerCanMove(p, MoveDirection.UP)) {
 								stockage += one[actLook]+numberOfPlayer+"U";
 							}
 							
 							verifBack = !sameFirstPlayer   ||   one[actLook].charAt(1) != reverse('D'); //You can't back
-							if(verifBack   &&   !p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.DOWN)) {
+							if(verifBack   &&   stadium.playerCanMove(p, MoveDirection.DOWN)) {
 								stockage += one[actLook]+numberOfPlayer+"D";
 							}
 							
 							verifBack = !sameFirstPlayer   ||   one[actLook].charAt(1) != reverse('L');	 //You can't back
-							if(verifBack   &&   !p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.LEFT)) {
+							if(verifBack   &&   stadium.playerCanMove(p, MoveDirection.LEFT)) {
 								stockage += one[actLook]+numberOfPlayer+"L";
 							}
 							
 							verifBack = !sameFirstPlayer   ||   one[actLook].charAt(1) != reverse('R');	 //You can't back
-							if(verifBack   &&   !p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.RIGHT)) {
+							if(verifBack   &&   stadium.playerCanMove(p, MoveDirection.RIGHT)) {
 								stockage += one[actLook]+numberOfPlayer+"R";
 							}
 							
-						}else{
+						} else if(!p.equals(ballPlayer)) {
 						
-							canRemplace =  p.getPosition().getX() == team.playerOfInt(firstPlayer).getPosition().getX() + 2;
-							if(one[actLook].charAt(1) == 'U'   &&   canRemplace) {
-								stockage += one[actLook]+numberOfPlayer+"U";
+							//first mouvement is UP
+							if(one[actLook].charAt(1) == 'U'){
+								//second mouvement is UP
+								canRemplace =  p.getPosition().getX() - 1 == team.playerOfInt(firstPlayer).getPosition().getX() + 1;
+								canRemplace = canRemplace   &&   p.getPosition().getY() == team.playerOfInt(firstPlayer).getPosition().getY();
+								if(canRemplace) {
+									stockage += one[actLook]+numberOfPlayer+"U";
+								}
+								//second mouvement is RIGHT
+								canRemplace =  p.getPosition().getX() == team.playerOfInt(firstPlayer).getPosition().getX() + 1;
+								canRemplace = canRemplace   &&   p.getPosition().getY() + 1 == team.playerOfInt(firstPlayer).getPosition().getY();
+								if(canRemplace) {
+									stockage += one[actLook]+numberOfPlayer+"R";
+								}
+								//second mouvement is LEFT
+								canRemplace =  p.getPosition().getX() == team.playerOfInt(firstPlayer).getPosition().getX() + 1;
+								canRemplace = canRemplace   &&   p.getPosition().getY() - 1 == team.playerOfInt(firstPlayer).getPosition().getY();
+								if(canRemplace) {
+									stockage += one[actLook]+numberOfPlayer+"L";
+								}
 							}
 							
-							canRemplace =  p.getPosition().getY() == team.playerOfInt(firstPlayer).getPosition().getY() - 2;
-							if(one[actLook].charAt(1) == 'R'   &&   canRemplace) {
-								stockage += one[actLook]+numberOfPlayer+"R";
+							//first mouvement is DOWN
+							if(one[actLook].charAt(1) == 'D'){
+								//second mouvement is DOWN
+								canRemplace =  p.getPosition().getX() + 1 == team.playerOfInt(firstPlayer).getPosition().getX() - 1;
+								canRemplace = canRemplace   &&   p.getPosition().getY() == team.playerOfInt(firstPlayer).getPosition().getY();
+								if(canRemplace) {
+									stockage += one[actLook]+numberOfPlayer+"D";
+								}
+								//second mouvement is RIGHT
+								canRemplace =  p.getPosition().getX() == team.playerOfInt(firstPlayer).getPosition().getX() - 1;
+								canRemplace = canRemplace   &&   p.getPosition().getY() + 1 == team.playerOfInt(firstPlayer).getPosition().getY();
+								if(canRemplace) {
+									stockage += one[actLook]+numberOfPlayer+"R";
+								}
+								//second mouvement is LEFT
+								canRemplace =  p.getPosition().getX() == team.playerOfInt(firstPlayer).getPosition().getX() - 1;
+								canRemplace = canRemplace   &&   p.getPosition().getY() - 1 == team.playerOfInt(firstPlayer).getPosition().getY();
+								if(canRemplace) {
+									stockage += one[actLook]+numberOfPlayer+"L";
+								}
 							}
 							
-							canRemplace =  p.getPosition().getX() == team.playerOfInt(firstPlayer).getPosition().getX() - 2;
-							if(one[actLook].charAt(1) == 'D'   &&   canRemplace) {
-								stockage += one[actLook]+numberOfPlayer+"D";
+							//first mouvement is RIGHT
+							if(one[actLook].charAt(1) == 'R'){
+								//second mouvement is UP
+								canRemplace =  p.getPosition().getX() - 1 == team.playerOfInt(firstPlayer).getPosition().getX();
+								canRemplace = canRemplace   &&   p.getPosition().getY() == team.playerOfInt(firstPlayer).getPosition().getY() - 1;
+								if(canRemplace) {
+									stockage += one[actLook]+numberOfPlayer+"U";
+								}
+								//second mouvement is RIGHT
+								canRemplace =  p.getPosition().getX() == team.playerOfInt(firstPlayer).getPosition().getX();
+								canRemplace = canRemplace   &&   p.getPosition().getY() + 1 == team.playerOfInt(firstPlayer).getPosition().getY() - 1;
+								if(canRemplace) {
+									stockage += one[actLook]+numberOfPlayer+"R";
+								}
+								//second mouvement is DOWN
+								canRemplace =  p.getPosition().getX() + 1 == team.playerOfInt(firstPlayer).getPosition().getX();
+								canRemplace = canRemplace   &&   p.getPosition().getY() == team.playerOfInt(firstPlayer).getPosition().getY() - 1;
+								if(canRemplace) {
+									stockage += one[actLook]+numberOfPlayer+"D";
+								}
 							}
 							
-							canRemplace =  p.getPosition().getY() == team.playerOfInt(firstPlayer).getPosition().getY() + 2;
-							if(one[actLook].charAt(1) == 'L'   &&   canRemplace) {
-								stockage += one[actLook]+numberOfPlayer+"L";
+							//first mouvement is LEFT
+							if(one[actLook].charAt(1) == 'U'){
+								//second mouvement is UP
+								canRemplace =  p.getPosition().getX() - 1 == team.playerOfInt(firstPlayer).getPosition().getX();
+								canRemplace = canRemplace   &&   p.getPosition().getY() == team.playerOfInt(firstPlayer).getPosition().getY() + 1;
+								if(canRemplace) {
+									stockage += one[actLook]+numberOfPlayer+"U";
+								}
+								//second mouvement is DOWN
+								canRemplace =  p.getPosition().getX() + 1 == team.playerOfInt(firstPlayer).getPosition().getX();
+								canRemplace = canRemplace   &&   p.getPosition().getY() == team.playerOfInt(firstPlayer).getPosition().getY() + 1;
+								if(canRemplace) {
+									stockage += one[actLook]+numberOfPlayer+"R";
+								}
+								//second mouvement is LEFT
+								canRemplace =  p.getPosition().getX() == team.playerOfInt(firstPlayer).getPosition().getX();
+								canRemplace = canRemplace   &&   p.getPosition().getY() - 1  == team.playerOfInt(firstPlayer).getPosition().getY() + 1;
+								if(canRemplace) {
+									stockage += one[actLook]+numberOfPlayer+"L";
+								}
 							}
 							
 						}
@@ -186,8 +254,6 @@ class MinMaxBall {
 		boolean verifBack;
 		int firstPlayer;
 		boolean sameFirstPlayer;
-		boolean lessPlayer;
-		boolean canRemplace;
 		boolean verifCondition;
 		
 		for(int actLook = 0; actLook != two.length; actLook++) {
@@ -214,55 +280,29 @@ class MinMaxBall {
 					
 					for(Player p : team.getPlayers()) {
 						numberOfPlayer++;
-						
-						lessPlayer = numberOfPlayer < firstPlayer;
-						if(!lessPlayer){
 							
-							sameFirstPlayer = numberOfPlayer == firstPlayer;
+						sameFirstPlayer = numberOfPlayer == firstPlayer;
 
-							verifBack = !sameFirstPlayer   ||   two[actLook].charAt(3) != reverse('U'); //You can't back
-							if(verifBack   &&   !p.equals(ballPlayer2)   &&   stadium.playerCanMove(p, MoveDirection.UP)){
-								stockage += two[actLook]+numberOfPlayer+"U";
-							}
-								
-							verifBack = !sameFirstPlayer   ||   two[actLook].charAt(3) != reverse('D'); //You can't back
-							if(verifBack   &&   !p.equals(ballPlayer2)   &&   stadium.playerCanMove(p, MoveDirection.DOWN)){
-								stockage += two[actLook]+numberOfPlayer+"D";
-							}
-								
-							verifBack = !sameFirstPlayer   ||   two[actLook].charAt(3) != reverse('L'); //You can't back
-							if(verifBack   &&   !p.equals(ballPlayer2)   &&   stadium.playerCanMove(p, MoveDirection.LEFT)){
-								stockage += two[actLook]+numberOfPlayer+"L";
-							}
-								
-							verifBack = !sameFirstPlayer   ||   two[actLook].charAt(3) != reverse('R'); //You can't back
-							if(verifBack   &&   !p.equals(ballPlayer2)   &&   stadium.playerCanMove(p, MoveDirection.RIGHT)){
-								stockage += two[actLook]+numberOfPlayer+"R";
-							}
-						
-						} else {
-						
-							canRemplace =  p.getPosition().getX() == team.playerOfInt(firstPlayer).getPosition().getX() + 2;
-							if(two[actLook].charAt(3) == 'U'   &&   canRemplace) {
-								stockage += two[actLook]+numberOfPlayer+"U";
-							}
-							
-							canRemplace =  p.getPosition().getY() == team.playerOfInt(firstPlayer).getPosition().getY() - 2;
-							if(two[actLook].charAt(3) == 'R'   &&   canRemplace) {
-								stockage += two[actLook]+numberOfPlayer+"R";
-							}
-							
-							canRemplace =  p.getPosition().getX() == team.playerOfInt(firstPlayer).getPosition().getX() - 2;
-							if(two[actLook].charAt(3) == 'D'   &&   canRemplace) {
-								stockage += two[actLook]+numberOfPlayer+"D";
-							}
-							
-							canRemplace =  p.getPosition().getY() == team.playerOfInt(firstPlayer).getPosition().getY() + 2;
-							if(two[actLook].charAt(3) == 'L'   &&   canRemplace) {
-								stockage += two[actLook]+numberOfPlayer+"L";
-							}
-							
+						verifBack = !sameFirstPlayer   ||   two[actLook].charAt(3) != reverse('U'); //You can't back
+						if(verifBack   &&   !p.equals(ballPlayer2)   &&   stadium.playerCanMove(p, MoveDirection.UP)){
+							stockage += two[actLook]+numberOfPlayer+"U";
 						}
+							
+						verifBack = !sameFirstPlayer   ||   two[actLook].charAt(3) != reverse('D'); //You can't back
+						if(verifBack   &&   !p.equals(ballPlayer2)   &&   stadium.playerCanMove(p, MoveDirection.DOWN)){
+							stockage += two[actLook]+numberOfPlayer+"D";
+						}
+							
+						verifBack = !sameFirstPlayer   ||   two[actLook].charAt(3) != reverse('L'); //You can't back
+						if(verifBack   &&   !p.equals(ballPlayer2)   &&   stadium.playerCanMove(p, MoveDirection.LEFT)){
+							stockage += two[actLook]+numberOfPlayer+"L";
+						}
+							
+						verifBack = !sameFirstPlayer   ||   two[actLook].charAt(3) != reverse('R'); //You can't back
+						if(verifBack   &&   !p.equals(ballPlayer2)   &&   stadium.playerCanMove(p, MoveDirection.RIGHT)){
+							stockage += two[actLook]+numberOfPlayer+"R";
+						}
+							
 					}
 					
 				} else {

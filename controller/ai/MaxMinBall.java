@@ -1,4 +1,4 @@
-package controller.ai;
+//package controller.ai;
 
 import model.Stadium;
 import model.Team;
@@ -7,7 +7,7 @@ import model.enums.MoveDirection;
 import model.enums.TeamPosition;
 import model.ModelConstants;
 
-class MaxMinBall {
+public class MaxMinBall{
 	int checkingDepth;
 	Stadium stadium;
 	Team team;
@@ -18,25 +18,38 @@ class MaxMinBall {
 	int[] twoHigh;
 	String[] three;
 	int[] threeHigh;
+	ToolsBall tools;
 	
 	String[] mustActs;
 	int mustAvancement;
 
 	public MaxMinBall(Stadium stadium, Team team, int depth) {
+		System.out.println(stadium.toString());
 		checkingDepth = depth;
 		this.stadium = stadium;
 		this.team = team;
+		ballPlayer = team.getBallPlayer();
 		
-		ballPlayer = this.team.getBallPlayer();
-
-		this.initOne();
-		this.initTwo();
-		this.initThree();
+		tools = new ToolsBall();
+		
+		initOne();
+		initTwo();
+		initThree();
 		
 		mustAvancement = this.Progress();
-		this.initMustActs();		
+		this.initMustActs();
+		System.out.println("Le meilleur avancement pour une profondeur de "+checkingDepth+" est: "+mustAvancement);
+		System.out.println("Possible part:");
+		for(String s : mustActs) {
+			System.out.print(s+" - ");
+		}
+		System.out.println("");
+		System.out.println("Taille de One: "+one.length);
+		System.out.println("Taille de Two: "+two.length);
+		System.out.println("Taille de Three: "+three.length);
 	}
-	
+
+
 	public void initOne(){	
 		one = new String[team.numberOfPossibilityPass() + team.movesNumber()];
 		oneHigh = new int[one.length];
@@ -45,43 +58,47 @@ class MaxMinBall {
 		
 		for(Player p : team.getPlayers()) {
 			numberOfPlayer++;
-		
-			//pass
-			if(!p.equals(ballPlayer)   &&   stadium.playerCanPass(ballPlayer, p)) {
-				one[oneNum] = ""+numberOfPlayer+"P";
-				if(checkingDepth == 0)
-					oneHigh[oneNum] = ballAvance(p.getPosition().getX());
-				oneNum++;
-			}
 			
-			//depl
-			if(!p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.UP)) {
-				one[oneNum] = ""+numberOfPlayer+"U";
-				if(checkingDepth == 0)
-					oneHigh[oneNum] = ballAvance(ballPlayer.getPosition().getX());
-				oneNum++;
-			}
-			if(!p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.DOWN)) {
-				one[oneNum] = ""+numberOfPlayer+"D";
-				if(checkingDepth == 0)
-					oneHigh[oneNum] = ballAvance(ballPlayer.getPosition().getX());
-				oneNum++;
-			}
-			if(!p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.LEFT)) {
-				one[oneNum] = ""+numberOfPlayer+"L";
-				if(checkingDepth == 0)
-					oneHigh[oneNum] = ballAvance(ballPlayer.getPosition().getX());
-				oneNum++;
-			}
-			if(!p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.RIGHT)) {
-				one[oneNum] = ""+numberOfPlayer+"R";
-				if(checkingDepth == 0)
-					oneHigh[oneNum] = ballAvance(ballPlayer.getPosition().getX());
-				oneNum++;
+			if(!p.equals(ballPlayer)){
+			
+				//pass
+				if(stadium.playerCanPass(ballPlayer, p)) {
+					one[oneNum] = ""+numberOfPlayer+"P";
+					if(checkingDepth == 0)
+						oneHigh[oneNum] = tools.ballAvance(team, p.getPosition().getX());
+					oneNum++;
+				}
+				
+				//depl
+				oneNum = oneCanMove(p, oneNum, numberOfPlayer);
 			}
 		}
 	}
 	
+	
+	public int oneCanMove(Player player, int oneNum, int numberOfPlayer){
+		int index = oneNum;
+		index = oneCanMoveDirection(player, index, numberOfPlayer, 'U');
+		index = oneCanMoveDirection(player, index, numberOfPlayer, 'R');
+		index = oneCanMoveDirection(player, index, numberOfPlayer, 'D');
+		index = oneCanMoveDirection(player, index, numberOfPlayer, 'L');
+		return index;
+	}
+
+
+	public int oneCanMoveDirection(Player player, int oneNum, int numberOfPlayer, char direction){
+		int index = oneNum;
+		if(stadium.playerCanMove(player, tools.moveOfChar(direction))){
+			one[index] = ""+numberOfPlayer+""+direction;
+			if(checkingDepth == 0)
+				oneHigh[index] = tools.ballAvance(team, ballPlayer.getPosition().getX());
+			index++;
+		}
+		
+		return index;
+	}
+	
+
 	public void initTwo(){
 		String stockage = "";
 		String stockageHigh = "";
@@ -94,6 +111,9 @@ class MaxMinBall {
 		boolean lessPlayer;
 		boolean canRemplace;
 		boolean verifBack;
+		String[] remplaceStock;
+		int[] nextPosition;
+		int[] previousPositionFirst;
 		
 		for(int actLook = 0; actLook != one.length; actLook++) {
 		
@@ -117,66 +137,18 @@ class MaxMinBall {
 						}
 						
 						lessPlayer = numberOfPlayer < firstPlayer;
-						if(!lessPlayer){
+						if(!lessPlayer   &&   !p.equals(ballPlayer)) {
 						
-							sameFirstPlayer = numberOfPlayer == firstPlayer;
+							String[] evaluation = tools.twoCanMove(ballPlayer, stadium, checkingDepth, one, firstPlayer, numberOfPlayer, p, actLook);
+							stockage += evaluation[0];
+							stockageHigh += evaluation[1];
 							
-							verifBack = !sameFirstPlayer   ||   one[actLook].charAt(1) != reverse('U'); //You can't back
-							if(verifBack   &&   !p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.UP)) {
-								stockage += one[actLook]+numberOfPlayer+"U";
-								if(checkingDepth == 0)
-									stockageHigh += ballPlayer.getPosition().getX();
-							}
+						} else if(!p.equals(ballPlayer)) {
 							
-							verifBack = !sameFirstPlayer   ||   one[actLook].charAt(1) != reverse('D'); //You can't back
-							if(verifBack   &&   !p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.DOWN)) {
-								stockage += one[actLook]+numberOfPlayer+"D";
-								if(checkingDepth == 0)
-									stockageHigh += ballPlayer.getPosition().getX();
-							}
-							
-							verifBack = !sameFirstPlayer   ||   one[actLook].charAt(1) != reverse('L');	 //You can't back
-							if(verifBack   &&   !p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.LEFT)) {
-								stockage += one[actLook]+numberOfPlayer+"L";
-								if(checkingDepth == 0)
-									stockageHigh += ballPlayer.getPosition().getX();
-							}
-							
-							verifBack = !sameFirstPlayer   ||   one[actLook].charAt(1) != reverse('R');	 //You can't back
-							if(verifBack   &&   !p.equals(ballPlayer)   &&   stadium.playerCanMove(p, MoveDirection.RIGHT)) {
-								stockage += one[actLook]+numberOfPlayer+"R";
-								if(checkingDepth == 0)
-									stockageHigh += ballPlayer.getPosition().getX();
-							}
-							
-						}else{
-						
-							canRemplace =  p.getPosition().getX() == team.playerOfInt(firstPlayer).getPosition().getX() + 2;
-							if(one[actLook].charAt(1) == 'U'   &&   canRemplace) {
-								stockage += one[actLook]+numberOfPlayer+"U";
-								if(checkingDepth == 0)
-									stockageHigh += ballPlayer.getPosition().getX();
-							}
-							
-							canRemplace =  p.getPosition().getY() == team.playerOfInt(firstPlayer).getPosition().getY() - 2;
-							if(one[actLook].charAt(1) == 'R'   &&   canRemplace) {
-								stockage += one[actLook]+numberOfPlayer+"R";
-								if(checkingDepth == 0)
-									stockageHigh += ballPlayer.getPosition().getX();
-							}
-							
-							canRemplace =  p.getPosition().getX() == team.playerOfInt(firstPlayer).getPosition().getX() - 2;
-							if(one[actLook].charAt(1) == 'D'   &&   canRemplace) {
-								stockage += one[actLook]+numberOfPlayer+"D";
-								if(checkingDepth == 0)
-									stockageHigh += ballPlayer.getPosition().getX();
-							}
-							
-							canRemplace =  p.getPosition().getY() == team.playerOfInt(firstPlayer).getPosition().getY() + 2;
-							if(one[actLook].charAt(1) == 'L'   &&   canRemplace) {
-								stockage += one[actLook]+numberOfPlayer+"L";
-								stockageHigh += ballPlayer.getPosition().getX();
-							}
+							previousPositionFirst = tools.previousPosition(team.playerOfInt(firstPlayer), one[actLook].charAt(1));
+							remplaceStock = tools.remplace1(team, checkingDepth, one, previousPositionFirst, actLook, p, one[actLook].charAt(1));
+							stockage += remplaceStock[0];
+							stockageHigh += remplaceStock[1];
 							
 						}
 					}
@@ -184,29 +156,9 @@ class MaxMinBall {
 				//pass + depl: only if depl is to the last player with ball
 						String ballNum = ""+ballPlayer.getName().charAt(ballPlayer.getName().length()-1);
 						
-						if(stadium.playerCanMove(ballPlayer, MoveDirection.UP)){
-							stockage += one[actLook]+ballNum+"U";
-							if(checkingDepth == 0)
-								stockageHigh += ballPlayer2.getPosition().getX();
-						}
-						
-						if(stadium.playerCanMove(ballPlayer, MoveDirection.DOWN)){
-							stockage += one[actLook]+ballNum+"D";
-							if(checkingDepth == 0)
-								stockageHigh += ballPlayer2.getPosition().getX();
-						}
-						
-						if(stadium.playerCanMove(ballPlayer, MoveDirection.LEFT)){
-							stockage += one[actLook]+ballNum+"L";
-							if(checkingDepth == 0)
-								stockageHigh += ballPlayer2.getPosition().getX();
-						}
-						
-						if(stadium.playerCanMove(ballPlayer, MoveDirection.RIGHT)){
-							stockage += one[actLook]+ballNum+"R";
-							if(checkingDepth == 0)
-								stockageHigh += ballPlayer2.getPosition().getX();
-						}
+						remplaceStock = tools.twoCanMovePreviousBall(team, stadium, checkingDepth, one, actLook, ballPlayer, ballNum);
+						stockage += remplaceStock[0];
+						stockageHigh += remplaceStock[1];
 						
 				}
 			undo(one[actLook]);
@@ -218,21 +170,21 @@ class MaxMinBall {
 		for(int i = 0; i != stockage.length(); i += 4){
 			two[i/4] = ""+stockage.charAt(i)+stockage.charAt(i+1)+stockage.charAt(i+2)+stockage.charAt(i+3);
 			if(checkingDepth == 0)
-				twoHigh[i/4] = ballAvance((int)(stockageHigh.charAt(i/4)-'0'));
+				twoHigh[i/4] = tools.ballAvance(team, (int)(stockageHigh.charAt(i/4)-'0'));
 		}
 	}
 	
+
 	public void initThree() {
 		String stockage = "";
 		String stockageHigh = "";
+		String[] view;
 		int numberOfPlayer;
 		Player ballPlayer2;
 		boolean verifPass;
 		boolean verifBack;
 		int firstPlayer;
 		boolean sameFirstPlayer;
-		boolean lessPlayer;
-		boolean canRemplace;
 		boolean verifCondition;
 		
 		for(int actLook = 0; actLook != two.length; actLook++) {
@@ -258,74 +210,12 @@ class MaxMinBall {
 				} else if(two[actLook].charAt(1) == 'P') {
 				//pass + depl +depl: same condition of 2 for
 					firstPlayer = (int)(two[actLook].charAt(2)-'0');
-					
+
 					for(Player p : team.getPlayers()) {
 						numberOfPlayer++;
-						
-						lessPlayer = numberOfPlayer < firstPlayer;
-						if(!lessPlayer){
-							
-							sameFirstPlayer = numberOfPlayer == firstPlayer;
-
-							verifBack = !sameFirstPlayer   ||   two[actLook].charAt(3) != reverse('U'); //You can't back
-							if(verifBack   &&   !p.equals(ballPlayer2)   &&   stadium.playerCanMove(p, MoveDirection.UP)){
-								stockage += two[actLook]+numberOfPlayer+"U";
-								if(checkingDepth == 0)
-									stockageHigh += ballPlayer2.getPosition().getX();
-							}
-								
-							verifBack = !sameFirstPlayer   ||   two[actLook].charAt(3) != reverse('D'); //You can't back
-							if(verifBack   &&   !p.equals(ballPlayer2)   &&   stadium.playerCanMove(p, MoveDirection.DOWN)){
-								stockage += two[actLook]+numberOfPlayer+"D";
-								if(checkingDepth == 0)
-									stockageHigh += ballPlayer2.getPosition().getX();
-							}
-								
-							verifBack = !sameFirstPlayer   ||   two[actLook].charAt(3) != reverse('L'); //You can't back
-							if(verifBack   &&   !p.equals(ballPlayer2)   &&   stadium.playerCanMove(p, MoveDirection.LEFT)){
-								stockage += two[actLook]+numberOfPlayer+"L";
-								if(checkingDepth == 0)
-									stockageHigh += ballPlayer2.getPosition().getX();
-							}
-								
-							verifBack = !sameFirstPlayer   ||   two[actLook].charAt(3) != reverse('R'); //You can't back
-							if(verifBack   &&   !p.equals(ballPlayer2)   &&   stadium.playerCanMove(p, MoveDirection.RIGHT)){
-								stockage += two[actLook]+numberOfPlayer+"R";
-								if(checkingDepth == 0)
-									stockageHigh += ballPlayer2.getPosition().getX();
-							}
-						
-						} else {
-						
-							canRemplace =  p.getPosition().getX() == team.playerOfInt(firstPlayer).getPosition().getX() + 2;
-							if(two[actLook].charAt(3) == 'U'   &&   canRemplace) {
-								stockage += two[actLook]+numberOfPlayer+"U";
-								if(checkingDepth == 0)
-									stockageHigh += ballPlayer.getPosition().getX();
-							}
-							
-							canRemplace =  p.getPosition().getY() == team.playerOfInt(firstPlayer).getPosition().getY() - 2;
-							if(two[actLook].charAt(3) == 'R'   &&   canRemplace) {
-								stockage += two[actLook]+numberOfPlayer+"R";
-								if(checkingDepth == 0)
-									stockageHigh += ballPlayer.getPosition().getX();
-							}
-							
-							canRemplace =  p.getPosition().getX() == team.playerOfInt(firstPlayer).getPosition().getX() - 2;
-							if(two[actLook].charAt(3) == 'D'   &&   canRemplace) {
-								stockage += two[actLook]+numberOfPlayer+"D";
-								if(checkingDepth == 0)
-									stockageHigh += ballPlayer.getPosition().getX();
-							}
-							
-							canRemplace =  p.getPosition().getY() == team.playerOfInt(firstPlayer).getPosition().getY() + 2;
-							if(two[actLook].charAt(3) == 'L'   &&   canRemplace) {
-								stockage += two[actLook]+numberOfPlayer+"L";
-								if(checkingDepth == 0)
-									stockageHigh += ballPlayer.getPosition().getX();
-							}
-							
-						}
+						view = tools.threeCanMove(team, stadium, checkingDepth, two, numberOfPlayer, firstPlayer, actLook, p);
+						stockage += view[0];
+						stockageHigh += view[1];
 					}
 					
 				} else {
@@ -334,31 +224,9 @@ class MaxMinBall {
 					
 					verifCondition = (two[actLook].charAt(0) == two[actLook].charAt(2));
 					if(verifCondition){
-					
-						if(stadium.playerCanMove(ballPlayer, MoveDirection.UP)){
-							stockage += two[actLook]+ballNum+"U";
-							if(checkingDepth == 0)
-								stockageHigh += ballPlayer2.getPosition().getX();
-						}
-						
-						if(stadium.playerCanMove(ballPlayer, MoveDirection.RIGHT)){
-							stockage += two[actLook]+ballNum+"R";
-							if(checkingDepth == 0)
-								stockageHigh += ballPlayer2.getPosition().getX();
-						}
-						
-						if(stadium.playerCanMove(ballPlayer, MoveDirection.DOWN)){
-							stockage += two[actLook]+ballNum+"D";
-							if(checkingDepth == 0)
-								stockageHigh += ballPlayer2.getPosition().getX();
-						}
-						
-						if(stadium.playerCanMove(ballPlayer, MoveDirection.LEFT)){
-							stockage += two[actLook]+ballNum+"L";
-							if(checkingDepth == 0)
-								stockageHigh += ballPlayer2.getPosition().getX();
-						}
-						
+						view = tools.threeCanMovePreviousBall(team, ballPlayer, stadium, checkingDepth, two, actLook, ballNum);
+						stockage += view[0];
+						stockageHigh += view[1];
 					}
 				}
 
@@ -371,9 +239,10 @@ class MaxMinBall {
 		for(int i = 0; i != stockage.length(); i += 6) {
 			three[i/6] = ""+stockage.charAt(i)+stockage.charAt(i+1)+stockage.charAt(i+2)+stockage.charAt(i+3)+stockage.charAt(i+4)+stockage.charAt(i+5);
 			if(checkingDepth == 0)
-				threeHigh[i/6] = ballAvance((int)(stockageHigh.charAt(i/6)-'0'));
+				threeHigh[i/6] = tools.ballAvance(team, (int)(stockageHigh.charAt(i/6)-'0'));
 		}
 	}
+
 
 	public void initMustActs(){
 		mustActs = new String[numberOfMust()];
@@ -395,27 +264,6 @@ class MaxMinBall {
 		}
 	}
 	
-	public char reverse(char move){
-		if(move == 'U')
-			return 'D';
-		else if (move == 'R')
-			return 'L';
-		else if (move == 'D')
-			return 'U';
-		else
-			return 'R';
-	}
-	
-	public MoveDirection moveOfChar(char deplacement) {
-		if(deplacement == 'D')
-			return MoveDirection.DOWN;
-		else if (deplacement == 'L')
-			return MoveDirection.LEFT;
-		else if (deplacement == 'U')
-			return MoveDirection.UP;
-		else
-			return MoveDirection.RIGHT;
-	}
 	
 	public void exec(String instruction){
 		int number = -1;
@@ -426,9 +274,10 @@ class MaxMinBall {
 			if(instruction.charAt(i+1) == 'P')
 				stadium.pass(ballPlayer, team.playerOfInt(number));
 			else
-				stadium.move(team.playerOfInt(number), moveOfChar(instruction.charAt(i+1)));
+				stadium.move(team.playerOfInt(number), tools.moveOfChar(instruction.charAt(i+1)));
 		}
 	}
+	
 	
 	public void undo(String instruction){
 		int number = -1;
@@ -439,9 +288,10 @@ class MaxMinBall {
 			if(instruction.charAt(i) == 'P')
 				stadium.pass(team.playerOfInt(number), ballPlayer);
 			else
-				stadium.move(team.playerOfInt(number), moveOfChar(reverse(instruction.charAt(i))));
+				stadium.move(team.playerOfInt(number), tools.moveOfChar(tools.reverse(instruction.charAt(i))));
 		}
 	}
+
 
 	public int maxList(int[] intList){
 		int max = intList[0];
@@ -452,23 +302,28 @@ class MaxMinBall {
 		return max;
 	}
 	
+	
 	public int max2(int first, int second){
 		if(first > second)
 			return first;
 		return second;
 	}
 	
+	
 	public int max3(int first, int second, int third){
 		return max2(max2(first, second), third);
 	}
+	
 	
 	public String[] getMustActs(){
 		return mustActs;
 	}
 	
+	
 	public int getMustAvancement(){
 		return mustAvancement;
 	}
+	
 	
 	public int Progress(){
 		if(checkingDepth != 0){
@@ -503,22 +358,12 @@ class MaxMinBall {
 
 		return maxAvancement();
 	}
-	
-	//return the avancement of team ball (6 - ball position if team bottom and 0 + ball position if team top)
-	public int teamBallAvance(Team team, int ballPosition){
-		if(team.getPosition() == TeamPosition.TOP)
-			return ballPosition;
-		return (ModelConstants.BOARD_SIZE - 1) - ballPosition;
-	}
-	
-	//return the difference between the avancement of two ball
-	public int ballAvance(int ballPosition){
-		return teamBallAvance(team, ballPosition) - teamBallAvance(team.getEnemyTeam(), team.getEnemyTeam().getBallPlayer().getPosition().getX());
-	}
+
 
 	public int maxAvancement(){
 		return max3(maxList(oneHigh), maxList(twoHigh), maxList(threeHigh));
 	}
+	
 	
 	public int numberOfMust(){
 		int numberOfMust = 0;
@@ -538,7 +383,10 @@ class MaxMinBall {
 		return numberOfMust;
 	}
 
+	
 	public static void main(String args[]){
 		//tests
+		Stadium stadium = new Stadium();
+		MaxMinBall test = new MaxMinBall(stadium, stadium.getTeam(TeamPosition.BOTTOM), (int)(args[0].charAt(0)-'0'));
 	}
 }
