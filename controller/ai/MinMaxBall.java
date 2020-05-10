@@ -8,7 +8,6 @@ import model.enums.TeamPosition;
 import model.ModelConstants;
 
 public class MinMaxBall{
-	int checkingDepth;
 	Stadium stadium;
 	Team team;
 	Player ballPlayer;
@@ -23,8 +22,7 @@ public class MinMaxBall{
 	String[] worstActs;
 	int worstAvancement;
 
-	public MinMaxBall(Stadium stadium, Team team, int depth) {
-		checkingDepth = depth;
+	public MinMaxBall(Stadium stadium, Team team) {
 		this.stadium = stadium;
 		this.team = team;
 		ballPlayer = team.getBallPlayer();
@@ -51,8 +49,7 @@ public class MinMaxBall{
 				//pass
 				if(stadium.playerCanPass(ballPlayer, p)) {
 					one[oneNum] = ""+numberOfPlayer+"P";
-					if(checkingDepth == 0)
-						oneHigh[oneNum] = (-1) * tools.ballAvance(team, p.getPosition().getX());
+					oneHigh[oneNum] = (-1) * tools.ballAvance(team, p.getPosition().getX());
 					oneNum++;
 				}
 				
@@ -77,8 +74,7 @@ public class MinMaxBall{
 		int index = oneNum;
 		if(stadium.playerCanMove(player, tools.moveOfChar(direction))){
 			one[index] = ""+numberOfPlayer+""+direction;
-			if(checkingDepth == 0)
-				oneHigh[index] = (-1) * tools.ballAvance(team, ballPlayer.getPosition().getX());
+			oneHigh[index] = (-1) * tools.ballAvance(team, ballPlayer.getPosition().getX());
 			index++;
 		}
 		
@@ -119,21 +115,20 @@ public class MinMaxBall{
 						
 						if(!p.equals(ballPlayer)   &&   stadium.playerCanPass(ballPlayer, p)){
 							stockage += one[actLook]+numberOfPlayer+"P";
-							if(checkingDepth == 0)
-								stockageHigh += p.getPosition().getX();
+							stockageHigh += p.getPosition().getX();
 						}
 						
 						lessPlayer = numberOfPlayer < firstPlayer;
 						if(!lessPlayer   &&   !p.equals(ballPlayer)) {
 						
-							String[] evaluation = tools.twoCanMove(ballPlayer, stadium, checkingDepth, one, firstPlayer, numberOfPlayer, p, actLook);
+							String[] evaluation = tools.twoCanMove(ballPlayer, stadium, one, firstPlayer, numberOfPlayer, p, actLook);
 							stockage += evaluation[0];
 							stockageHigh += evaluation[1];
 							
 						} else if(!p.equals(ballPlayer)) {
 							
 							previousPositionFirst = tools.previousPosition(team.playerOfInt(firstPlayer), one[actLook].charAt(1));
-							remplaceStock = tools.remplace1(team, checkingDepth, one, previousPositionFirst, actLook, p, one[actLook].charAt(1));
+							remplaceStock = tools.remplace1(team, one, previousPositionFirst, actLook, p, one[actLook].charAt(1));
 							stockage += remplaceStock[0];
 							stockageHigh += remplaceStock[1];
 							
@@ -143,7 +138,7 @@ public class MinMaxBall{
 				//pass + depl: only if depl is to the last player with ball
 						String ballNum = ""+ballPlayer.getName().charAt(ballPlayer.getName().length()-1);
 						
-						remplaceStock = tools.twoCanMovePreviousBall(team, stadium, checkingDepth, one, actLook, ballPlayer, ballNum);
+						remplaceStock = tools.twoCanMovePreviousBall(team, stadium, one, actLook, ballPlayer, ballNum);
 						stockage += remplaceStock[0];
 						stockageHigh += remplaceStock[1];
 						
@@ -156,8 +151,7 @@ public class MinMaxBall{
 		
 		for(int i = 0; i != stockage.length(); i += 4){
 			two[i/4] = ""+stockage.charAt(i)+stockage.charAt(i+1)+stockage.charAt(i+2)+stockage.charAt(i+3);
-			if(checkingDepth == 0)
-				twoHigh[i/4] = (-1) * tools.ballAvance(team, (int)(stockageHigh.charAt(i/4)-'0'));
+			twoHigh[i/4] = (-1) * tools.ballAvance(team, (int)(stockageHigh.charAt(i/4)-'0'));
 		}
 	}
 	
@@ -188,8 +182,7 @@ public class MinMaxBall{
 						numberOfPlayer++;
 						if(!p.equals(ballPlayer)   &&   stadium.playerCanPass(ballPlayer, p)) {
 							stockage += two[actLook]+numberOfPlayer+"P";
-							if(checkingDepth == 0)
-								stockageHigh += p.getPosition().getX();
+							stockageHigh += p.getPosition().getX();
 						}
 					}
 				
@@ -200,7 +193,7 @@ public class MinMaxBall{
 
 					for(Player p : team.getPlayers()) {
 						numberOfPlayer++;
-						view = tools.threeCanMove(team, stadium, checkingDepth, two, numberOfPlayer, firstPlayer, actLook, p);
+						view = tools.threeCanMove(team, stadium, two, numberOfPlayer, firstPlayer, actLook, p);
 						stockage += view[0];
 						stockageHigh += view[1];
 					}
@@ -211,7 +204,7 @@ public class MinMaxBall{
 					
 					verifCondition = (two[actLook].charAt(0) == two[actLook].charAt(2));
 					if(verifCondition){
-						view = tools.threeCanMovePreviousBall(team, ballPlayer, stadium, checkingDepth, two, actLook, ballNum);
+						view = tools.threeCanMovePreviousBall(team, ballPlayer, stadium, two, actLook, ballNum);
 						stockage += view[0];
 						stockageHigh += view[1];
 					}
@@ -225,8 +218,7 @@ public class MinMaxBall{
 		
 		for(int i = 0; i != stockage.length(); i += 6) {
 			three[i/6] = ""+stockage.charAt(i)+stockage.charAt(i+1)+stockage.charAt(i+2)+stockage.charAt(i+3)+stockage.charAt(i+4)+stockage.charAt(i+5);
-			if(checkingDepth == 0)
-				threeHigh[i/6] = (-1) * tools.ballAvance(team, (int)(stockageHigh.charAt(i/6)-'0'));
+			threeHigh[i/6] = (-1) * tools.ballAvance(team, (int)(stockageHigh.charAt(i/6)-'0'));
 		}
 	}
 
@@ -321,7 +313,7 @@ public class MinMaxBall{
 				if(i < one.length){
 					//you play one act
 					exec(one[i]);
-						maxCheck = new MaxMinBall(stadium, team.getEnemyTeam(), checkingDepth-1);
+						maxCheck = new MaxMinBall(stadium, team.getEnemyTeam());
 						maxCheck.progress(checkingDepth-1);
 						oneHigh[i] = maxCheck.getMustAvancement();
 					undo(one[i]);
@@ -329,7 +321,7 @@ public class MinMaxBall{
 				}else if(i-one.length < two.length){
 					//you play two act
 					exec(two[i-one.length]);
-						maxCheck = new MaxMinBall(stadium, team.getEnemyTeam(), checkingDepth-1);
+						maxCheck = new MaxMinBall(stadium, team.getEnemyTeam());
 						maxCheck.progress(checkingDepth-1);
 						twoHigh[i-one.length] = maxCheck.getMustAvancement();
 					undo(two[i-one.length]);
@@ -337,7 +329,7 @@ public class MinMaxBall{
 				}else{
 					//you play three act
 					exec(three[i-one.length-two.length]);
-						maxCheck = new MaxMinBall(stadium, team.getEnemyTeam(), checkingDepth-1);
+						maxCheck = new MaxMinBall(stadium, team.getEnemyTeam());
 						maxCheck.progress(checkingDepth-1);
 						threeHigh[i-one.length-two.length] = maxCheck.getMustAvancement();
 					undo(three[i-one.length-two.length]);
