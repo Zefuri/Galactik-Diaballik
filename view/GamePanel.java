@@ -11,9 +11,12 @@ import javax.swing.JPanel;
 import model.Stadium;
 import model.enums.ActionType;
 import patterns.Observable;
+import patterns.ObservableHandler;
 import patterns.Observer;
 
 public class GamePanel extends JPanel implements Observable {
+	private final ObservableHandler observableHandler;
+
 	private Stadium stadium;	
 	private ArkadiaNews arkadiaNews;
 	private JPanel gameControlPanel;
@@ -26,6 +29,9 @@ public class GamePanel extends JPanel implements Observable {
 	
 	public GamePanel(Stadium stadium) {
 		super(new BorderLayout());
+
+		observableHandler = new ObservableHandler();
+
 		this.stadium = stadium;
 		this.arkadiaNews = new ArkadiaNews(stadium);
 		this.add(this.arkadiaNews, BorderLayout.CENTER);
@@ -64,14 +70,12 @@ public class GamePanel extends JPanel implements Observable {
 
 	@Override
 	public void addObserver(Observer observer) {
-		observers.add(observer);
+		observableHandler.addObserver(observer);
 	}
 
 	@Override
 	public void notify(Object object) {
-		for(Observer observer : observers) {
-			observer.update(object);
-		}
+		observableHandler.notify(object);
 	}
 	
 	private int getNbTeam() {
