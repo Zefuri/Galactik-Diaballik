@@ -36,14 +36,6 @@ public class MaxMinBall{
 		initTwo();
 		initThree();
 		
-		mustAvancement = this.Progress();
-		this.initMustActs();
-		System.out.println("Le meilleur avancement pour une profondeur de "+checkingDepth+" est: "+mustAvancement);
-		System.out.println("Possible part:");
-		for(String s : mustActs) {
-			System.out.print(s+" - ");
-		}
-		System.out.println("");
 		System.out.println("Taille de One: "+one.length);
 		System.out.println("Taille de Two: "+two.length);
 		System.out.println("Taille de Three: "+three.length);
@@ -325,7 +317,7 @@ public class MaxMinBall{
 	}
 	
 	
-	public int Progress(){
+	public void progress(int checkingDepth){
 		if(checkingDepth != 0){
 			MinMaxBall minCheck;
 			
@@ -334,29 +326,33 @@ public class MaxMinBall{
 				if(i < one.length){
 					//you play one act
 					exec(one[i]);
-						minCheck = new MinMaxBall(stadium, team.getEnemyTeam(), checkingDepth);
-						oneHigh[i] = minCheck.Progress();
+						minCheck = new MinMaxBall(stadium, team.getEnemyTeam(), checkingDepth-1);
+						minCheck.progress(checkingDepth-1);
+						oneHigh[i] = minCheck.getWorstAvancement();
 					undo(one[i]);
 				
 				}else if(i-one.length < two.length){
 					//you play two act
 					exec(two[i-one.length]);
-						minCheck = new MinMaxBall(stadium, team.getEnemyTeam(), checkingDepth);
-						twoHigh[i-one.length] = minCheck.Progress();
+						minCheck = new MinMaxBall(stadium, team.getEnemyTeam(), checkingDepth-1);
+						minCheck.progress(checkingDepth-1);
+						twoHigh[i-one.length] = minCheck.getWorstAvancement();
 					undo(two[i-one.length]);
 				
 				}else{
 					//you play three act
 					exec(three[i-one.length-two.length]);
-						minCheck = new MinMaxBall(stadium, team.getEnemyTeam(), checkingDepth);
-						threeHigh[i-one.length-two.length] = minCheck.Progress();
+						minCheck = new MinMaxBall(stadium, team.getEnemyTeam(), checkingDepth-1);
+						minCheck.progress(checkingDepth-1);
+						threeHigh[i-one.length-two.length] = minCheck.getWorstAvancement();
 					undo(three[i-one.length-two.length]);
 				}
 			}
 			
 		}
-
-		return maxAvancement();
+		
+		mustAvancement = maxAvancement();
+		this.initMustActs();
 	}
 
 
@@ -385,8 +381,6 @@ public class MaxMinBall{
 
 	
 	public static void main(String args[]){
-		//tests
-		Stadium stadium = new Stadium();
-		MaxMinBall test = new MaxMinBall(stadium, stadium.getTeam(TeamPosition.BOTTOM), (int)(args[0].charAt(0)-'0'));
+		//tests	
 	}
 }

@@ -40,7 +40,6 @@ public class ToolsBall {
 		return (ModelConstants.BOARD_SIZE - 1) - ballPosition;
 	}
 	
-	
 	//return the difference between the avancement of two ball
 	public int ballAvance(Team team, int ballPosition){
 		return teamBallAvance(team, ballPosition) - teamBallAvance(team.getEnemyTeam(), team.getEnemyTeam().getBallPlayer().getPosition().getX());
