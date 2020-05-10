@@ -13,6 +13,7 @@ public class HoloTV implements Runnable {
 	}
 
 	private GamePanel gamePanel;
+	private GameModePanel gameModePanel; // todo : remove this
 	
 	public HoloTV(Stadium stadium) {
 		this.stadium = stadium;
@@ -25,9 +26,11 @@ public class HoloTV implements Runnable {
 		
 		// Create the GamePanel and himself create and add an ArkadiaNews
 		this.gamePanel = new GamePanel(stadium);
-		
+		this.gameModePanel = new GameModePanel(); // todo : remove this
+
+
 		// Add the panel to the frame
-		this.frame.add(this.gamePanel);
+		this.frame.add(this.gameModePanel); // todo : change this
 		
 		// When red X is clicked
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

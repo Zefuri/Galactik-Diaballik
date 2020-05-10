@@ -5,7 +5,6 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 
 public class MainMenuPanel extends JPanel {
 
@@ -15,19 +14,11 @@ public class MainMenuPanel extends JPanel {
     private static Dimension buttonsDimensions;
 
     public MainMenuPanel() {
-        backgroundColor = new Color(27,148,209);
+        backgroundColor = VisualRessources.getInstance().customBlue;
         this.setLayout(new GridLayout(2,1)); // upper area for the title, lower area for the buttons
 
         // importing a font to use throughout the game
-        Font customFont;
-        try{
-            customFont = Font.createFont(Font.TRUETYPE_FONT, new File("fonts/galacticstormsuperital.ttf")).deriveFont(20f);
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(customFont);
-        } catch (Exception e) {
-            e.printStackTrace();
-            customFont = new Font("Arial", Font.BOLD, 40); // if font isn't imported, use a classic font
-        }
+        Font customFont = VisualRessources.getInstance().customFontSuperItal;
 
         JPanel mainTitlePanel = new JPanel();
         mainTitlePanel.setBackground(backgroundColor); // without this a fine ray will appear
