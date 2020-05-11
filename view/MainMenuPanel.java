@@ -1,6 +1,7 @@
 package view;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -20,15 +21,18 @@ public class MainMenuPanel extends JPanel {
         // importing a font to use throughout the game
         Font customFont = VisualResources.getInstance().customFontSuperItal;
 
-        JPanel mainTitlePanel = new JPanel();
+        JPanel mainTitlePanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.CENTER;
         mainTitlePanel.setBackground(backgroundColor); // without this a fine ray will appear
         this.add(mainTitlePanel);
 
         Font titleFont = customFont.deriveFont(100f); // create a font for the title
 
         JLabel titleLabel = new JLabel("<html>Galactik<br>&emsp;Diaballik"); // html for multi-line label and "&emsp;" for a tab. don't ask.
+        titleLabel.setBorder(new EmptyBorder(0,0,0,20));
         titleLabel.setFont(titleFont);
-        mainTitlePanel.add(titleLabel);
+        mainTitlePanel.add(titleLabel, gbc);
 
         buttonsPanel = new JPanel(new GridLayout(3,1)); // panel will hold the buttons. need as many rows as buttons
         this.add(buttonsPanel);
