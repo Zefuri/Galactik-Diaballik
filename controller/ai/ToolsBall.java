@@ -34,103 +34,72 @@ public class ToolsBall {
 	
 	
 	//return the avancement of team ball (6 - ball position if team bottom and 0 + ball position if team top)
-	public int teamBallAvance(Team team, int ballPosition){
+	public int teamBallAvance(Team team){
 		if(team.getPosition() == TeamPosition.TOP)
-			return ballPosition;
-		return (ModelConstants.BOARD_SIZE - 1) - ballPosition;
+			return team.getBallPlayer().getPosition().getX();
+		return (ModelConstants.BOARD_SIZE - 1) - team.getBallPlayer().getPosition().getX();
 	}
 	
 	//return the difference between the avancement of two ball
-	public int ballAvance(Team team, int ballPosition){
-		return teamBallAvance(team, ballPosition) - teamBallAvance(team.getEnemyTeam(), team.getEnemyTeam().getBallPlayer().getPosition().getX());
+	public int ballAvance(Team team){
+		return teamBallAvance(team) - teamBallAvance(team.getEnemyTeam());
 	}
 
 
-	public String[] remplace1(Team team, String[] one, int[] previousPositionFirst, int numPreviousAction, Player player, char deplacementOne) {
-		String[] stockage;
-		String[] result = new String[2];
-		result[0] = "";	result[1] = "";
+	public String remplace1(Team team, String[] one, int[] previousPositionFirst, int numPreviousAction, Player player, char deplacementOne) {
+		String result = "";
 		if(deplacementOne == 'U') {
-			stockage = remplace2(team, one, previousPositionFirst, numPreviousAction, player, 'U');
-			result[0] += stockage[0];	result[1] += stockage[1];
-			stockage = remplace2(team, one, previousPositionFirst, numPreviousAction, player, 'R');
-			result[0] += stockage[0];	result[1] += stockage[1];
-			stockage = remplace2(team, one, previousPositionFirst, numPreviousAction, player, 'L');
-			result[0] += stockage[0];	result[1] += stockage[1];
+			result += remplace2(team, one, previousPositionFirst, numPreviousAction, player, 'U');
+			result += remplace2(team, one, previousPositionFirst, numPreviousAction, player, 'R');
+			result += remplace2(team, one, previousPositionFirst, numPreviousAction, player, 'L');
 		} else if(deplacementOne == 'R') {
-			stockage = remplace2(team, one, previousPositionFirst, numPreviousAction, player, 'U');
-			result[0] += stockage[0];	result[1] += stockage[1];
-			stockage = remplace2(team, one, previousPositionFirst, numPreviousAction, player, 'R');
-			result[0] += stockage[0];	result[1] += stockage[1];
-			stockage = remplace2(team, one, previousPositionFirst, numPreviousAction, player, 'D');
-			result[0] += stockage[0];	result[1] += stockage[1];
+			result += remplace2(team, one, previousPositionFirst, numPreviousAction, player, 'U');
+			result += remplace2(team, one, previousPositionFirst, numPreviousAction, player, 'R');
+			result += remplace2(team, one, previousPositionFirst, numPreviousAction, player, 'D');
 		} else if(deplacementOne == 'D') {
-			stockage = remplace2(team, one, previousPositionFirst, numPreviousAction, player, 'D');
-			result[0] += stockage[0];	result[1] += stockage[1];
-			stockage = remplace2(team, one, previousPositionFirst, numPreviousAction, player, 'R');
-			result[0] += stockage[0];	result[1] += stockage[1];
-			stockage = remplace2(team, one, previousPositionFirst, numPreviousAction, player, 'L');
-			result[0] += stockage[0];	result[1] += stockage[1];
+			result += remplace2(team, one, previousPositionFirst, numPreviousAction, player, 'D');
+			result += remplace2(team, one, previousPositionFirst, numPreviousAction, player, 'R');
+			result += remplace2(team, one, previousPositionFirst, numPreviousAction, player, 'L');
 		} else {
-			stockage = remplace2(team, one, previousPositionFirst, numPreviousAction, player, 'U');
-			result[0] += stockage[0];	result[1] += stockage[1];
-			stockage = remplace2(team, one, previousPositionFirst, numPreviousAction, player, 'D');
-			result[0] += stockage[0];	result[1] += stockage[1];
-			stockage = remplace2(team, one, previousPositionFirst, numPreviousAction, player, 'L');
-			result[0] += stockage[0];	result[1] += stockage[1];
+			result += remplace2(team, one, previousPositionFirst, numPreviousAction, player, 'U');
+			result += remplace2(team, one, previousPositionFirst, numPreviousAction, player, 'D');
+			result += remplace2(team, one, previousPositionFirst, numPreviousAction, player, 'L');
 		}
 		
 		return result;
 	}
 	
 	
-	public String[] remplace2(Team team, String[] one, int[] previousPositionFirst, int numPreviousAction, Player player, char deplacementTwo) {
-		String[] result = new String[2];
-		result[0] = ""; result[1] = "";
+	public String remplace2(Team team, String[] one, int[] previousPositionFirst, int numPreviousAction, Player player, char deplacementTwo) {
+		String result = "";
 		int[] nextPosition = previousPosition(player, reverse(deplacementTwo));
-		boolean canRemplace = nextPosition[0] == previousPositionFirst[0];
-		canRemplace = canRemplace   &&   nextPosition[1] == previousPositionFirst[1];
+		boolean canRemplace = nextPosition[0] == previousPositionFirst[0]   &&   nextPosition[1] == previousPositionFirst[1];
 		
 		if(canRemplace) {
-			result[0] += one[numPreviousAction]+player.getName().charAt(player.getName().length()-1)+""+deplacementTwo;
-			result[1] += team.getBallPlayer().getPosition().getX();
+			result += one[numPreviousAction]+player.getName().charAt(player.getName().length()-1)+""+deplacementTwo;
 		}
 		
 		return result;
 	}
 	
 	
-	public String[] twoCanMove(Player ballPlayer, Stadium stadium, String[] one, int firstPlayer, int numberOfPlayer, Player player, int action){
-		String[] result = new String[2];
-		result[0] = "";
-		result[1] = "";
-		String[] testDeplacement;
+	public String twoCanMove(Player ballPlayer, Stadium stadium, String[] one, int firstPlayer, int numberOfPlayer, Player player, int action){
 		
-		testDeplacement = twoCanMoveDirection(ballPlayer, stadium, one, firstPlayer, numberOfPlayer, player, action, 'U');
-			result[0] += testDeplacement[0];
-			result[1] += testDeplacement[1];
-		testDeplacement = twoCanMoveDirection(ballPlayer, stadium, one, firstPlayer, numberOfPlayer, player, action, 'R');
-			result[0] += testDeplacement[0];
-			result[1] += testDeplacement[1];
-		testDeplacement = twoCanMoveDirection(ballPlayer, stadium, one, firstPlayer, numberOfPlayer, player, action, 'D');
-			result[0] += testDeplacement[0];
-			result[1] += testDeplacement[1];
-		testDeplacement = twoCanMoveDirection(ballPlayer, stadium, one, firstPlayer, numberOfPlayer, player, action, 'L');
-			result[0] += testDeplacement[0];
-			result[1] += testDeplacement[1];
+		String result = twoCanMoveDirection(ballPlayer, stadium, one, firstPlayer, numberOfPlayer, player, action, 'U');
+		result += twoCanMoveDirection(ballPlayer, stadium, one, firstPlayer, numberOfPlayer, player, action, 'R');
+		result += twoCanMoveDirection(ballPlayer, stadium, one, firstPlayer, numberOfPlayer, player, action, 'D');
+		result += twoCanMoveDirection(ballPlayer, stadium, one, firstPlayer, numberOfPlayer, player, action, 'L');
 		
 		return result;
 	}
 	
-	public String[] twoCanMoveDirection(Player ballPlayer, Stadium stadium, String[] one, int firstPlayer, int numberOfPlayer, Player player, int action, char deplacement){
-		String[] result = new String[2];
-		result[0] = ""; result[1] = "";
+	public String twoCanMoveDirection(Player ballPlayer, Stadium stadium, String[] one, int firstPlayer, int numberOfPlayer, Player player, int action, char deplacement){
+		String result = "";
 		boolean sameFirstPlayer = numberOfPlayer == firstPlayer;
 		boolean verifBack = !sameFirstPlayer   ||   one[action].charAt(1) != reverse(deplacement); //You can't back
 		
 		if(verifBack   &&   stadium.playerCanMove(player, moveOfChar(deplacement))) {
-			result[0] = one[action]+numberOfPlayer+""+deplacement;
-			result[1] = ""+ballPlayer.getPosition().getX();
+			result = one[action]+numberOfPlayer+""+deplacement;
 		}
 		
 		return result;
@@ -170,91 +139,63 @@ public class ToolsBall {
 	}
 	
 
-	public String[] twoCanMovePreviousBall(Team team, Stadium stadium, String[] one, int index, Player ballPlayer, String ballNumber) {
-		String[] result = new String[2];
-		result[0] = "";	result[1] = "";
-		
-		String[] view;
-		view = twoCanMovePreviousBallDeplacement(team, stadium, one, index, ballPlayer, ballNumber, 'U');
-		result[0] += view[0]; result[1] += view[1];
-		view = twoCanMovePreviousBallDeplacement(team, stadium, one, index, ballPlayer, ballNumber, 'R');
-		result[0] += view[0]; result[1] += view[1];
-		view = twoCanMovePreviousBallDeplacement(team, stadium, one, index, ballPlayer, ballNumber, 'D');
-		result[0] += view[0]; result[1] += view[1];
-		view = twoCanMovePreviousBallDeplacement(team, stadium, one, index, ballPlayer, ballNumber, 'L');
-		result[0] += view[0]; result[1] += view[1];
+	public String twoCanMovePreviousBall(Team team, Stadium stadium, String[] one, int index, Player ballPlayer, String ballNumber) {
+		String result = twoCanMovePreviousBallDeplacement(team, stadium, one, index, ballPlayer, ballNumber, 'U');
+		result += twoCanMovePreviousBallDeplacement(team, stadium, one, index, ballPlayer, ballNumber, 'R');
+		result += twoCanMovePreviousBallDeplacement(team, stadium, one, index, ballPlayer, ballNumber, 'D');
+		result += twoCanMovePreviousBallDeplacement(team, stadium, one, index, ballPlayer, ballNumber, 'L');
 		
 		return result;
 	}
 
 							
-	public String[] twoCanMovePreviousBallDeplacement(Team team, Stadium stadium, String[] one, int index, Player ballPlayer, String ballNumber, char deplacement) {
-		String[] result = new String[2];
-		result[0] = "";	result[1] = "";
+	public String twoCanMovePreviousBallDeplacement(Team team, Stadium stadium, String[] one, int index, Player ballPlayer, String ballNumber, char deplacement) {
+		String result = "";
 		if(stadium.playerCanMove(ballPlayer, moveOfChar(deplacement))){
-			result[0] += one[index]+ballNumber+""+deplacement;
-			result[1] += team.getBallPlayer().getPosition().getX();
+			result += one[index]+ballNumber+""+deplacement;
 		}
 		return result;	
 	}
 		
 		
-	public String[] threeCanMove(Team team, Stadium stadium, String[] two, int numberOfPlayer, int firstPlayer, int index, Player player){
-		String[] result = new String[2];
-		result[0] = ""; result[1] = "";
-		
-		String[] view = threeCanMoveDeplacement(team,stadium, two, numberOfPlayer, firstPlayer, index, player, 'U');
-		result[0] += view[0]; result[1] += view[1];
-		view = threeCanMoveDeplacement(team,stadium, two, numberOfPlayer, firstPlayer, index, player, 'R');
-		result[0] += view[0]; result[1] += view[1];
-		view = threeCanMoveDeplacement(team,stadium, two, numberOfPlayer, firstPlayer, index, player, 'D');
-		result[0] += view[0]; result[1] += view[1];
-		view = threeCanMoveDeplacement(team,stadium, two, numberOfPlayer, firstPlayer, index, player, 'L');
-		result[0] += view[0]; result[1] += view[1];
+	public String threeCanMove(Team team, Stadium stadium, String[] two, int numberOfPlayer, int firstPlayer, int index, Player player){
+		String result = threeCanMoveDeplacement(team,stadium, two, numberOfPlayer, firstPlayer, index, player, 'U');
+		result += threeCanMoveDeplacement(team,stadium, two, numberOfPlayer, firstPlayer, index, player, 'R');
+		result += threeCanMoveDeplacement(team,stadium, two, numberOfPlayer, firstPlayer, index, player, 'D');
+		result += threeCanMoveDeplacement(team,stadium, two, numberOfPlayer, firstPlayer, index, player, 'L');
 		
 		return result;
 	}
 	
 
-	public String[] threeCanMoveDeplacement(Team team, Stadium stadium, String[] two, int numberOfPlayer, int firstPlayer, int index, Player player, char deplacement) {
-		String[] result = new String[2];
-		result[0] = ""; result[1] = "";
+	public String threeCanMoveDeplacement(Team team, Stadium stadium, String[] two, int numberOfPlayer, int firstPlayer, int index, Player player, char deplacement) {
+		String result = "";
 		
 		boolean sameFirstPlayer = numberOfPlayer == firstPlayer;
 		boolean verifBack = !sameFirstPlayer   ||   two[index].charAt(3) != reverse(deplacement); //You can't back
 		if(verifBack   &&   !player.equals(team.getBallPlayer())   &&   stadium.playerCanMove(player, moveOfChar(deplacement))) {
-			result[0] += two[index]+numberOfPlayer+""+deplacement;
-			result[1] += team.getBallPlayer().getPosition().getX();
+			result += two[index]+numberOfPlayer+""+deplacement;
 		}
 		
 		return result;
 	}
 	
 	
-		public String[] threeCanMovePreviousBall(Team team, Player ballPlayer, Stadium stadium, String[] two, int index, String ballNum) {
-		String[] result = new String[2];
-		result[0] = ""; result[1] = "";
-		
-		String[] view = threeCanMovePreviousBallDeplacement(team, ballPlayer, stadium, two, index, ballNum, 'U');
-		result[0] += view[0]; result[1] += view[1];
-		view = threeCanMovePreviousBallDeplacement(team, ballPlayer, stadium, two, index, ballNum, 'R');
-		result[0] += view[0]; result[1] += view[1];
-		view = threeCanMovePreviousBallDeplacement(team, ballPlayer, stadium, two, index, ballNum, 'D');
-		result[0] += view[0]; result[1] += view[1];
-		view = threeCanMovePreviousBallDeplacement(team, ballPlayer, stadium, two, index, ballNum, 'L');
-		result[0] += view[0]; result[1] += view[1];
+		public String threeCanMovePreviousBall(Team team, Player ballPlayer, Stadium stadium, String[] two, int index, String ballNum) {
+		String result = threeCanMovePreviousBallDeplacement(team, ballPlayer, stadium, two, index, ballNum, 'U');
+		result += threeCanMovePreviousBallDeplacement(team, ballPlayer, stadium, two, index, ballNum, 'R');
+		result += threeCanMovePreviousBallDeplacement(team, ballPlayer, stadium, two, index, ballNum, 'D');
+		result += threeCanMovePreviousBallDeplacement(team, ballPlayer, stadium, two, index, ballNum, 'L');
 		
 		return result;
 	}
 	
 	
-	public String[] threeCanMovePreviousBallDeplacement(Team team, Player ballPlayer, Stadium stadium, String[] two, int index, String ballNum, char deplacement) {
-		String[] result = new String[2];
-		result[0] = ""; result[1] = "";
+	public String threeCanMovePreviousBallDeplacement(Team team, Player ballPlayer, Stadium stadium, String[] two, int index, String ballNum, char deplacement) {
+		String result = "";
 		
 		if(stadium.playerCanMove(ballPlayer, moveOfChar(deplacement))) {
-			result[0] += two[index]+ballNum+deplacement;
-			result[1] += team.getBallPlayer().getPosition().getX();
+			result += two[index]+ballNum+deplacement;
 		}
 		
 		return result;
