@@ -14,11 +14,11 @@ public class MainMenuPanel extends JPanel {
     private static Dimension buttonsDimensions;
 
     public MainMenuPanel() {
-        backgroundColor = VisualRessources.getInstance().customBlue;
+        backgroundColor = VisualResources.getInstance().customBlue;
         this.setLayout(new GridLayout(2,1)); // upper area for the title, lower area for the buttons
 
         // importing a font to use throughout the game
-        Font customFont = VisualRessources.getInstance().customFontSuperItal;
+        Font customFont = VisualResources.getInstance().customFontSuperItal;
 
         JPanel mainTitlePanel = new JPanel();
         mainTitlePanel.setBackground(backgroundColor); // without this a fine ray will appear
