@@ -8,7 +8,12 @@ public class Action {
     private Player previousPlayer, nextPlayer;
     private Case previousCase, nextCase;
 
-    //We remove the "public" attribute in order not to access the constructor from an outer package
+    /* We remove the "public" attribute in order not to access the constructor from an outer package
+     * 
+     * PASS : new Action(ActionType.PASS, joueurEmetteur, joueurCible, caseEmettrice, caseCible);
+     * MOVE : new Action(ActionType.MOVE, joueurBougeant, joueurBougeant, caseInitiale, caseCible);
+     * END_TURN : new Action(ActionType.END_TURN, null, null, null, null);
+     */
     Action(ActionType actionType, Player previousPlayer, Player nextPlayer, Case previousCase, Case nextCase) {
         this.type = actionType;
         this.previousPlayer = previousPlayer;
