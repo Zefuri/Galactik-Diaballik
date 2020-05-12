@@ -1,11 +1,11 @@
 package view;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 
 public class MainMenuPanel extends JPanel {
 
@@ -15,29 +15,24 @@ public class MainMenuPanel extends JPanel {
     private static Dimension buttonsDimensions;
 
     public MainMenuPanel() {
-        backgroundColor = new Color(27,148,209);
+        backgroundColor = VisualResources.getInstance().customBlue;
         this.setLayout(new GridLayout(2,1)); // upper area for the title, lower area for the buttons
 
         // importing a font to use throughout the game
-        Font customFont;
-        try{
-            customFont = Font.createFont(Font.TRUETYPE_FONT, new File("fonts/galacticstormsuperital.ttf")).deriveFont(20f);
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(customFont);
-        } catch (Exception e) {
-            e.printStackTrace();
-            customFont = new Font("Arial", Font.BOLD, 40); // if font isn't imported, use a classic font
-        }
+        Font customFont = VisualResources.getInstance().customFontSuperItal;
 
-        JPanel mainTitlePanel = new JPanel();
+        JPanel mainTitlePanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.CENTER;
         mainTitlePanel.setBackground(backgroundColor); // without this a fine ray will appear
         this.add(mainTitlePanel);
 
         Font titleFont = customFont.deriveFont(100f); // create a font for the title
 
         JLabel titleLabel = new JLabel("<html>Galactik<br>&emsp;Diaballik"); // html for multi-line label and "&emsp;" for a tab. don't ask.
+        titleLabel.setBorder(new EmptyBorder(0,0,0,20));
         titleLabel.setFont(titleFont);
-        mainTitlePanel.add(titleLabel);
+        mainTitlePanel.add(titleLabel, gbc);
 
         buttonsPanel = new JPanel(new GridLayout(3,1)); // panel will hold the buttons. need as many rows as buttons
         this.add(buttonsPanel);
