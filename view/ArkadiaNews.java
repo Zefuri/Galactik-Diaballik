@@ -29,10 +29,10 @@ public class ArkadiaNews extends JComponent {
 		this.stadium = stadium;
 		
 		try {
-			this.snowKidPlayer = ImageIO.read(getClass().getResourceAsStream("/resources/snowKidPlayer.png"));
-			this.snowKidBall = ImageIO.read(getClass().getResourceAsStream("/resources/snowKidBall.png"));
-			this.shadowPlayer = ImageIO.read(getClass().getResourceAsStream("/resources/shadowPlayer.png"));
-			this.shadowBall = ImageIO.read(getClass().getResourceAsStream("/resources/shadowBall.png"));
+			this.snowKidPlayer = ImageIO.read(getClass().getResourceAsStream("/resources/images/snowKidPlayer.png"));
+			this.snowKidBall = ImageIO.read(getClass().getResourceAsStream("/resources/images/snowKidBall.png"));
+			this.shadowPlayer = ImageIO.read(getClass().getResourceAsStream("/resources/images/shadowPlayer.png"));
+			this.shadowBall = ImageIO.read(getClass().getResourceAsStream("/resources/images/shadowBall.png"));
 		} catch (IOException e) {
 			System.err.println("Les images n'ont pas pu être chargées : ");
 			e.printStackTrace();
