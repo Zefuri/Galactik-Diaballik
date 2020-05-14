@@ -3,6 +3,9 @@ package view;
 import javax.swing.JFrame;
 import controller.listeners.MouseAction;
 import model.Stadium;
+import patterns.Observer;
+
+import static java.lang.Thread.sleep;
 
 public class HoloTV implements Runnable {
 	private JFrame frame;
@@ -19,11 +22,15 @@ public class HoloTV implements Runnable {
 	public HoloTV(Stadium stadium) {
 		this.stadium = stadium;
 	}
-	
+
+	public JFrame getFrame() {
+		return frame;
+	}
+
 	@Override
 	public void run() {
 		// Create the main window
-		this.frame = new JFrame("Stadium : Snow Kids VS Shadows !!!!");
+		this.frame = new JFrame("Galactik Diaballik");
 
 		// create the main menu panel
 		mainMenuPanel = new MainMenuPanel();
@@ -35,7 +42,7 @@ public class HoloTV implements Runnable {
 		this.gamePanel = new GamePanel(stadium);
 
 		// Add the panel to the frame
-		this.frame.add(this.gamePanel);
+		this.frame.add(this.mainMenuPanel);
 		
 		// When red X is clicked
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -67,5 +74,22 @@ public class HoloTV implements Runnable {
 	
 	public int getScreenHeight() {
 		return this.frame.getHeight();
+	}
+
+	public void addObserverMainMenuPanel(Observer observer) {
+		mainMenuPanel.addObserver(observer);
+	}
+
+	public void addObserverGameModePanel(Observer observer) {
+		gameModePanel.addObserver(observer);
+	}
+
+	/*
+	clear the frame entirely and add the game mode selection panel
+	 */
+	public void switchToGameModePanel() {
+		frame.getContentPane().removeAll();
+		frame.add(gameModePanel);
+		frame.validate();  // very important
 	}
 }

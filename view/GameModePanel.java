@@ -1,5 +1,10 @@
 package view;
 
+import model.enums.UserInput;
+import patterns.Observable;
+import patterns.ObservableHandler;
+import patterns.Observer;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -8,9 +13,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
-public class GameModePanel extends JPanel {
+public class GameModePanel extends JPanel implements Observable {
+
+    private ObservableHandler observableHandler;
 
     public GameModePanel() {
+        observableHandler = new ObservableHandler();
+
         this.setBackground(VisualResources.getInstance().customBlue);
         this.setLayout(new GridLayout(4,1)); // divide the panel into 4 rows
 
@@ -39,7 +48,7 @@ public class GameModePanel extends JPanel {
         pvpPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
+                GameModePanel.this.notify(UserInput.CLICKED_PVP);
             }
 
             @Override
@@ -59,7 +68,7 @@ public class GameModePanel extends JPanel {
         pvcPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
+                GameModePanel.this.notify(UserInput.CLICKED_PVC);
             }
 
             @Override
@@ -79,7 +88,7 @@ public class GameModePanel extends JPanel {
         cvcPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
+                GameModePanel.this.notify(UserInput.CLICKED_CVC);
             }
 
             @Override
@@ -102,6 +111,17 @@ public class GameModePanel extends JPanel {
         JPanel mainPanel = new JPanel(new GridLayout(1,3)); // the panel has 3 columns
         mainPanel.setBackground(VisualResources.getInstance().customBlue);
         mainPanel.setBorder(new LineBorder(Color.BLUE)); // default border color
+//        mainPanel.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseEntered(MouseEvent e) {
+//                mainPanel.setBorder(new LineBorder(Color.RED));
+//            }
+//
+//            @Override
+//            public void mouseExited(MouseEvent e) {
+//                mainPanel.setBorder(new LineBorder(Color.BLUE));
+//            }
+//        });
 
         // left picture as an ImageIcon
         JLabel leftPictureLabel = new JLabel(new ImageIcon(leftIcon));
@@ -123,5 +143,15 @@ public class GameModePanel extends JPanel {
         mainPanel.add(rightPictureLabel);
 
         return mainPanel;
+    }
+
+    @Override
+    public void addObserver(Observer observer) {
+        observableHandler.addObserver(observer);
+    }
+
+    @Override
+    public void notify(Object object) {
+        observableHandler.notify(object);
     }
 }

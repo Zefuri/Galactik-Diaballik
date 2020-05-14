@@ -1,5 +1,10 @@
 package view;
 
+import model.enums.UserInput;
+import patterns.Observable;
+import patterns.ObservableHandler;
+import patterns.Observer;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -7,7 +12,9 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class MainMenuPanel extends JPanel {
+public class MainMenuPanel extends JPanel implements Observable {
+
+    private ObservableHandler observableHandler;
 
     private static Color backgroundColor;
     private static JPanel buttonsPanel;
@@ -15,6 +22,8 @@ public class MainMenuPanel extends JPanel {
     private static Dimension buttonsDimensions;
 
     public MainMenuPanel() {
+        observableHandler = new ObservableHandler();
+
         backgroundColor = VisualResources.getInstance().customBlue;
         this.setLayout(new GridLayout(2,1)); // upper area for the title, lower area for the buttons
 
@@ -42,15 +51,15 @@ public class MainMenuPanel extends JPanel {
 
         //create the play button
         JButton playButton = createButton("Jouer");
-        playButton.addActionListener(actionEvent -> System.out.println("clicked on play")); // action listener for when button is clicked
+        playButton.addActionListener(actionEvent -> notify(UserInput.CLICKED_PLAY)); // action listener for when button is clicked
 
         // create the settings button
         JButton settingsButton = createButton("Option");
-        settingsButton.addActionListener(actionEvent -> System.out.println("clicked on settings"));
+        settingsButton.addActionListener(actionEvent -> notify(UserInput.CLICKED_SETTINGS));
 
         // create the quit button
         JButton quitButton = createButton("Quitter");
-        quitButton.addActionListener(actionEvent -> System.out.println("clicked on quit"));
+        quitButton.addActionListener(actionEvent -> notify(UserInput.CLICKED_QUIT));
     }
 
     /*
@@ -77,5 +86,15 @@ public class MainMenuPanel extends JPanel {
         currentButtonPanel.add(button);
 
         return button;
+    }
+
+    @Override
+    public void addObserver(Observer observer) {
+        observableHandler.addObserver(observer);
+    }
+
+    @Override
+    public void notify(Object object) {
+        observableHandler.notify(object);
     }
 }
