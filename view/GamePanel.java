@@ -5,6 +5,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -216,6 +217,9 @@ public class GamePanel extends JPanel implements Observable {
 		turnButtons.add(this.resetTurnButton, gbc);
 
 		this.gameControlPanel.add(turnButtons);
+		
+		this.undoButton.addActionListener(actionEvent -> notify(ActionType.UNDO));
+		this.resetTurnButton.addActionListener(actionEvent -> notify(ActionType.RESET));
 	}
 	
 	private void createEndTurnButtonPanel() {

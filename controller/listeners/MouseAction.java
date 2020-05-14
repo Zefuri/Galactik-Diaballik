@@ -201,15 +201,27 @@ public class MouseAction extends MouseAdapter implements Observer {
 
 	@Override
 	public void update(Object object) {
-		if(object.equals(ActionType.END_TURN)) { // following code is executed when the "end of turn" button is pressed
-			ActionResult res = this.stadium.endTurn();
+		ActionResult res = ActionResult.DONE;
+		
+		switch((ActionType) object) {	
+			case END_TURN : // following code is executed when the "end of turn" button is pressed
+				res = this.stadium.endTurn();
+				break;
+				
+			case UNDO :
+				res = this.stadium.undoAction();
+				break;
 			
-			if (res == ActionResult.ERROR) {
-				System.err.println("You cannot end your turn without performing at least one action.");
-			} else {
-				this.holoTV.updateGameInfos();
-				clearSelectedPlayer();
-			}
+			case RESET :
+				res = this.stadium.resetTurn();
+				break;
+		}
+		
+		if (res == ActionResult.ERROR) {
+			System.err.println("You need to do at least one action before doing that.");
+		} else {
+			this.holoTV.updateGameInfos();
+			clearSelectedPlayer();
 		}
 	}
 	

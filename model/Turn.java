@@ -1,5 +1,6 @@
 package model;
 
+import model.enums.ActionResult;
 import model.enums.ActionType;
 
 public class Turn {
@@ -51,5 +52,35 @@ public class Turn {
 	
 	public int getNbMoveLeft() {
 		return ModelConstants.MAX_MOVES_PER_TOUR - this.nbMove;
+	}
+	
+	public ActionResult undo() {
+		ActionResult res = ActionResult.DONE;
+		
+		if(this.nbMove + this.nbPass > 0) {
+			if(this.actions[(this.nbPass + this.nbMove) - 1].getType() == ActionType.PASS) {
+				this.nbPass--;
+			} else {
+				this.nbMove--;
+			}
+		} else {
+			res = ActionResult.ERROR;
+		}
+		
+		return res;
+	}
+	
+	public ActionResult deleteActions() {
+		ActionResult res = ActionResult.DONE;
+		
+		if(this.nbMove + this.nbPass > 0) {
+			this.actions = new Action[3];
+			this.nbPass = 0;
+			this.nbMove = 0;
+		} else {
+			res = ActionResult.ERROR;
+		}
+		
+		return res;
 	}
 }
