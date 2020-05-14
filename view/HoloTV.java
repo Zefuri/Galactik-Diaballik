@@ -41,7 +41,7 @@ public class HoloTV implements Runnable {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Give it a default size and lets roll
-        frame.setSize(800, 800);
+        frame.setSize(900, 810);
         frame.setVisible(true);
 	}
 	
