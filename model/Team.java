@@ -155,4 +155,8 @@ public class Team {
 		//Voir si c'est suffisant
 		return this.position == t.getPosition();
 	}
+
+	public boolean isWinner() {
+		return stadium.isAWin(position);
+	}
 }

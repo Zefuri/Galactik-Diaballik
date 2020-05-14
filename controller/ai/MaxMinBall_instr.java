@@ -7,7 +7,7 @@ import model.enums.MoveDirection;
 import model.enums.TeamPosition;
 import model.ModelConstants;
 
-public class MaxMinBall{
+public class MaxMinBall_instr{
 	Stadium stadium;
 	Team team;
 	Player ballPlayer;
@@ -22,7 +22,8 @@ public class MaxMinBall{
 	String[] mustActs;
 	int mustAvancement;
 
-	public MaxMinBall(Stadium stadium, Team team) {
+	public MaxMinBall_instr(Stadium stadium, Team team) {
+		System.out.println(stadium.toString());
 		this.stadium = stadium;
 		this.team = team;
 		ballPlayer = team.getBallPlayer();
@@ -316,14 +317,14 @@ public class MaxMinBall{
 		threeHigh = initValue(three);
 		
 		if(checkingDepth != 0){
-			MinMaxBall minCheck;
+			MinMaxBall_instr minCheck;
 			
 			for(int i = 0; i != one.length+two.length+three.length; i++){
 			
 				if(i < one.length){
 					//you play one act
 					exec(one[i]);
-						minCheck = new MinMaxBall(stadium, team.getEnemyTeam());
+						minCheck = new MinMaxBall_instr(stadium, team.getEnemyTeam());
 						minCheck.progress(checkingDepth-1);
 						oneHigh[i] = minCheck.getWorstAvancement();
 					undo(one[i]);
@@ -331,7 +332,7 @@ public class MaxMinBall{
 				}else if(i-one.length < two.length){
 					//you play two act
 					exec(two[i-one.length]);
-						minCheck = new MinMaxBall(stadium, team.getEnemyTeam());
+						minCheck = new MinMaxBall_instr(stadium, team.getEnemyTeam());
 						minCheck.progress(checkingDepth-1);
 						twoHigh[i-one.length] = minCheck.getWorstAvancement();
 					undo(two[i-one.length]);
@@ -339,7 +340,7 @@ public class MaxMinBall{
 				}else{
 					//you play three act
 					exec(three[i-one.length-two.length]);
-						minCheck = new MinMaxBall(stadium, team.getEnemyTeam());
+						minCheck = new MinMaxBall_instr(stadium, team.getEnemyTeam());
 						minCheck.progress(checkingDepth-1);
 						threeHigh[i-one.length-two.length] = minCheck.getWorstAvancement();
 					undo(three[i-one.length-two.length]);
@@ -378,6 +379,18 @@ public class MaxMinBall{
 
 	
 	public static void main(String args[]){
-		//tests
+		//tests	
+		Stadium stadium = new Stadium();
+		MaxMinBall_instr test = new MaxMinBall_instr(stadium, stadium.getTeam(TeamPosition.BOTTOM));
+		test.progress((int)(args[0].charAt(args[0].length()-1)-'0'));
+		System.out.println("Taille de One: "+test.getOne().length);
+		System.out.println("Taille de Two: "+test.getTwo().length);
+		System.out.println("Taille de Three: "+test.getThree().length);
+		System.out.println("Pour une prévision de: "+args[0]+" on a une valeur de: "+test.getMustAvancement());
+		System.out.println("Obtenu par: ");
+		for(int i = 0; i!=test.getMustActs().length; i++){
+			System.out.print(test.getMustActs()[i]+" - ");
+		}
+		System.out.println("");	
 	}
 }
