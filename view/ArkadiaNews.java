@@ -27,6 +27,7 @@ public class ArkadiaNews extends JComponent {
 	
 	public ArkadiaNews(Stadium stadium) {
 		this.stadium = stadium;
+		this.setBackground(VisualResources.getInstance().customGrassGreen);
 		
 		try {
 			this.snowKidPlayer = ImageIO.read(getClass().getResourceAsStream("/resources/images/snowKidPlayer.png"));
@@ -54,7 +55,17 @@ public class ArkadiaNews extends JComponent {
         
         // Drawing all players and outlines of the stadium
         for (int i = 0; i < ModelConstants.BOARD_SIZE; i++) {
-            for (int j = 0; j < ModelConstants.BOARD_SIZE; j++) {            	
+            for (int j = 0; j < ModelConstants.BOARD_SIZE; j++) {
+            	// Drawing all case
+            	drawable.setColor(VisualResources.getInstance().customGrassGreen);
+            	drawable.fillRect(caseSize * j, caseSize * i, caseSize, caseSize);
+            	
+            	// Draw outlines
+                drawable.setStroke(new BasicStroke(1));
+                drawable.setColor(Color.BLACK);
+                drawable.drawLine(caseSize * (j + 1), caseSize * i, caseSize * (j + 1), caseSize * (i + 1));
+                drawable.drawLine(caseSize * j, caseSize * (i + 1), caseSize * (j + 1), caseSize * (i + 1));
+            	
             	// Recover the player
                 Player p = this.stadium.getPlayer(new Case(i, j));
                 
@@ -84,12 +95,6 @@ public class ArkadiaNews extends JComponent {
 	                	drawable.drawImage(ball, (caseSize * j) + caseSize/6, (caseSize * i) + caseSize/6, caseSize - (caseSize/3), caseSize - (caseSize/3), null);
 	                }
                 }
-                
-                // Draw outlines
-                drawable.setStroke(new BasicStroke(1));
-                drawable.setColor(Color.BLACK);
-                drawable.drawLine(caseSize * (j + 1), caseSize * i, caseSize * (j + 1), caseSize * (i + 1));
-                drawable.drawLine(caseSize * j, caseSize * (i + 1), caseSize * (j + 1), caseSize * (i + 1));
             }
         }
 	}
