@@ -58,9 +58,14 @@ public class Turn {
 		ActionResult res = ActionResult.DONE;
 		
 		if(this.nbMove + this.nbPass > 0) {
-			if(this.actions[(this.nbPass + this.nbMove) - 1].getType() == ActionType.PASS) {
+			Action actionToDelete = this.actions[(this.nbPass + this.nbMove) - 1];
+			
+			if(actionToDelete.getType() == ActionType.PASS) {
+				actionToDelete.getPreviousPlayer().setBallPossession(true);
+				actionToDelete.getNextPlayer().setBallPossession(false);
 				this.nbPass--;
 			} else {
+				actionToDelete.getPreviousPlayer().setPosition(actionToDelete.getPreviousCase());
 				this.nbMove--;
 			}
 		} else {
@@ -73,12 +78,8 @@ public class Turn {
 	public ActionResult deleteActions() {
 		ActionResult res = ActionResult.DONE;
 		
-		if(this.nbMove + this.nbPass > 0) {
-			this.actions = new Action[3];
-			this.nbPass = 0;
-			this.nbMove = 0;
-		} else {
-			res = ActionResult.ERROR;
+		while(this.nbMove + this.nbPass > 0 && res == ActionResult.DONE) {
+			res = undo();
 		}
 		
 		return res;

@@ -219,10 +219,10 @@ public class MouseAction extends MouseAdapter implements Observer {
 		
 		if (res == ActionResult.ERROR) {
 			System.err.println("You need to do at least one action before doing that.");
-		} else {
-			this.holoTV.updateGameInfos();
-			clearSelectedPlayer();
 		}
+		
+		this.holoTV.updateGameInfos();
+		clearSelectedPlayer();
 	}
 	
 	private void clearSelectedPlayer() {

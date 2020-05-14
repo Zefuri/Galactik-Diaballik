@@ -88,7 +88,7 @@ public class Player {
 		if (canMove(direction)) {
 			Case newPosition = calculateNewPosition(direction);
 
-			Action moveAction = new Action(ActionType.MOVE, this, this, this.position, newPosition);
+			Action moveAction = new Action(ActionType.MOVE, this, this, new Case(this.position), newPosition);
 			
 			return this.getStadium().actionPerformed(moveAction);
 		} else {
@@ -103,7 +103,7 @@ public class Player {
 	
 	public ActionResult pass(Player nextPlayer) {
 		if (canPass(nextPlayer)) {
-			Action passAction = new Action(ActionType.PASS, this, nextPlayer, this.position, nextPlayer.getPosition());
+			Action passAction = new Action(ActionType.PASS, this, nextPlayer, new Case(this.position), new Case(nextPlayer.getPosition()));
 		
 			return this.getStadium().actionPerformed(passAction);
 		} else {
