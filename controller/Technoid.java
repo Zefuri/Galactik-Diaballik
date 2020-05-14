@@ -1,15 +1,21 @@
 package controller;
 
+import controller.listeners.MouseAction;
+import model.Stadium;
 import model.enums.UserInput;
 import patterns.Observer;
 import view.HoloTV;
 
 public class Technoid implements Observer {
 
-    private HoloTV holoTV;
+    private final HoloTV holoTV;
+    private Stadium stadium;
 
-    public Technoid(HoloTV holoTV) {
+    public Technoid(HoloTV holoTV, Stadium stadium) {
         this.holoTV = holoTV;
+        this.stadium = stadium;
+
+
     }
 
     @Override
@@ -28,15 +34,20 @@ public class Technoid implements Observer {
                 break;
 
             case CLICKED_PVP: // context : GameModePanel
-                System.out.println("user chose pvp");
+                MouseAction mouseAction = new MouseAction(holoTV, stadium);
+                holoTV.addArkadiaNewsMouseListener(mouseAction);
+                holoTV.getGamePanel().addObserver(mouseAction);
+                holoTV.switchToGamePanel();
                 break;
 
             case CLICKED_PVC: // context : GameModePanel
                 System.out.println("user chose pvc");
+                // TODO : create a MouseAction with an IA
                 break;
 
             case CLICKED_CVC: // context : GameModePanel
                 System.out.println("user chose cvc");
+                // TODO : loop on two AIs
                 break;
         }
     }

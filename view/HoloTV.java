@@ -92,4 +92,10 @@ public class HoloTV implements Runnable {
 		frame.add(gameModePanel);
 		frame.validate();  // very important
 	}
+
+	public void switchToGamePanel() {
+		frame.getContentPane().removeAll();
+		frame.add(gamePanel);
+		frame.validate();  // very important
+	}
 }
