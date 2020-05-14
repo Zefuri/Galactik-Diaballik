@@ -42,10 +42,12 @@ public class Technoid implements Observer {
 
             case CLICKED_PVC: // context : GameModePanel
                 System.out.println("user chose pvc");
+                // TODO : create a MouseAction with an IA
                 break;
 
             case CLICKED_CVC: // context : GameModePanel
                 System.out.println("user chose cvc");
+                // TODO : loop on two AIs
                 break;
         }
     }
