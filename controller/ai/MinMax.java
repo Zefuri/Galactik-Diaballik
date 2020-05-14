@@ -1,4 +1,4 @@
-package controller.ai;
+/*package controller.ai;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -191,4 +191,4 @@ public class MinMax {
 
         return possibleActions;
     }
-}
+}*/
