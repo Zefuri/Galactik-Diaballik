@@ -12,6 +12,8 @@ public class HoloTV implements Runnable {
 		return gamePanel;
 	}
 
+	private MainMenuPanel mainMenuPanel;
+	private GameModePanel gameModePanel;
 	private GamePanel gamePanel;
 	
 	public HoloTV(Stadium stadium) {
@@ -22,10 +24,16 @@ public class HoloTV implements Runnable {
 	public void run() {
 		// Create the main window
 		this.frame = new JFrame("Stadium : Snow Kids VS Shadows !!!!");
-		
+
+		// create the main menu panel
+		mainMenuPanel = new MainMenuPanel();
+
+		// create the game mode selection panel
+		gameModePanel = new GameModePanel();
+
 		// Create the GamePanel and himself create and add an ArkadiaNews
 		this.gamePanel = new GamePanel(stadium);
-		
+
 		// Add the panel to the frame
 		this.frame.add(this.gamePanel);
 		
@@ -33,7 +41,7 @@ public class HoloTV implements Runnable {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Give it a default size and lets roll
-        frame.setSize(800, 800);
+        frame.setSize(900, 810);
         frame.setVisible(true);
 	}
 	

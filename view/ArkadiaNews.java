@@ -4,7 +4,10 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 
 import model.Player;
@@ -17,8 +20,23 @@ public class ArkadiaNews extends JComponent {
 	
 	private int caseSize;
 	
+	private Image snowKidPlayer;
+	private Image snowKidBall;
+	private Image shadowPlayer;
+	private Image shadowBall;
+	
 	public ArkadiaNews(Stadium stadium) {
 		this.stadium = stadium;
+		
+		try {
+			this.snowKidPlayer = ImageIO.read(getClass().getResourceAsStream("/resources/images/snowKidPlayer.png"));
+			this.snowKidBall = ImageIO.read(getClass().getResourceAsStream("/resources/images/snowKidBall.png"));
+			this.shadowPlayer = ImageIO.read(getClass().getResourceAsStream("/resources/images/shadowPlayer.png"));
+			this.shadowBall = ImageIO.read(getClass().getResourceAsStream("/resources/images/shadowBall.png"));
+		} catch (IOException e) {
+			System.err.println("Les images n'ont pas pu être chargées : ");
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -31,58 +49,39 @@ public class ArkadiaNews extends JComponent {
         //To keep squared cases, we take the minimum between screen width and screen height
         this.caseSize = Math.min(windowWidth, windowHeight) / 7;
         
+        drawable.drawLine(0, 0, 0, caseSize * 7);
+        drawable.drawLine(0, 0, caseSize * 7, 0);
+        
         // Drawing all players and outlines of the stadium
         for (int i = 0; i < ModelConstants.BOARD_SIZE; i++) {
-            for (int j = 0; j < ModelConstants.BOARD_SIZE; j++) {
-            	Color ball = Color.WHITE;
-            	
+            for (int j = 0; j < ModelConstants.BOARD_SIZE; j++) {            	
             	// Recover the player
                 Player p = this.stadium.getPlayer(new Case(i, j));
                 
-             // Draw current player (change color if selected)
+                Image ball = this.snowKidBall;
+                
+                // Draw current player (change color if selected)
                 if (p != null) {
-                	// Draw current player (change color if selected)
-                	if (p.isSelected()) {
-                		drawable.setColor(Color.YELLOW);
-                	} else {
-                		drawable.setColor(Color.BLACK);
-                	}
-	                drawable.fillOval(caseSize * j, caseSize * i, caseSize, caseSize);
-	                
-	              
-                	drawable.setStroke(new BasicStroke(2));
-                	
                 	switch (p.getTeam().getPosition()) {
 	                	case TOP:
-	                		drawable.setColor(Color.RED);
-	                		ball = Color.BLACK;
+	                		drawable.drawImage(this.snowKidPlayer, caseSize * j, caseSize * i, caseSize, caseSize, null);
 	                		break;
-	                		
 	                	case BOTTOM:
-	                		drawable.setColor(Color.CYAN);
-	                		ball = Color.WHITE;
+	                		drawable.drawImage(this.shadowPlayer, caseSize * j, caseSize * i, caseSize, caseSize, null);
+	                		ball = this.shadowBall;
 	                		break;
 	                }
 	                
-	                // Fill current player with the good color
-	                drawable.fillOval(caseSize * j, caseSize * i, caseSize, caseSize);
-	                
-	                // Draw the outline of the player                	
+	                // Draw the outline of the player
                 	if (p.isSelected()) {
+                		drawable.setStroke(new BasicStroke(2));
                 		drawable.setColor(Color.YELLOW);
-                	} else {
-                		drawable.setColor(Color.BLACK);
+                		drawable.drawOval(caseSize * j, caseSize * i, caseSize, caseSize);
                 	}
-                	
-	                drawable.drawOval(caseSize * j, caseSize * i, caseSize, caseSize);
-	                
-	                // Draw the ball if necessary
-	                if (p.hasBall()) {
-	                	drawable.setColor(Color.BLACK);
-	                	drawable.setStroke(new BasicStroke(4));
-	                	drawable.drawOval((caseSize * j) + caseSize/6, (caseSize * i) + caseSize/6, caseSize - (caseSize/3), caseSize - (caseSize/3));
-	                	drawable.setColor(ball);
-	                	drawable.fillOval((caseSize * j) + caseSize/6, (caseSize * i) + caseSize/6, caseSize - (caseSize/3), caseSize - (caseSize/3));
+
+	                // Draw the ball
+	                if(p.hasBall()) {
+	                	drawable.drawImage(ball, (caseSize * j) + caseSize/6, (caseSize * i) + caseSize/6, caseSize - (caseSize/3), caseSize - (caseSize/3), null);
 	                }
                 }
                 

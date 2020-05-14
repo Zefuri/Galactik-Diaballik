@@ -1,19 +1,30 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 
 import model.Stadium;
 import model.enums.ActionType;
+
 import patterns.Observable;
+import patterns.ObservableHandler;
 import patterns.Observer;
 
 public class GamePanel extends JPanel implements Observable {
+	private final ObservableHandler observableHandler;
+
 	private Stadium stadium;	
 	private ArkadiaNews arkadiaNews;
 	private JPanel gameControlPanel;
@@ -22,33 +33,21 @@ public class GamePanel extends JPanel implements Observable {
 	private JLabel whosturn;
 	private JLabel nbPassRemaining;
 	private JLabel nbMoveRemaining;
+	private JButton undoButton;
+	private JButton resetTurnButton;
 	private JButton endTurnButton;
 	
 	public GamePanel(Stadium stadium) {
 		super(new BorderLayout());
+
+		observableHandler = new ObservableHandler();
+
 		this.stadium = stadium;
 		this.arkadiaNews = new ArkadiaNews(stadium);
 		this.add(this.arkadiaNews, BorderLayout.CENTER);
 		
-		this.gameControlPanel = new JPanel(new GridLayout(5, 0));
-		
-		this.nbTurn = new JLabel("Tour " + (stadium.getTurnIndex() + 1) + " :");
-		this.gameControlPanel.add(this.nbTurn);
-		
-		this.whosturn = new JLabel("Joueur " + (getNbTeam() + 1) + ", à toi !");
-		this.gameControlPanel.add(this.whosturn);
-		
-		this.nbPassRemaining = new JLabel("Passe : " + (1 - stadium.getNbPassesDone()));
-		this.gameControlPanel.add(this.nbPassRemaining);
-		
-		this.nbMoveRemaining = new JLabel("Dï¿½placements : " + (2 - stadium.getNbMovesDone()));
-		this.gameControlPanel.add(this.nbMoveRemaining);
-		
-		this.endTurnButton = new JButton("Fin du tour !");
-		this.gameControlPanel.add(this.endTurnButton);
-		endTurnButton.addActionListener(actionEvent -> notify(ActionType.END_TURN));
-		
-		this.add(this.gameControlPanel, BorderLayout.EAST);
+		this.setMargin();
+		this.createGameControlPanel();
 	}
 	
 	public ArkadiaNews getArkadiaNews() {
@@ -56,22 +55,20 @@ public class GamePanel extends JPanel implements Observable {
 	}
 	
 	public void updateGamePanelInfos() {
-		this.nbTurn.setText("Tour " + (stadium.getTurnIndex() + 1) + " :");
-		this.whosturn.setText("Joueur " + (getNbTeam() + 1) + ", à toi !");
-		this.nbPassRemaining.setText("Passe : " + (1 - stadium.getNbPassesDone()));
-		this.nbMoveRemaining.setText("Dï¿½placements : " + (2 - stadium.getNbMovesDone()));
+		this.nbTurn.setText("Tour " + (this.stadium.getTurnIndex() + 1) + " :");
+		this.whosturn.setText(this.stadium.getCurrentTeamTurn().getName() + ", à vous !");
+		this.nbPassRemaining.setText("Passe : " + (1 - this.stadium.getNbPassesDone()));
+		this.nbMoveRemaining.setText("Déplacements : " + (2 - this.stadium.getNbMovesDone()));
 	}
 
 	@Override
 	public void addObserver(Observer observer) {
-		observers.add(observer);
+		observableHandler.addObserver(observer);
 	}
 
 	@Override
 	public void notify(Object object) {
-		for(Observer observer : observers) {
-			observer.update(object);
-		}
+		observableHandler.notify(object);
 	}
 	
 	private int getNbTeam() {
@@ -92,5 +89,127 @@ public class GamePanel extends JPanel implements Observable {
 		if (input == JOptionPane.OK_OPTION || input == JOptionPane.CANCEL_OPTION || input == JOptionPane.CLOSED_OPTION) {
 			System.exit(0);
 		}
+	}
+	
+	private void setMargin() {
+		JPanel northPanel = new JPanel();
+		northPanel.setBorder(new EmptyBorder(new Insets(this.getWidth()/20, this.getWidth()/20, this.getWidth()/20, 0)));
+		this.add(northPanel, BorderLayout.NORTH);
+		
+		JPanel southPanel = new JPanel();
+		southPanel.setBorder(new EmptyBorder(new Insets(this.getWidth()/20, this.getWidth()/20, this.getWidth()/20, 0)));
+		this.add(southPanel, BorderLayout.SOUTH);
+		
+		JPanel westPanel = new JPanel();
+		westPanel.setBorder(new EmptyBorder(new Insets(this.getWidth()/20, this.getWidth()/20, this.getWidth()/20, 0)));
+		this.add(westPanel, BorderLayout.WEST);
+	}
+	
+	private void createGameControlPanel() {
+		this.gameControlPanel = new JPanel(new GridLayout(4, 1, 0, this.getWidth()/20));
+		
+		this.createTurnPanel();
+		this.createActionsRemainingPanel();
+		this.createTurnButtonsPanel();
+		this.createEndTurnButtonPanel();
+		
+		this.add(this.gameControlPanel, BorderLayout.EAST);
+	}
+	
+	private void createTurnPanel() {
+		JPanel turnPanel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		
+		// Création et placement du JLabel annonçant le numéro du tour
+		this.nbTurn = new JLabel("Tour " + (this.stadium.getTurnIndex() + 1) + " :");
+		
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.anchor = GridBagConstraints.ABOVE_BASELINE;
+		
+		turnPanel.add(this.nbTurn, gbc);
+		
+		// Création et placement du JLabel annonçant à quelle équipe jouer
+		this.whosturn = new JLabel(this.stadium.getCurrentTeamTurn().getName() + ", à vous !");
+		
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.anchor = GridBagConstraints.ABOVE_BASELINE;
+		
+		turnPanel.add(this.whosturn, gbc);
+		
+		this.gameControlPanel.add(turnPanel);
+	}
+	
+	private void createActionsRemainingPanel() {
+		JPanel actionsRemainingPanel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		
+		// Création et placement du JLabel annonçant le nombre de passes restantes
+		this.nbPassRemaining = new JLabel("Passe : " + (1 - this.stadium.getNbPassesDone()));
+		
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.anchor = GridBagConstraints.ABOVE_BASELINE_LEADING;
+		
+		actionsRemainingPanel.add(this.nbPassRemaining, gbc);
+		
+		// Création et placement du JLabel annonçant le nombre de déplacements restants
+		this.nbMoveRemaining = new JLabel("Déplacements : " + (2 - this.stadium.getNbMovesDone()));
+		
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.ipady = this.getWidth()/20;
+		gbc.anchor = GridBagConstraints.ABOVE_BASELINE_LEADING;
+		
+		actionsRemainingPanel.add(this.nbMoveRemaining, gbc);
+		
+		this.gameControlPanel.add(actionsRemainingPanel);
+	}
+	
+	private void createTurnButtonsPanel() {
+		JPanel turnButtons = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		
+		// Création et placement du JButton permettant le retour en arrière
+		this.undoButton = new JButton(" << ");
+		
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		
+		turnButtons.add(this.undoButton, gbc);
+
+		// Création et placement du JButton permettant l'annulation du tour
+		this.resetTurnButton = new JButton("Reset");
+		
+		gbc.gridx = 2;
+		gbc.gridy = 0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		
+		turnButtons.add(this.resetTurnButton, gbc);
+
+		this.gameControlPanel.add(turnButtons);
+	}
+	
+	private void createEndTurnButtonPanel() {
+		JPanel endTurnButtonPanel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		
+		// Création et placement du JButton permettant la fin du tour
+		this.endTurnButton = new JButton("Fin du tour !");
+		
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.anchor = GridBagConstraints.ABOVE_BASELINE;
+		
+		endTurnButtonPanel.add(this.endTurnButton, gbc);
+
+		this.gameControlPanel.add(endTurnButtonPanel);
+		
+		// Ajout de la fonction "observeur/observé" au endTurnButton permettant de notifier la partie controller
+		this.endTurnButton.addActionListener(actionEvent -> notify(ActionType.END_TURN));
 	}
 }
