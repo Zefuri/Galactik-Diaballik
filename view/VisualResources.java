@@ -28,7 +28,7 @@ public class VisualResources {
     private VisualResources(){
         // setting the custom fonts for the app
         try{
-            customFont = Font.createFont(Font.TRUETYPE_FONT, new File("resources/fonts/galacticstorm.ttf")).deriveFont(20f);
+            customFont = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/resources/fonts/galacticstorm.ttf")).deriveFont(20f);
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ge.registerFont(customFont);
         } catch (Exception e) {
@@ -36,7 +36,7 @@ public class VisualResources {
             customFont = new Font("Arial", Font.ITALIC, 40); // if font isn't imported, use a classic font
         }
         try{
-            customFontItal = Font.createFont(Font.TRUETYPE_FONT, new File("resources/fonts/galacticstormital.ttf")).deriveFont(20f);
+            customFontItal = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/resources/fonts/galacticstormital.ttf")).deriveFont(20f);
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ge.registerFont(customFontItal);
         } catch (Exception e) {
@@ -44,7 +44,7 @@ public class VisualResources {
             customFontItal = new Font("Arial", Font.ITALIC, 40); // if font isn't imported, use a classic font
         }
         try{
-            customFontSuperItal = Font.createFont(Font.TRUETYPE_FONT, new File("resources/fonts/galacticstormsuperital.ttf")).deriveFont(20f);
+            customFontSuperItal = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/resources/fonts/galacticstormsuperital.ttf")).deriveFont(20f);
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ge.registerFont(customFontSuperItal);
         } catch (Exception e) {
@@ -54,8 +54,8 @@ public class VisualResources {
 
         // loading images
         try{
-            userIconImage = ImageIO.read(new File("resources/images/man-avatar.png"));
-            computerIconImage = ImageIO.read(new File("resources/images/computer.png"));
+            userIconImage = ImageIO.read(getClass().getResourceAsStream("/resources/images/man-avatar.png"));
+            computerIconImage = ImageIO.read(getClass().getResourceAsStream("/resources/images/computer.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
