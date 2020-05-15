@@ -3,6 +3,7 @@ package model;
 import static java.lang.Math.abs;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import model.enums.TeamPosition;
 import model.enums.ActionResult;
@@ -23,6 +24,29 @@ public class Stadium {
 
         this.history = new Historic();
         this.history.newTurn(getCurrentTeamTurn());
+        
+        this.board = setBoard();
+    }
+    
+    private Player[][] setBoard() {
+    	Player[][] board = new Player[ModelConstants.BOARD_SIZE][ModelConstants.BOARD_SIZE];
+    	Iterator<Player> topTeamIt = topTeam.getPlayers().iterator();
+    	Iterator<Player> botTeamIt = bottomTeam.getPlayers().iterator();
+    	
+    	//We add the top and bottom line
+    	for (int j = 0; j < ModelConstants.BOARD_SIZE; j++) {
+    		board[0][j] = topTeamIt.next();
+    		board[6][j] = botTeamIt.next();
+    	}
+    			
+    	//We empty the rest
+    	for (int i = 0; i < ModelConstants.BOARD_SIZE; i++) {
+    		for (int j = 0; j < ModelConstants.BOARD_SIZE; j++) {
+    			board[i][j] = null;
+    		}
+    	}
+    	
+    	return board;
     }
     
     public Team getTeam(TeamPosition position) {
@@ -35,27 +59,7 @@ public class Stadium {
     }
     
     public Player getPlayer(Case position) {
-    	for (Player p : topTeam.getPlayers()) {
-    		Case currPos = p.getPosition();
-    		
-    		if (currPos.getX() == position.getX()) {
-    			if (currPos.getY() == position.getY()) {
-    				return p;
-    			}
-    		}
-    	}
-    	
-    	for (Player p : bottomTeam.getPlayers()) {
-    		Case currPos = p.getPosition();
-    		
-    		if (currPos.getX() == position.getX()) {
-    			if (currPos.getY() == position.getY()) {
-    				return p;
-    			}
-    		}
-    	}
-    	
-    	return null;
+    	return this.board[position.getX()][position.getY()];
     }
     
     public boolean hasABall(Case position) {
@@ -76,6 +80,10 @@ public class Stadium {
     	}
     	
     	return false;
+    }
+    
+    private boolean caseIsNotEmpty(Case position) {
+    	return (this.board[position.getX()][position.getY()] != null);
     }
 
     public void move(Player player, MoveDirection direction) {
@@ -107,32 +115,34 @@ public class Stadium {
     }
 
 
-    public boolean booleanCanMove(MoveDirection direction, Player currPlayer, int i, int j) {
+    public boolean booleanCanMove(MoveDirection direction, Player playerToMove) {
     	boolean canMove = true;
+    	int i = playerToMove.getPosition().getX();
+    	int j = playerToMove.getPosition().getY();
     	
 		switch (direction) {
 			case UP:
-				if (i <= 0 || currPlayer.getPosition().equals(new Case(i - 1, j))) {
+				if (i <= 0 || caseIsNotEmpty(new Case(i - 1, j))) {
 					canMove = false;
 				}
 				break;
 				
 			case DOWN:
-				if (i >= 6 || currPlayer.getPosition().equals(new Case(i + 1, j))) {
+				if (i >= 6 || caseIsNotEmpty(new Case(i + 1, j))) {
 					canMove = false;
 				}
 
 				break;
 
 			case LEFT:
-				if (j <= 0 || currPlayer.getPosition().equals(new Case(i, j - 1))) {
+				if (j <= 0 || caseIsNotEmpty(new Case(i, j - 1))) {
 					canMove = false;
 				}
 
 				break;
 
 			case RIGHT:
-				if (j >= 6 || currPlayer.getPosition().equals(new Case(i, j + 1))) {
+				if (j >= 6 || caseIsNotEmpty(new Case(i, j + 1))) {
 					canMove = false;
 				}
 				break;
@@ -152,37 +162,7 @@ public class Stadium {
 	}
 
     public boolean playerCanMove(Player player, MoveDirection direction) {
-    	boolean canMove = true;
-        int i = player.getPosition().getX();
-        int j = player.getPosition().getY();
-        
-        if (player.hasBall()) {
-			canMove = false;
-		} 
-		
-		if (canMove) {
-        	for (Player currPlayer : player.getTeam().getPlayers()) {
-        		//For each player of the ally team, we check if he is not badly positioned
-	            canMove = booleanCanMove(direction, currPlayer, i, j);
-	            
-				if (!canMove) {
-					break;
-				}
-			}
-		}
-        	
-		if (canMove) {
-        	for (Player currPlayer : player.getTeam().getEnemyTeam().getPlayers()) {
-        		//For each player of the enemy team, we check if he is not badly positioned
-        		canMove = booleanCanMove(direction, currPlayer, i, j);
-        		
-				if (!canMove) {
-					break;
-				}
-        	}
-        }
-        
-        return canMove;
+        return !player.hasBall() && booleanCanMove(direction, player); 
     }
 
     public MoveDirection direction(Player playerOne, Player playerTwo) {
