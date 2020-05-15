@@ -92,10 +92,16 @@ public class Stadium {
     	}
     }
 
+    private void emptyCase(Case pos) {
+    	this.board[pos.getX()][pos.getY()] = null;
+    }
+    
     private void simpleMove(Player player, MoveDirection direction){ //move player at position in the selected direction
     	// /!\ Caution: Please use the playerCanMove() function before using this one/!\
     	Case playerPos = player.getPosition();
 
+    	emptyCase(playerPos);
+    	
 		switch (direction) {
 			case UP:
 				player.getPosition().setX(playerPos.getX() - 1);
@@ -112,6 +118,8 @@ public class Stadium {
 			default:
 				throw new IllegalStateException("Wrong input direction");
 		}
+		
+		this.board[player.getPosition().getX()][player.getPosition().getY()] = player;
     }
 
 
