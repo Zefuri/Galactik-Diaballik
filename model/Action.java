@@ -14,7 +14,7 @@ public class Action {
      * MOVE : new Action(ActionType.MOVE, joueurBougeant, joueurBougeant, caseInitiale, caseCible);
      * END_TURN : new Action(ActionType.END_TURN, null, null, null, null);
      */
-    Action(ActionType actionType, Player previousPlayer, Player nextPlayer, Case previousCase, Case nextCase) {
+    public Action(ActionType actionType, Player previousPlayer, Player nextPlayer, Case previousCase, Case nextCase) {
         this.type = actionType;
         this.previousPlayer = previousPlayer;
         this.nextPlayer = nextPlayer;
@@ -73,5 +73,42 @@ public class Action {
     	} else {
     		throw new IllegalStateException("Do not call the getDirection() function if the action type is not \"MOVE\".");
     	}
-    }
+	}
+
+    public Action inverse() {
+		switch (type) {
+			case MOVE:
+				return new Action(ActionType.MOVE, null, nextPlayer, nextCase, previousCase);
+			case PASS:
+				return new Action(ActionType.PASS, nextPlayer, previousPlayer, nextCase, previousCase);
+			case END_TURN:
+				return new Action(ActionType.END_TURN, null, null, null, null);
+		}
+
+		return null;
+	}
+	
+	public String toString(){
+		int numNextPlayer;
+		switch (type) {
+			case MOVE:
+				numNextPlayer = (int)(nextPlayer.getName().charAt(nextPlayer.getName().length()-1) - '0');
+				if(previousCase.getX()+1 == nextCase.getX()) {
+					return ""+numNextPlayer+"D";
+				} else if(previousCase.getX()-1 == nextCase.getX()) {
+					return ""+numNextPlayer+"U";
+				} else if(previousCase.getY()+1 == nextCase.getY()) {
+					return ""+numNextPlayer+"R";
+				} else {
+					return ""+numNextPlayer+"L";
+				}
+			case PASS:
+				numNextPlayer = (int)(nextPlayer.getName().charAt(nextPlayer.getName().length()-1) - '0');
+				return ""+numNextPlayer+"P";
+			case END_TURN:
+				return "END";
+		}
+		
+		return "FAIL";
+	}
 }

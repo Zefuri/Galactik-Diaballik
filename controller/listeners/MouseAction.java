@@ -83,6 +83,8 @@ public class MouseAction extends MouseAdapter implements Observer {
 			System.out.println("The enemy team made an antiplay: Team \"" + stadium.getPlayer(playerWithBallCase).getTeam().getName() + "\" have won the match!");
 			holoTV.getGamePanel().showAntiPlayPopUp(stadium.getPlayer(playerWithBallCase).getTeam().getName());
 		}
+
+		// TODO : make the AI play
 	}
 	
 	private Case getCase(int x, int y) {
