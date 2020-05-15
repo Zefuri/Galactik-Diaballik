@@ -7,7 +7,7 @@ import model.enums.MoveDirection;
 import model.enums.TeamPosition;
 import model.ModelConstants;
 
-public class MaxMinBall{
+public class MinMaxBallString {
 	Stadium stadium;
 	Team team;
 	Player ballPlayer;
@@ -17,32 +17,17 @@ public class MaxMinBall{
 	int[] twoHigh;
 	String[] three;
 	int[] threeHigh;
-	ToolsBall tools;
+	ToolsBallString tools;
 	
-	String[] mustActs;
-	int mustAvancement;
+	String[] worstActs;
+	int worstAvancement;
 
-	public MaxMinBall(Stadium stadium, Team team) {
+	public MinMaxBallString(Stadium stadium, Team team) {
 		this.stadium = stadium;
 		this.team = team;
 		ballPlayer = team.getBallPlayer();
 		
-		tools = new ToolsBall();
-	}
-	
-
-	public String[] getOne(){
-		return one;
-	}
-	
-
-		public String[] getTwo(){
-		return two;
-	}
-
-
-	public String[] getThree(){
-		return three;
+		tools = new ToolsBallString();
 	}
 
 
@@ -53,14 +38,14 @@ public class MaxMinBall{
 		for(String action : actionList){
 			index++;
 			exec(action);
-				valueList[index] = tools.ballAvance(team);
+				valueList[index] = (-1) * tools.ballAvance(team);
 			undo(action);
 		}
 		
 		return valueList;
 	}
-	
-	
+
+
 	public void initOne(){	
 		one = new String[team.numberOfPossibilityPass() + team.movesNumber()];
 		int oneNum = 0;
@@ -226,22 +211,22 @@ public class MaxMinBall{
 	}
 
 
-	public void initMustActs(){
-		mustActs = new String[numberOfMust()];
-		int mustActNumber = 0;
-		for(int i = 0; mustActNumber != mustActs.length   &&   i != one.length+two.length+three.length; i++){
+	public void initWorstActs(){
+		worstActs = new String[numberOfWorst()];
+		int worstActNumber = 0;
+		for(int i = 0; worstActNumber != worstActs.length   &&   i != one.length+two.length+three.length; i++){
 		
-			if(i < one.length   &&   mustAvancement == oneHigh[i]){
-				mustActs[mustActNumber] = one[i];
-				mustActNumber++;
+			if(i < one.length   &&   worstAvancement == oneHigh[i]){
+				worstActs[worstActNumber] = one[i];
+				worstActNumber++;
 				
-			}else if(-1 < i-one.length   &&   i-one.length < two.length   &&   mustAvancement == twoHigh[i-one.length]){
-				mustActs[mustActNumber] = two[i-one.length];
-				mustActNumber++;
+			}else if(-1 < i-one.length   &&   i-one.length < two.length   &&   worstAvancement == twoHigh[i-one.length]){
+				worstActs[worstActNumber] = two[i-one.length];
+				worstActNumber++;
 				
-			}else if(-1 < i-one.length-two.length   &&   mustAvancement == threeHigh[i-one.length-two.length]){
-				mustActs[mustActNumber] = three[i-one.length-two.length];
-				mustActNumber++;
+			}else if(-1 < i-one.length-two.length   &&   worstAvancement == threeHigh[i-one.length-two.length]){
+				worstActs[worstActNumber] = three[i-one.length-two.length];
+				worstActNumber++;
 			}
 		}
 	}
@@ -275,35 +260,35 @@ public class MaxMinBall{
 	}
 
 
-	public int maxList(int[] intList){
-		int max = intList[0];
+	public int minList(int[] intList){
+		int min = intList[0];
 		for(int i = 1; i != intList.length; i++){
-			if(max < intList[i])
-				max = intList[i];
+			if(min > intList[i])
+				min = intList[i];
 		}
-		return max;
+		return min;
 	}
 	
 	
-	public int max2(int first, int second){
-		if(first > second)
+	public int min2(int first, int second){
+		if(first < second)
 			return first;
 		return second;
 	}
 	
 	
-	public int max3(int first, int second, int third){
-		return max2(max2(first, second), third);
+	public int min3(int first, int second, int third){
+		return min2(min2(first, second), third);
 	}
 	
 	
-	public String[] getMustActs(){
-		return mustActs;
+	public String[] getWorstActs(){
+		return worstActs;
 	}
 	
 	
-	public int getMustAvancement(){
-		return mustAvancement;
+	public int getWorstAvancement(){
+		return worstAvancement;
 	}
 	
 	
@@ -316,64 +301,64 @@ public class MaxMinBall{
 		threeHigh = initValue(three);
 		
 		if(checkingDepth != 0){
-			MinMaxBall minCheck;
+			MaxMinBallString maxCheck;
 			
 			for(int i = 0; i != one.length+two.length+three.length; i++){
 			
 				if(i < one.length){
 					//you play one act
 					exec(one[i]);
-						minCheck = new MinMaxBall(stadium, team.getEnemyTeam());
-						minCheck.progress(checkingDepth-1);
-						oneHigh[i] = minCheck.getWorstAvancement();
+						maxCheck = new MaxMinBallString(stadium, team.getEnemyTeam());
+						maxCheck.progress(checkingDepth-1);
+						oneHigh[i] = maxCheck.getMustAvancement();
 					undo(one[i]);
 				
 				}else if(i-one.length < two.length){
 					//you play two act
 					exec(two[i-one.length]);
-						minCheck = new MinMaxBall(stadium, team.getEnemyTeam());
-						minCheck.progress(checkingDepth-1);
-						twoHigh[i-one.length] = minCheck.getWorstAvancement();
+						maxCheck = new MaxMinBallString(stadium, team.getEnemyTeam());
+						maxCheck.progress(checkingDepth-1);
+						twoHigh[i-one.length] = maxCheck.getMustAvancement();
 					undo(two[i-one.length]);
 				
 				}else{
 					//you play three act
 					exec(three[i-one.length-two.length]);
-						minCheck = new MinMaxBall(stadium, team.getEnemyTeam());
-						minCheck.progress(checkingDepth-1);
-						threeHigh[i-one.length-two.length] = minCheck.getWorstAvancement();
+						maxCheck = new MaxMinBallString(stadium, team.getEnemyTeam());
+						maxCheck.progress(checkingDepth-1);
+						threeHigh[i-one.length-two.length] = maxCheck.getMustAvancement();
 					undo(three[i-one.length-two.length]);
 				}
 			}
 			
 		}
 		
-		mustAvancement = maxAvancement();
-		this.initMustActs();
+		worstAvancement = minAvancement();
+		this.initWorstActs();
 	}
 
 
-	public int maxAvancement(){
-		return max3(maxList(oneHigh), maxList(twoHigh), maxList(threeHigh));
+	public int minAvancement(){
+		return min3(minList(oneHigh), minList(twoHigh), minList(threeHigh));
 	}
 	
 	
-	public int numberOfMust(){
-		int numberOfMust = 0;
+	public int numberOfWorst(){
+		int numberOfWorst = 0;
 			
 		for(int i = 0; i != one.length+two.length+three.length; i++){
 
-			if(i < one.length   &&   mustAvancement == oneHigh[i]){
-				numberOfMust++;
-			}else if(-1 < i-one.length   &&   i-one.length < two.length   &&   mustAvancement == twoHigh[i-one.length]){
-				numberOfMust++;
+			if(i < one.length   &&   worstAvancement == oneHigh[i]){
+				numberOfWorst++;
+			}else if(-1 < i-one.length   &&   i-one.length < two.length   &&   worstAvancement == twoHigh[i-one.length]){
+				numberOfWorst++;
 				
-			}else if(-1 < i-one.length-two.length   &&   mustAvancement == threeHigh[i-one.length-two.length]){
-				numberOfMust++;
+			}else if(-1 < i-one.length-two.length   &&   worstAvancement == threeHigh[i-one.length-two.length]){
+				numberOfWorst++;
 			}
 		}
 		
-		return numberOfMust;
+		return numberOfWorst;
 	}
 
 	

@@ -7,7 +7,7 @@ import model.enums.MoveDirection;
 import model.enums.TeamPosition;
 import model.ModelConstants;
 
-public class ToolsBall {
+public class ToolsBallString {
 	
 	public char reverse(char move){
 		if(move == 'U')

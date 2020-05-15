@@ -11,15 +11,15 @@ import model.enums.ActionType;
 import model.enums.TeamPosition;
 import model.Action;
 
-public class BallAI_1{
+public class BallStringAI_1{
 	
-	MaxMinBall brain;
+	MaxMinBallString brain;
 	Random randomgene;
 	Team team;
 	
-	public BallAI_1(Stadium stadium, Team team) {
+	public BallStringAI_1(Stadium stadium, Team team) {
 		this.team = team;
-		brain = new MaxMinBall(stadium, team);
+		brain = new MaxMinBallString(stadium, team);
 		randomgene = new Random();
 	}
 	
@@ -83,7 +83,7 @@ public class BallAI_1{
 	public static void main(String args[]){
 		//test
 		Stadium stadium = new Stadium();
-		BallAI_1 test = new BallAI_1(stadium, stadium.getTeam(TeamPosition.BOTTOM));
+		BallStringAI_1 test = new BallStringAI_1(stadium, stadium.getTeam(TeamPosition.BOTTOM));
 		
 		ArrayList acts = test.play((int)(args[0].charAt(0)-'0'));
 		for(int i = 0; i != acts.size(); i++){
