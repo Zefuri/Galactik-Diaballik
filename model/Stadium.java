@@ -606,5 +606,13 @@ public class Stadium {
 	public int getNbMovesDone() {
 		return this.history.getLast().getNbMoveDone();
 	}
+	
+	public ActionResult undoAction() {
+		return this.history.undoLastAction();
+	}
+	
+	public ActionResult resetTurn() {
+		return this.history.resetCurrentTurn();
+	}
 }
 
