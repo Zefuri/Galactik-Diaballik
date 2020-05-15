@@ -83,7 +83,7 @@ public class Turn {
 		}
 		
 		return res;
-  }
+	}
 
 	public Turn inverse() {
 		Turn inverseTurn = new Turn(team);
