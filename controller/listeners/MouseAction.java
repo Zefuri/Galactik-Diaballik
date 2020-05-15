@@ -203,6 +203,8 @@ public class MouseAction extends MouseAdapter implements Observer {
 	public void update(Object object) {
 		ActionResult res = ActionResult.DONE;
 		
+		clearSelectedPlayer();
+		
 		switch((ActionType) object) {	
 			case END_TURN : // following code is executed when the "end of turn" button is pressed
 				res = this.stadium.endTurn();
@@ -222,7 +224,6 @@ public class MouseAction extends MouseAdapter implements Observer {
 		}
 		
 		this.holoTV.updateGameInfos();
-		clearSelectedPlayer();
 	}
 	
 	private void clearSelectedPlayer() {
