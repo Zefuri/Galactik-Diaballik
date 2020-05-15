@@ -56,7 +56,6 @@ public class Action {
     public MoveDirection getDirection() {
     	if (type == ActionType.MOVE) {
 	    	MoveDirection direction;
-	    	
 	    	if (previousCase.getX() < nextCase.getX()) {
 	    		direction = MoveDirection.DOWN;
 	    	} else if (previousCase.getX() > nextCase.getX()) {
