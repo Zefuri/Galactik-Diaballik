@@ -16,68 +16,89 @@ public class CoupAction {
 	Stadium stadium;
 	Team team;
 	Player ballPlayer;
+	
+	boolean canAccess;
+	int alpha;
+	int beta;
+	
 	ArrayList<ArrayList<Action>> one;
 	int[] oneHigh;
 	ArrayList<ArrayList<Action>> two;
 	int[] twoHigh;
 	ArrayList<ArrayList<Action>> three;
 	int[] threeHigh;
+	
+	ArrayList<ArrayList<Action>> acts;
+	int avancement;
+	
 	ToolsBallAction tools;
-	
-	ArrayList<ArrayList<Action>> mustActs;
-	int mustAvancement;
-	
-	ArrayList<ArrayList<Action>> worstActs;
-	int worstAvancement;
 
-	public CoupAction(Stadium stadium, Team team) {
+	public CoupAction(Stadium stadium, Team team, int alpha, int beta) {
 		this.stadium = stadium;
 		this.team = team;
 		ballPlayer = team.getBallPlayer();
-		System.out.println(stadium.toString());
+		
+		canAccess = true;
+		this.alpha = alpha;
+		this.beta = beta;
 		
 		tools = new ToolsBallAction();
 		
 	}
 	
 	
-	public int numberOfAction(){
+	public int numberOfAction() {
 		return one.size() + two.size() + three.size();
 	}
 	
 	
-	public ArrayList<ArrayList<Action>> getOne(){
+	public ArrayList<ArrayList<Action>> getOne() {
 		return one;
 	}
 	
 
-	public ArrayList<ArrayList<Action>> getTwo(){
+	public ArrayList<ArrayList<Action>> getTwo() {
 		return two;
 	}
 
 
-	public ArrayList<ArrayList<Action>> getThree(){
+	public ArrayList<ArrayList<Action>> getThree() {
 		return three;
 	}
 	
 	
-	public ArrayList<ArrayList<Action>> getMustActs(){
-		return mustActs;
+	public boolean canAccess(){
+		return canAccess;
 	}
 	
 	
-	public ArrayList<ArrayList<Action>> getWorstActs(){
-		return mustActs;
+	public int getAlpha() {
+		return alpha;
 	}
 	
 	
-	public int getMustAvancement(){
-		return mustAvancement;
+	public int getBeta() {
+		return beta;
 	}
 	
 	
-	public int getWorstAvancement(){
-		return worstAvancement;
+	public void setAlpha(int newAlpha) {
+		alpha = newAlpha;
+	}
+	
+	
+	public void setBeta(int newBeta) {
+		beta = newBeta;
+	}
+	
+	
+	public ArrayList<ArrayList<Action>> getActs() {
+		return acts;
+	}
+	
+	
+	public int getAvancement() {
+		return avancement;
 	}
 	
 	
@@ -91,14 +112,15 @@ public class CoupAction {
 	}
 	
 	
-	public void initValueMin(){
+	public void initValueMin() {
+		avancement = Integer.MAX_VALUE;
 		oneHigh = initValueMin(one);
 		twoHigh = initValueMin(two);
 		threeHigh = initValueMin(three);
 	}
 	
 	
-	public int[] initValueMin(ArrayList<ArrayList<Action>> actionList){
+	public int[] initValueMin(ArrayList<ArrayList<Action>> actionList) {
 		int[] valueList = new int[actionList.size()];
 		
 		int index = -1;
@@ -106,6 +128,9 @@ public class CoupAction {
 			index++;
 			exec(action);
 				valueList[index] = (-1) * tools.ballAvance(team);
+				if(valueList[index] < avancement) {
+					avancement = valueList[index];
+				}
 			undo(action);
 		}
 		
@@ -113,14 +138,15 @@ public class CoupAction {
 	}
 	
 	
-	public void initValueMax(){
+	public void initValueMax() {
+		avancement = Integer.MIN_VALUE;
 		oneHigh = initValueMax(one);
 		twoHigh = initValueMax(two);
 		threeHigh = initValueMax(three);
 	}
 	
 	
-	public int[] initValueMax(ArrayList<ArrayList<Action>> actionList){
+	public int[] initValueMax(ArrayList<ArrayList<Action>> actionList) {
 		int[] valueList = new int[actionList.size()];
 		
 		int index = -1;
@@ -128,6 +154,9 @@ public class CoupAction {
 			index++;
 			exec(action);
 				valueList[index] = tools.ballAvance(team);
+				if(valueList[index] > avancement) {
+					avancement = valueList[index];
+				}
 			undo(action);
 		}
 		
@@ -135,7 +164,7 @@ public class CoupAction {
 	}
 	
 	
-	public void initOne(){	
+	public void initOne() {	
 		one = new ArrayList<>();
 		ArrayList<Action> actionOne;
 		
@@ -159,7 +188,7 @@ public class CoupAction {
 	}
 	
 	
-	public void oneCanMove(Player player){
+	public void oneCanMove(Player player) {
 		oneCanMoveDirection(player, MoveDirection.UP);
 		oneCanMoveDirection(player, MoveDirection.RIGHT);
 		oneCanMoveDirection(player, MoveDirection.DOWN);
@@ -167,7 +196,7 @@ public class CoupAction {
 	}
 
 
-	public void oneCanMoveDirection(Player player, MoveDirection direction){
+	public void oneCanMoveDirection(Player player, MoveDirection direction) {
 		if(stadium.playerCanMove(player, direction)){
 			ArrayList<Action> actionOne = new ArrayList<>();
 			Case previousCase = new Case(player.getPosition().getX(), player.getPosition().getY());
@@ -177,7 +206,7 @@ public class CoupAction {
 	}
 	
 
-	public void initTwo(){
+	public void initTwo() {
 		two = new ArrayList<>();
 		
 		Player firstPlayer;
@@ -404,99 +433,18 @@ public class CoupAction {
 			 three.add(actionThree);
 		}
 	}
-
-
-	public void initMax(){
-		mustAvancement = maxAvancement();
-		this.initMustActs();
-	}
-
-
-	public int maxAvancement(){
-		return max3(maxList(oneHigh), maxList(twoHigh), maxList(threeHigh));
-	}
 	
 	
-	public int max3(int first, int second, int third){
-		return max2(max2(first, second), third);
-	}
-	
-	
-	public int max2(int first, int second){
-		if(first > second)
-			return first;
-		return second;
-	}
-
-
-	public int maxList(int[] intList){
-		int max = intList[0];
-		for(int i = 1; i != intList.length; i++){
-			if(max < intList[i])
-				max = intList[i];
-		}
-		return max;
-	}
-	
-	
-	public void initMustActs() {
-		mustActs = new ArrayList<>();
-		for(int i = 0; i != one.size()+two.size()+three.size(); i++) {
+	public void initActs() {
+		acts = new ArrayList<>();
+		for(int i = 0; i != numberOfAction(); i++) {
 		
-			if(i < one.size()   &&   mustAvancement == oneHigh[i]) {
-				mustActs.add(one.get(i));
-			} else if(-1 < i-one.size()   &&   i-one.size() < two.size()   &&   mustAvancement == twoHigh[i-one.size()]) {
-				mustActs.add(two.get(i-one.size()));
-			} else if(-1 < i-one.size()-two.size()   &&   mustAvancement == threeHigh[i-one.size()-two.size()]) {
-				mustActs.add(three.get(i-one.size()-two.size()));
-			}
-		}
-	}
-	
-	
-	public void initMin(){
-		worstAvancement = minAvancement();
-		this.initWorstActs();
-	}
-
-
-	public int minAvancement(){
-		return min3(minList(oneHigh), minList(twoHigh), minList(threeHigh));
-	}
-	
-	
-	public int min3(int first, int second, int third){
-		return min2(min2(first, second), third);
-	}
-	
-	
-	public int min2(int first, int second){
-		if(first < second)
-			return first;
-		return second;
-	}
-
-
-	public int minList(int[] intList){
-		int min = intList[0];
-		for(int i = 1; i != intList.length; i++){
-			if(min > intList[i])
-				min = intList[i];
-		}
-		return min;
-	}
-
-
-	public void initWorstActs() {
-		worstActs = new ArrayList<>();
-		for(int i = 0; i != one.size()+two.size()+three.size(); i++) {
-		
-			if(i < one.size()   &&   worstAvancement == oneHigh[i]) {
-				worstActs.add(one.get(i));
-			} else if(-1 < i-one.size()   &&   i-one.size() < two.size()   &&   worstAvancement == twoHigh[i-one.size()]) {
-				worstActs.add(two.get(i-one.size()));
-			} else if(-1 < i-one.size()-two.size()   &&   worstAvancement == threeHigh[i-one.size()-two.size()]) {
-				worstActs.add(three.get(i-one.size()-two.size()));
+			if(i < one.size()   &&   avancement == oneHigh[i]) {
+				acts.add(one.get(i));
+			} else if(-1 < i-one.size()   &&   i-one.size() < two.size()   &&   avancement == twoHigh[i-one.size()]) {
+				acts.add(two.get(i-one.size()));
+			} else if(-1 < i-one.size()-two.size()   &&   avancement == threeHigh[i-one.size()-two.size()]) {
+				acts.add(three.get(i-one.size()-two.size()));
 			}
 		}
 	}
@@ -548,7 +496,33 @@ public class CoupAction {
 	}
 	
 	
-	public void report(int actionNumero, int value){
+	public void reportMax(int actionNumero, int value) {
+		if(value > beta) {
+			canAccess = false;
+		}
+		
+		if(actionNumero == 0 || value > avancement) {
+			avancement = value;
+		}
+		
+		report(actionNumero, value);
+	}
+	
+	
+	public void reportMin(int actionNumero, int value) {
+		if(value < alpha) {
+			canAccess = false;
+		}
+	
+		if(actionNumero == 0 || value < avancement) {
+			avancement = value;
+		}
+		
+		report(actionNumero, value);
+	}
+	
+	
+	public void report(int actionNumero, int value) {
 		if(actionNumero < one.size()) {
 			oneHigh[actionNumero] = value;
 		} else if(actionNumero - one.size() < two.size()) {
