@@ -16,7 +16,6 @@ public class MaxMinBallString{
 		this.stadium = stadium;
 		this.team = team;
 		this.coup = new CoupString(stadium, team, alpha, beta);
-		System.out.println(stadium.toString());
 	}
 	
 	
@@ -58,15 +57,6 @@ public class MaxMinBallString{
 
 	
 	public static void main(String args[]){
-		//tests	
-		Stadium stadium = new Stadium();
-		MaxMinBallString test = new MaxMinBallString(stadium, stadium.getTeam(TeamPosition.BOTTOM), Integer.MIN_VALUE, Integer.MAX_VALUE);
-		test.progress((int)(args[0].charAt(args[0].length()-1)-'0'));
-		System.out.println("Pour une prévision de: "+args[0]);
-		System.out.println("Obtenu par: ");
-		for(String turn : test.getMustActs()) {
-			System.out.print(turn+" - ");
-		}
-		System.out.println("");	
+		//tests
 	}
 }
