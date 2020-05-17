@@ -5,8 +5,6 @@ import java.util.Random;
 
 import model.Stadium;
 import model.Team;
-import model.Player;
-import model.Case;
 import model.enums.ActionType;
 import model.enums.TeamPosition;
 import model.Action;

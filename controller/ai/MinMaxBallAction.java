@@ -4,13 +4,7 @@ import java.util.ArrayList;
 
 import model.Stadium;
 import model.Team;
-import model.Player;
-import model.Case;
 import model.Action;
-import model.ModelConstants;
-import model.enums.MoveDirection;
-import model.enums.TeamPosition;
-import model.enums.ActionType;
 
 public class MinMaxBallAction {
 	Stadium stadium;
