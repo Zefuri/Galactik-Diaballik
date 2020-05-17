@@ -5,8 +5,6 @@ import java.util.Random;
 
 import model.Stadium;
 import model.Team;
-import model.Player;
-import model.Case;
 import model.enums.ActionType;
 import model.enums.TeamPosition;
 import model.Action;
@@ -19,7 +17,7 @@ public class BallActionAI_1{
 	
 	public BallActionAI_1(Stadium stadium, Team team) {
 		this.team = team;
-		brain = new MaxMinBallAction(stadium, team);
+		brain = new MaxMinBallAction(stadium, team, Integer.MIN_VALUE, Integer.MAX_VALUE);
 		randomgene = new Random();
 	}
 	

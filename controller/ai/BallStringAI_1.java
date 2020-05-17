@@ -19,7 +19,7 @@ public class BallStringAI_1{
 	
 	public BallStringAI_1(Stadium stadium, Team team) {
 		this.team = team;
-		brain = new MaxMinBallString(stadium, team);
+		brain = new MaxMinBallString(stadium, team, Integer.MIN_VALUE, Integer.MAX_VALUE);
 		randomgene = new Random();
 	}
 	
