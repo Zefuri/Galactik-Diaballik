@@ -64,9 +64,8 @@ public class HoloTV implements Runnable {
 	However, their no extensive control on the audio playback
 	 */
 	private void playMusic() {
-		File audioFile = new File("resources/musics/full_soundtrack.wav");
 		try {
-			AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+			AudioInputStream audioStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("/resources/musics/full_soundtrack.wav"));
 			AudioFormat format = audioStream.getFormat();
 			DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
 			SourceDataLine audioLine = (SourceDataLine) AudioSystem.getLine(info);
