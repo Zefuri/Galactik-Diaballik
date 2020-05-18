@@ -471,9 +471,9 @@ public class CoupAction {
 	public void exec(Action action) {
 		
 		if(action.getType() == ActionType.PASS) {
-			stadium.pass(action.getPreviousPlayer(), action.getNextPlayer());
+			stadium.simplePass(action.getPreviousPlayer(), action.getNextPlayer());
 		} else {
-			stadium.move(action.getNextPlayer(), action.getDirection());
+			stadium.simpleMove(action.getNextPlayer(), action.getDirection());
 		}
 	}
 	

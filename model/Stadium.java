@@ -84,7 +84,7 @@ public class Stadium {
     	}
     }
 
-    private void simpleMove(Player player, MoveDirection direction){ //move player at position in the selected direction
+    public void simpleMove(Player player, MoveDirection direction){ //move player at position in the selected direction
     	// /!\ Caution: Please use the playerCanMove() function before using this one/!\
     	Case playerPos = player.getPosition();
 
@@ -235,7 +235,8 @@ public class Stadium {
         return null;
     }
 
-    private void simplePass(Player playerOne, Player playerTwo){ //player at i j pass the ball to nextI nextJ
+    public void simplePass(Player playerOne, Player playerTwo){ //player at i j pass the ball to nextI nextJ
+    	playerOne.getTeam().setBallPlayer(playerTwo);
         playerOne.setBallPossession(false);
         playerTwo.setBallPossession(true);
     }
