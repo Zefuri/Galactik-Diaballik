@@ -85,7 +85,7 @@ public class HoloTV implements Runnable {
 	}
 
 	/*
-	clear the frame entirely and add the game mode selection panel
+	clear the frame entirely and then add the game mode selection panel
 	 */
 	public void switchToGameModePanel() {
 		frame.getContentPane().removeAll();
