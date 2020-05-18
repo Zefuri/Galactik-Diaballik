@@ -8,11 +8,15 @@ import patterns.Observer;
 
 import static java.lang.Thread.sleep;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.*;
 
 public class HoloTV implements Runnable {
 	private JFrame frame;
 	private Stadium stadium;
+
+	private Float systemVolume;
 
 	public GamePanel getGamePanel() {
 		return gamePanel;
@@ -53,6 +57,17 @@ public class HoloTV implements Runnable {
         // Give it a default size and lets roll
         frame.setSize(950, 800);
         frame.setVisible(true);
+
+        // following lines set the system volume
+        systemVolume = Audio.getMasterOutputVolume(); // get the system volume and store it
+        Audio.setMasterOutputVolume(0.3f); // arbitrary music volume
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// TODO : stop the music
+				Audio.setMasterOutputVolume(systemVolume); // when window closes, set back the system volume
+			}
+		});
 
 		playMusic();
 
