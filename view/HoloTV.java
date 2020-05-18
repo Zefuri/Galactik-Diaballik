@@ -16,16 +16,14 @@ public class HoloTV implements Runnable {
 	private JFrame frame;
 	private Stadium stadium;
 
+    private MainMenuPanel mainMenuPanel;
+    private GameModePanel gameModePanel;
+    private GamePanel gamePanel;
+
 	private Float systemVolume;
 
-	public GamePanel getGamePanel() {
-		return gamePanel;
-	}
+    private SourceDataLine audioLine;
 
-	private MainMenuPanel mainMenuPanel;
-	private GameModePanel gameModePanel;
-	private GamePanel gamePanel;
-	
 	public HoloTV(Stadium stadium) {
 		this.stadium = stadium;
 
@@ -42,6 +40,10 @@ public class HoloTV implements Runnable {
 	public JFrame getFrame() {
 		return frame;
 	}
+
+    public GamePanel getGamePanel() {
+        return gamePanel;
+    }
 
 	@Override
 	public void run() {
@@ -64,7 +66,7 @@ public class HoloTV implements Runnable {
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				// TODO : stop the music
+				audioLine.stop(); // stop the audio before putting the volume back up
 				Audio.setMasterOutputVolume(systemVolume); // when window closes, set back the system volume
 			}
 		});
@@ -83,7 +85,7 @@ public class HoloTV implements Runnable {
 			AudioInputStream audioStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("/resources/musics/full_soundtrack.wav"));
 			AudioFormat format = audioStream.getFormat();
 			DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
-			SourceDataLine audioLine = (SourceDataLine) AudioSystem.getLine(info);
+			audioLine = (SourceDataLine) AudioSystem.getLine(info);
 
 			audioLine.open(format);
 			audioLine.start();
