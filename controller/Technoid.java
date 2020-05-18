@@ -14,8 +14,6 @@ public class Technoid implements Observer {
     public Technoid(HoloTV holoTV, Stadium stadium) {
         this.holoTV = holoTV;
         this.stadium = stadium;
-
-
     }
 
     @Override

@@ -10,6 +10,7 @@ import model.Player;
 import model.Stadium;
 import model.enums.ActionResult;
 import model.enums.ActionType;
+import model.enums.GameResult;
 import model.enums.MoveDirection;
 import patterns.Observable;
 import patterns.Observer;
@@ -72,16 +73,22 @@ public class MouseAction extends MouseAdapter implements Observer {
 		holoTV.getArkadiaNews().repaint();
 		holoTV.updateGameInfos();
 		
+		String currentTeamName = stadium.getPlayer(playerWithBallCase).getTeam().getName();
+		
 		if (result == ActionResult.WIN) {
-			//TODO Impl�menter le passage � l'�cran de fin
-			System.out.println("Team \"" + stadium.getPlayer(playerWithBallCase).getTeam().getName() + "\" have won the match!");
-			holoTV.getGamePanel().showEndGamePopUp(stadium.getPlayer(playerWithBallCase).getTeam().getName());
+			if(currentTeamName == "snowKids") {
+				holoTV.switchToEndGamePanel(GameResult.VICTORY, currentTeamName);
+			} else {
+				holoTV.switchToEndGamePanel(GameResult.DEFEAT, currentTeamName);
+			}
 		}
 		
 		if (result == ActionResult.ANTIPLAY) {
-			//TODO Impl�menter le passage � l'�cran de fin
-			System.out.println("The enemy team made an antiplay: Team \"" + stadium.getPlayer(playerWithBallCase).getTeam().getName() + "\" have won the match!");
-			holoTV.getGamePanel().showAntiPlayPopUp(stadium.getPlayer(playerWithBallCase).getTeam().getName());
+			if(currentTeamName == "snowKids") {
+				holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, currentTeamName);
+			} else {
+				holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, currentTeamName);
+			}
 		}
 
 		// TODO : make the AI play

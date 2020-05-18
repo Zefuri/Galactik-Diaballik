@@ -23,7 +23,7 @@ import patterns.ObservableHandler;
 import patterns.Observer;
 
 public class GamePanel extends JPanel implements Observable {
-	private final ObservableHandler observableHandler;
+	private ObservableHandler observableHandler;
 	private final VisualResources visualResources = VisualResources.getInstance();
 
 	private Stadium stadium;	

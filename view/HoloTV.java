@@ -4,6 +4,7 @@ import javax.sound.sampled.*;
 import javax.swing.JFrame;
 import controller.listeners.MouseAction;
 import model.Stadium;
+import model.enums.GameResult;
 import patterns.Observer;
 
 import static java.lang.Thread.sleep;
@@ -21,15 +22,16 @@ public class HoloTV implements Runnable {
 	private MainMenuPanel mainMenuPanel;
 	private GameModePanel gameModePanel;
 	private GamePanel gamePanel;
+	private EndGamePanel endGamePanel;
 	
 	public HoloTV(Stadium stadium) {
 		this.stadium = stadium;
 
 		// create the main menu panel
-		mainMenuPanel = new MainMenuPanel();
+		this.mainMenuPanel = new MainMenuPanel();
 
 		// create the game mode selection panel
-		gameModePanel = new GameModePanel();
+		this.gameModePanel = new GameModePanel();
 
 		// Create the GamePanel and himself create and add an ArkadiaNews
 		this.gamePanel = new GamePanel(stadium);
@@ -121,6 +123,9 @@ public class HoloTV implements Runnable {
 	public void addObserverGameModePanel(Observer observer) {
 		gameModePanel.addObserver(observer);
 	}
+	public void addObserverEndGamePanel(Observer observer) {
+		gameModePanel.addObserver(observer);
+	}
 
 	/*
 	clear the frame entirely and then add the game mode selection panel
@@ -135,5 +140,15 @@ public class HoloTV implements Runnable {
 		frame.getContentPane().removeAll();
 		frame.add(gamePanel);
 		frame.validate();  // very important
+	}
+	
+	public void switchToEndGamePanel(GameResult gameResult, String teamName) {
+		// create the end game panel
+		this.endGamePanel = new EndGamePanel(gameResult, teamName);
+		
+		// replacing the current panel
+		frame.getContentPane().removeAll();
+		frame.add(endGamePanel);
+		frame.validate();
 	}
 }
