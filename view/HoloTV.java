@@ -9,15 +9,13 @@ import patterns.Observer;
 
 import static java.lang.Thread.sleep;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.*;
 
 public class HoloTV implements Runnable {
 	private JFrame frame;
 	private Stadium stadium;
-
-	public GamePanel getGamePanel() {
-		return gamePanel;
-	}
 
 	private MainMenuPanel mainMenuPanel;
 	private GameModePanel gameModePanel;
@@ -40,6 +38,10 @@ public class HoloTV implements Runnable {
 	public JFrame getFrame() {
 		return frame;
 	}
+
+    public GamePanel getGamePanel() {
+        return gamePanel;
+    }
 
 	@Override
 	public void run() {

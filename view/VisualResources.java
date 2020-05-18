@@ -17,6 +17,7 @@ public class VisualResources {
     }
 
     public Color customBlue = new Color(27, 148, 209);
+    public Color customLightBlue = new Color(115, 198,240);
     public Color customRed = new Color(208, 0, 0);
     public Color customGrassGreen = new Color(111, 176, 72);
 
