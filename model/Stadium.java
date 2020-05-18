@@ -425,43 +425,11 @@ public class Stadium {
 				game.append("|");
 				
 				boolean hasPlayer = false;
-				
-				for (Player currTopPlayer : topTeam.getPlayers()) {
-					Case position = currTopPlayer.getPosition();
-					
-					if (position.getX() == abscisse) {
-						if (position.getY() == ordonnee) {
-							hasPlayer = true;
-							
-							if (currTopPlayer.hasBall()) {
-								//game.append("a").append("num(?)").append("*");
-								game.append(currTopPlayer.getName()).append("*");
-							} else {
-								//game.append("a").append("num(?)").append(".");
-								game.append(currTopPlayer.getName()).append(".");
-							}
-						}
-					}
-				}
-				
-				for (Player currBotPlayer : bottomTeam.getPlayers()) {
-					Case position = currBotPlayer.getPosition();
-					
-					if (position.getX() == abscisse) {
-						if (position.getY() == ordonnee) {
-							hasPlayer = true;
-							
-							if (currBotPlayer.hasBall()) {
-								//game.append("b").append("num(?)").append("*");
-								game.append(currBotPlayer.getName()).append("*");
-							} else {
-								//game.append("b").append("num(?)").append(".");
-								game.append(currBotPlayer.getName()).append(".");
-							}
-						}
-					}
-				}
-				
+
+				hasPlayer = isHasPlayer(game, abscisse, ordonnee, hasPlayer, topTeam);
+
+				hasPlayer = isHasPlayer(game, abscisse, ordonnee, hasPlayer, bottomTeam);
+
 				if (!hasPlayer) {
 					game.append("______");
 				}
@@ -472,6 +440,27 @@ public class Stadium {
 		}		
 		
 		return game.toString();
+	}
+
+	private boolean isHasPlayer(StringBuilder game, int abscissa, int ordinate, boolean hasPlayer, Team bottomTeam) {
+		for (Player currBotPlayer : bottomTeam.getPlayers()) {
+			Case position = currBotPlayer.getPosition();
+
+			if (position.getX() == abscissa) {
+				if (position.getY() == ordinate) {
+					hasPlayer = true;
+
+					if (currBotPlayer.hasBall()) {
+						//game.append("b").append("num(?)").append("*");
+						game.append(currBotPlayer.getName()).append("*");
+					} else {
+						//game.append("b").append("num(?)").append(".");
+						game.append(currBotPlayer.getName()).append(".");
+					}
+				}
+			}
+		}
+		return hasPlayer;
 	}
 
 	public MoveDirection getMoveDirection(Player player, Case pos){
