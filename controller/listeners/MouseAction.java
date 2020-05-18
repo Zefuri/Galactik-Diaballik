@@ -39,9 +39,10 @@ public class MouseAction extends MouseAdapter implements Observer {
 	}
 	
 	@Override
-	public void mouseClicked(MouseEvent e) {
-		super.mouseClicked(e);
+	public void mousePressed(MouseEvent e) {
+		super.mousePressed(e);
 		ActionResult result = null;
+		String currentTeamName = null;
 		
 		//We get the position of the case (meaning its position in the game grid)
 		try {
@@ -63,7 +64,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 			//ex.printStackTrace();
 		}
 
-		// provisoir
+		// provisoire
 //		clickNumber++;
 //
 //		if (clickNumber%3 == 0 && clickNumber != 0) {
@@ -73,21 +74,19 @@ public class MouseAction extends MouseAdapter implements Observer {
 		holoTV.getArkadiaNews().repaint();
 		holoTV.updateGameInfos();
 		
-		String currentTeamName = stadium.getPlayer(playerWithBallCase).getTeam().getName();
-		
 		if (result == ActionResult.WIN) {
-			if(currentTeamName == "snowKids") {
-				holoTV.switchToEndGamePanel(GameResult.VICTORY, currentTeamName);
-			} else {
-				holoTV.switchToEndGamePanel(GameResult.DEFEAT, currentTeamName);
+			if(stadium.getPlayer(playerAloneCase).getTeam().getName() == "snowKids") {
+				holoTV.switchToEndGamePanel(GameResult.VICTORY, stadium.getPlayer(playerAloneCase).getTeam().getName());
+			} else if(stadium.getPlayer(playerAloneCase).getTeam().getName() != null) {
+				holoTV.switchToEndGamePanel(GameResult.DEFEAT, stadium.getPlayer(playerAloneCase).getTeam().getName());
 			}
 		}
 		
 		if (result == ActionResult.ANTIPLAY) {
-			if(currentTeamName == "snowKids") {
-				holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, currentTeamName);
-			} else {
-				holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, currentTeamName);
+			if(stadium.getPlayer(playerAloneCase).getTeam().getName() == "snowKids") {
+				holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getPlayer(playerAloneCase).getTeam().getName());
+			} else if(stadium.getPlayer(playerAloneCase).getTeam().getName() != null) {
+				holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getPlayer(playerAloneCase).getTeam().getName());
 			}
 		}
 
