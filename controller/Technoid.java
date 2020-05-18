@@ -1,10 +1,18 @@
 package controller;
 
+import controller.ai.BallActionAI_1;
 import controller.listeners.MouseAction;
+import model.Action;
 import model.Stadium;
+import model.enums.TeamPosition;
 import model.enums.UserInput;
 import patterns.Observer;
 import view.HoloTV;
+
+
+import java.util.ArrayList;
+
+import static java.lang.Thread.sleep;
 
 public class Technoid implements Observer {
 
@@ -46,8 +54,39 @@ public class Technoid implements Observer {
                 break;
 
             case CLICKED_CVC: // context : GameModePanel
-                System.out.println("user chose cvc");
-                // TODO : loop on two AIs
+                holoTV.switchToGamePanel();
+                try {
+                    wait(2000);
+                } catch (Exception e) {
+//                    e.printStackTrace();
+                }
+
+                BallActionAI_1 AI1 = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.TOP));
+                BallActionAI_1 AI2 = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.BOTTOM));
+
+                for(int i = 0; i < 100; i++) {
+                    ArrayList<Action> AI1Actions = AI1.play(1);
+                    for(Action currentAction : AI1Actions) {
+                        stadium.actionPerformed(currentAction);
+                        holoTV.getArkadiaNews().repaint();
+                        try {
+                            wait(1000);
+                        } catch (Exception e) {
+//                            e.printStackTrace();
+                        }
+                    }
+
+                    ArrayList<Action> AI2Actions = AI2.play(0);
+                    for(Action currentAction : AI2Actions) {
+                        stadium.actionPerformed(currentAction);
+                        holoTV.getArkadiaNews().repaint();
+                        try {
+                            wait(1000);
+                        } catch (Exception e) {
+//                            e.printStackTrace();
+                        }
+                    }
+                }
                 break;
         }
     }
