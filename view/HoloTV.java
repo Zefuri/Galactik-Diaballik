@@ -1,11 +1,14 @@
 package view;
 
+import javax.sound.sampled.*;
 import javax.swing.JFrame;
 import controller.listeners.MouseAction;
 import model.Stadium;
 import patterns.Observer;
 
 import static java.lang.Thread.sleep;
+
+import java.io.*;
 
 public class HoloTV implements Runnable {
 	private JFrame frame;
@@ -50,6 +53,42 @@ public class HoloTV implements Runnable {
         // Give it a default size and lets roll
         frame.setSize(950, 800);
         frame.setVisible(true);
+
+		playMusic();
+
+	}
+
+	/*
+	function reads the music using SourceDataLine. Other method uses Clip class
+	This method uses less memory as it doesn't load the entire audio file but reads it progressively.
+	However, their no extensive control on the audio playback
+	 */
+	private void playMusic() {
+		File audioFile = new File("resources/musics/full_soundtrack.wav");
+		try {
+			AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+			AudioFormat format = audioStream.getFormat();
+			DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
+			SourceDataLine audioLine = (SourceDataLine) AudioSystem.getLine(info);
+
+			audioLine.open(format);
+			audioLine.start();
+
+			int BUFFER_SIZE = 4096;
+
+			byte[] bytesBuffer = new byte[BUFFER_SIZE];
+			int bytesRead;
+
+			while ((bytesRead = audioStream.read(bytesBuffer)) != -1) {
+				audioLine.write(bytesBuffer, 0, bytesRead);
+			}
+
+			audioLine.drain();
+			audioLine.close();
+			audioStream.close();
+		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void addArkadiaNewsMouseListener(MouseAction mouseAction) {
