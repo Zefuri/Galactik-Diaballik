@@ -47,14 +47,14 @@ public class GameModePanel extends JPanel implements Observable {
 
     /*
     Code segmentation script. Creates the clickable panels and sets their mouse adapters
-    When mouse hovers over, the borders become red
+    When mouse hovers over, the background of said panel gets lighter
      */
     private void createClickablePanels() {
         // player vs player clickable panel on second line
         pvpPanel = createGameModeSubPanel(VisualResources.getInstance().userIconImage, "Joueur vs Joueur", VisualResources.getInstance().userIconImage);
         pvpPanel.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mousePressed(MouseEvent e) {
                 GameModePanel.this.notify(UserInput.CLICKED_PVP);
             }
 
@@ -74,7 +74,7 @@ public class GameModePanel extends JPanel implements Observable {
         pvcPanel = createGameModeSubPanel(VisualResources.getInstance().userIconImage, "Joueur vs IA", VisualResources.getInstance().computerIconImage);
         pvcPanel.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mousePressed(MouseEvent e) {
                 GameModePanel.this.notify(UserInput.CLICKED_PVC);
             }
 
@@ -94,7 +94,7 @@ public class GameModePanel extends JPanel implements Observable {
         cvcPanel = createGameModeSubPanel(VisualResources.getInstance().computerIconImage, "IA vs IA", VisualResources.getInstance().computerIconImage);
         cvcPanel.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mousePressed(MouseEvent e) {
                 GameModePanel.this.notify(UserInput.CLICKED_CVC);
             }
 
