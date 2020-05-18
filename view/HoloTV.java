@@ -52,7 +52,7 @@ public class HoloTV implements Runnable {
 	}
 
 	/*
-	function reads the music using SourceDataLine. Other method uses Clip
+	function reads the music using SourceDataLine. Other method uses Clip class
 	This method uses less memory as it doesn't load the entire audio file but reads it progressively.
 	However, their no extensive control on the audio playback
 	 */
