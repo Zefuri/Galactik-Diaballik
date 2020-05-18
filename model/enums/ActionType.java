@@ -4,4 +4,6 @@ public enum ActionType {
     MOVE,
     PASS,
     END_TURN,
+    UNDO,
+    RESET,
 }

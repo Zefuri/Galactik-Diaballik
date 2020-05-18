@@ -13,6 +13,8 @@ public class Stadium {
     private Team topTeam;
     private Team bottomTeam;
     
+    private Player[][] board;
+    
     private Historic history;
 
     public Stadium() {
@@ -84,28 +86,24 @@ public class Stadium {
 
     private void simpleMove(Player player, MoveDirection direction){ //move player at position in the selected direction
     	// /!\ Caution: Please use the playerCanMove() function before using this one/!\
-    	if (playerCanMove(player, direction)) {
-	    	Case playerPos = player.getPosition();
+    	Case playerPos = player.getPosition();
 
-			switch (direction) {
-				case UP:
-					player.getPosition().setX(playerPos.getX() - 1);
-					break;
-				case DOWN:
-					player.getPosition().setX(playerPos.getX() + 1);
-					break;
-				case RIGHT:
-					player.getPosition().setY(playerPos.getY() + 1);
-					break;
-				case LEFT:
-					player.getPosition().setY(playerPos.getY() - 1);
-					break;
-				default:
-					throw new IllegalStateException("Wrong input direction");
-			}
-    	} else {
-    		throw new RuntimeException("You did not use the playerCanMove() function as mentionned!!!");
-    	}
+		switch (direction) {
+			case UP:
+				player.getPosition().setX(playerPos.getX() - 1);
+				break;
+			case DOWN:
+				player.getPosition().setX(playerPos.getX() + 1);
+				break;
+			case RIGHT:
+				player.getPosition().setY(playerPos.getY() + 1);
+				break;
+			case LEFT:
+				player.getPosition().setY(playerPos.getY() - 1);
+				break;
+			default:
+				throw new IllegalStateException("Wrong input direction");
+		}
     }
 
 
@@ -607,6 +605,14 @@ public class Stadium {
 	
 	public int getNbMovesDone() {
 		return this.history.getLast().getNbMoveDone();
+	}
+	
+	public ActionResult undoAction() {
+		return this.history.undoLastAction();
+	}
+	
+	public ActionResult resetTurn() {
+		return this.history.resetCurrentTurn();
 	}
 }
 

@@ -2,6 +2,8 @@ package model;
 
 import java.util.ArrayList;
 
+import model.enums.ActionResult;
+
 public class Historic {
     ArrayList<Turn> historicList;
     private int currentTurnIndex;
@@ -33,5 +35,14 @@ public class Historic {
 
     public void newTurn(Team currentTeamTurn) {
         this.historicList.add(new Turn(currentTeamTurn));
+    }
+    
+    public ActionResult undoLastAction() {
+    	return this.historicList.get(currentTurnIndex).undo();
+    }
+    
+    public ActionResult resetCurrentTurn() {
+    	Turn currentTurn = this.historicList.get(this.currentTurnIndex);
+    	return currentTurn.deleteActions();
     }
 }
