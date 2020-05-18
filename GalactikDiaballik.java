@@ -9,8 +9,8 @@ public class GalactikDiaballik {
 		HoloTV holoTV = new HoloTV(stadium);
 		Technoid technoid = new Technoid(holoTV, stadium);
 
-		holoTV.run();
-		holoTV.addObserverGameModePanel(technoid);
 		holoTV.addObserverMainMenuPanel(technoid);
+		holoTV.addObserverGameModePanel(technoid);
+		holoTV.run(); // must be the last line
 	}
 }

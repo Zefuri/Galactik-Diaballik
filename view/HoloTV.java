@@ -24,6 +24,15 @@ public class HoloTV implements Runnable {
 	
 	public HoloTV(Stadium stadium) {
 		this.stadium = stadium;
+
+		// create the main menu panel
+		mainMenuPanel = new MainMenuPanel();
+
+		// create the game mode selection panel
+		gameModePanel = new GameModePanel();
+
+		// Create the GamePanel and himself create and add an ArkadiaNews
+		this.gamePanel = new GamePanel(stadium);
 	}
 
 	public JFrame getFrame() {
@@ -34,15 +43,6 @@ public class HoloTV implements Runnable {
 	public void run() {
 		// Create the main window
 		this.frame = new JFrame("Galactik Diaballik");
-
-		// create the main menu panel
-		mainMenuPanel = new MainMenuPanel();
-
-		// create the game mode selection panel
-		gameModePanel = new GameModePanel();
-
-		// Create the GamePanel and himself create and add an ArkadiaNews
-		this.gamePanel = new GamePanel(stadium);
 
 		// Add the panel to the frame
 		this.frame.add(this.mainMenuPanel);

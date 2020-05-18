@@ -8,7 +8,6 @@ All classes that need to be observable have to both implement the interface and 
  */
 public class ObservableHandler implements Observable {
 
-
     ArrayList<Observer> observers = new ArrayList<>();
 
     @Override
