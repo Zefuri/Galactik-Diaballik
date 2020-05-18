@@ -1,6 +1,4 @@
-package controller;
-
-import controller.listeners.MouseAction;
+import listeners.MouseAction;
 import model.Stadium;
 import model.enums.UserInput;
 import patterns.Observer;

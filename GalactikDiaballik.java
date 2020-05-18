@@ -1,5 +1,4 @@
-import controller.Technoid;
-import controller.listeners.MouseAction;
+import listeners.MouseAction;
 import model.Stadium;
 import view.HoloTV;
 

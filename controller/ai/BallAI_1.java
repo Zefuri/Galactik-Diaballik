@@ -1,4 +1,4 @@
-package controller.ai;
+package ai;
 
 import java.util.ArrayList;
 import java.util.Random;
