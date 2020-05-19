@@ -112,10 +112,10 @@ public class GameLoader {
 	            while (index < board.length()) {
 	            	if (board.charAt(index) == ' ') {
 	            		//We read a space so we go to next column
-	            		if (val.matches("[P][A][1][0-9]") || val.matches("[P][B][1][0-9]")) {
+	            		if (val.matches(SaverConstants.REGEXP_TOP_TEAM_PLAYER_ALONE) || val.matches(SaverConstants.REGEXP_TOP_TEAM_PLAYER_WITH_BALL)) {
 	            			addPlayerIfNeeded(val, realLine, currColumn, topTeam, topPlayerIndex);
 	            			topPlayerIndex++;
-	            		} else if (val.matches("[P][A][2][0-9]") || val.matches("[P][B][2][0-9]")) {
+	            		} else if (val.matches(SaverConstants.REGEXP_BOT_TEAM_PLAYER_ALONE) || val.matches(SaverConstants.REGEXP_BOT_TEAM_PLAYER_WITH_BALL)) {
 	            			addPlayerIfNeeded(val, realLine, currColumn, botTeam, botPlayerIndex);
 	            			botPlayerIndex++;
 	            		}
@@ -207,8 +207,6 @@ public class GameLoader {
 				player.setPosition(currLine, currColumn);
 				
 				team.addPlayer(player);
-				
-				//System.out.println(player);
 				break;
 			}
 				
@@ -218,8 +216,6 @@ public class GameLoader {
 				player.setBallPossession(true);
 				
 				team.addPlayer(player);
-				
-				//System.out.println(player);
 				break;
 			}
 			
@@ -228,8 +224,6 @@ public class GameLoader {
 				player.setPosition(currLine, currColumn);
 				
 				team.addPlayer(player);
-				
-				//System.out.println(player);
 				break;
 			}
 				
@@ -239,8 +233,6 @@ public class GameLoader {
 				player.setBallPossession(true);
 				
 				team.addPlayer(player);
-				
-				//System.out.println(player);
 				break;
 			}
 		}
