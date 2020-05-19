@@ -21,9 +21,6 @@ import view.HoloTV;
 public class MouseAction extends MouseAdapter implements Observer {
 	private HoloTV holoTV;
 	private Stadium stadium;
-	private Case clickedCase;
-	private Case playerAloneCase;
-	private Case playerWithBallCase;
 
 	//private StupidAI ai;
 	private int clickNumber = 0;
@@ -31,8 +28,8 @@ public class MouseAction extends MouseAdapter implements Observer {
 	public MouseAction(HoloTV holoTV, Stadium stadium) {
 		this.holoTV = holoTV;
 		this.stadium = stadium;
-		this.playerAloneCase = null;
-		this.playerWithBallCase = null;
+		stadium.setPlayerAloneCase(null);
+		stadium.setPlayerWithBallCase(null);
 
 		//this.ai = new StupidAI(0, stadium, Position.BOTTOM);
 	}
@@ -51,7 +48,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 		}
 		
 		try {
-			result = stadium.performRequestedAction(this.clickedCase, this.playerWithBallCase, this.playerAloneCase);
+			result = stadium.performRequestedAction();
 		} catch (IllegalStateException ex) {
 			//Means that the user performed an undoable action
 			System.out.println(ex.toString());
@@ -74,14 +71,14 @@ public class MouseAction extends MouseAdapter implements Observer {
 		
 		if (result == ActionResult.WIN) {
 			//TODO Impl�menter le passage � l'�cran de fin
-			System.out.println("Team \"" + stadium.getPlayer(playerWithBallCase).getTeam().getName() + "\" have won the match!");
-			holoTV.getGamePanel().showEndGamePopUp(stadium.getPlayer(playerWithBallCase).getTeam().getName());
+			System.out.println("Team \"" + stadium.getPlayer(stadium.getPlayerWithBallCase()).getTeam().getName() + "\" have won the match!");
+			holoTV.getGamePanel().showEndGamePopUp(stadium.getPlayer(stadium.getPlayerWithBallCase()).getTeam().getName());
 		}
 		
 		if (result == ActionResult.ANTIPLAY) {
 			//TODO Impl�menter le passage � l'�cran de fin
-			System.out.println("The enemy team made an antiplay: Team \"" + stadium.getPlayer(playerWithBallCase).getTeam().getName() + "\" have won the match!");
-			holoTV.getGamePanel().showAntiPlayPopUp(stadium.getPlayer(playerWithBallCase).getTeam().getName());
+			System.out.println("The enemy team made an antiplay: Team \"" + stadium.getPlayer(stadium.getPlayerWithBallCase()).getTeam().getName() + "\" have won the match!");
+			holoTV.getGamePanel().showAntiPlayPopUp(stadium.getPlayer(stadium.getPlayerWithBallCase()).getTeam().getName());
 		}
 
 		// TODO : make the AI play

@@ -27,6 +27,7 @@ public class Stadium {
         topTeam = new Team("snowKids", TeamPosition.TOP, this);
         bottomTeam = new Team("shadows", TeamPosition.BOTTOM, this);
 
+        this.cheatModActivated = true;
         this.history = new Historic();
         this.history.newTurn(getCurrentTeamTurn());
     }
@@ -66,7 +67,6 @@ public class Stadium {
     
     public boolean hasABall(Case position) {
     	Player p ;
-		
     	if ((p = getPlayer(position)) != null) {
 			return p.hasBall();
     	}
@@ -281,7 +281,7 @@ public class Stadium {
     }
 
     public void pass(Player playerOne, Player playerTwo) { //player playerOne passes the ball to playerTwo
-        if (playerCanPass(playerOne, playerTwo)) {
+        if (playerCanPass(playerOne, playerTwo) || (cheatModActivated && playerOne.isATeammate(playerTwo))) {
         	simplePass(playerOne, playerTwo);
         }
     }
@@ -619,7 +619,7 @@ public class Stadium {
 		this.cheatModActivated = cheatModActivated;
 	}
 
-	public ActionResult performRequestedAction(Case clickedCase, Case playerWithBallCase, Case playerAloneCase) {
+	public ActionResult performRequestedAction() {
 		//Verify if the user click must perform a doable action
 		ActionResult result = null;
 
@@ -714,8 +714,21 @@ public class Stadium {
 		this.clickedCase = clickedCase;
 	}
 
-	private void setPlayerWithBallCase(Case c) {
-		this.playerWithBallCase = new Case(c);
+	public Case getPlayerAloneCase() {
+		return playerAloneCase;
+	}
+
+	public Case getPlayerWithBallCase(){
+    	return playerWithBallCase;
+	}
+
+	public void setPlayerWithBallCase(Case c) {
+    	if(c != null) {
+			this.playerWithBallCase = new Case(c);
+		}
+    	else{
+    		this.playerWithBallCase = null;
+		}
 		this.playerAloneCase = null;
 	}
 
@@ -724,9 +737,14 @@ public class Stadium {
 		this.playerAloneCase = null;
 	}
 
-	private void setPlayerAloneCase(Case c) {
+	public void setPlayerAloneCase(Case c) {
 		this.playerWithBallCase = null;
-		this.playerAloneCase = new Case(c);
+		if(c != null) {
+			this.playerAloneCase = new Case(c);
+		}
+		else{
+			this.playerAloneCase = null;
+		}
 	}
 
 	public void clearSelectedPlayer() {
