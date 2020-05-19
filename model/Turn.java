@@ -30,9 +30,9 @@ public class Turn {
 	public void addAction(Action action) {
 		this.actions[this.nbMove + this.nbPass] = action;
 		
-		if (action.getType() == ActionType.PASS) {
+		if (action.getType() == ActionType.PASS && !cheatModActivated) {
 			this.nbPass++;
-		} else if (action.getType() == ActionType.MOVE) {
+		} else if (action.getType() == ActionType.MOVE && !cheatModActivated) {
 			this.nbMove++;
 		}
 	}
@@ -106,12 +106,12 @@ public class Turn {
         for (int i = 2; i >= 0; i--) {
 			Action a = actions[i];
 
-			if (a.getType() != ActionType.END_TURN && !cheatModActivated) {
+			if (a.getType() != ActionType.END_TURN) {
 				inverseTurn.addAction(a.inverse());
 			}
 		}
 
-		if (inverseTurn.nbMove + inverseTurn.nbPass < 3 && !cheatModActivated) {
+		if (inverseTurn.nbMove + inverseTurn.nbPass < 3) {
 			inverseTurn.addAction(new Action(ActionType.END_TURN, null, null, null, null));
 		}
 
