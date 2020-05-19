@@ -1,10 +1,8 @@
 package controller.listeners;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import model.Action;
 import model.Case;
 import model.Player;
 import model.Stadium;
@@ -12,7 +10,6 @@ import model.enums.ActionResult;
 import model.enums.ActionType;
 import model.enums.GameResult;
 import model.enums.MoveDirection;
-import patterns.Observable;
 import patterns.Observer;
 import view.HoloTV;
 
@@ -26,8 +23,8 @@ public class MouseAction extends MouseAdapter implements Observer {
 	private Case playerAloneCase;
 	private Case playerWithBallCase;
 
-	//private StupidAI ai;
-	private int clickNumber = 0;
+	// private StupidAI ai;
+	// private int clickNumber = 0;
 	
 	public MouseAction(HoloTV holoTV, Stadium stadium) {
 		this.holoTV = holoTV;
@@ -42,7 +39,6 @@ public class MouseAction extends MouseAdapter implements Observer {
 	public void mousePressed(MouseEvent e) {
 		super.mousePressed(e);
 		ActionResult result = null;
-		String currentTeamName = null;
 		
 		//We get the position of the case (meaning its position in the game grid)
 		try {
@@ -129,9 +125,9 @@ public class MouseAction extends MouseAdapter implements Observer {
 				}
 			}
 		} else if (stadium.hasAPlayerOnly(clickedCase)) {
-			//There is a player only on the clicked case
+			// There is a player only on the clicked case
 			if (playerWithBallCase != null) {
-				//Do a pass if possible
+				// Do a pass if possible
 				Player previousOwner = stadium.getPlayer(playerWithBallCase);
 				Player futureOwner = stadium.getPlayer(clickedCase);
 				result = previousOwner.pass(futureOwner);
@@ -175,7 +171,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 				result = player.move(direction);
 				
 				if (result == ActionResult.DONE) {
-					setPlayerAloneCase(clickedCase);
+					setPlayerAloneCase(player.getPosition());
 				} else if (result == ActionResult.ANTIPLAY) {
 					throw new RuntimeException("Antiplay detected!");
 				} else {
