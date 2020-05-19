@@ -35,7 +35,7 @@ public class ArkadiaNews extends JComponent {
 			this.shadowPlayer = ImageIO.read(getClass().getResourceAsStream("/resources/images/shadowPlayer.png"));
 			this.shadowBall = ImageIO.read(getClass().getResourceAsStream("/resources/images/shadowBall.png"));
 		} catch (IOException e) {
-			System.err.println("Les images n'ont pas pu être chargées : ");
+			System.err.println("Les images n'ont pas pu etre chargees : ");
 			e.printStackTrace();
 		}
 	}
