@@ -15,15 +15,19 @@ public class BallActionAI_1{
 	
 	MaxMinBallAction brain;
 	Random randomgene;
+	Stadium stadium;
 	Team team;
 	
 	public BallActionAI_1(Stadium stadium, Team team) {
+		this.stadium = stadium;
 		this.team = team;
-		brain = new MaxMinBallAction(stadium, team, Integer.MIN_VALUE, Integer.MAX_VALUE);
 		randomgene = new Random();
 	}
 	
 	public ArrayList<Action> play(int depth) {
+		//creation of MinMax tree
+		this.brain = new MaxMinBallAction(stadium, team, Integer.MIN_VALUE, Integer.MAX_VALUE);
+		
 		//creation of result ArrayList
 		ArrayList<Action> chooseActs = new ArrayList<>();
 		

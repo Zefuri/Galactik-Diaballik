@@ -17,7 +17,6 @@ public class MaxMinBallAction {
 		this.stadium = stadium;
 		this.team = team;
 		this.coup = new CoupAction(stadium, team, alpha, beta);
-		
 	}
 	
 	
