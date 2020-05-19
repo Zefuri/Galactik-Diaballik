@@ -132,8 +132,6 @@ public class GameSaver {
 		
 		jsonTurn.put("Indice", this.stadium.getHistory().getCurrentTurnIndex());
 		jsonTurn.put("Team", tour.getTeam().getPosition());
-		jsonTurn.put("NbPassesDone", tour.getNbPassDone());
-		jsonTurn.put("NbMovesDone", tour.getNbMoveDone());
 		jsonTurn.put("Actions", jsonActions);
 		
 		return jsonTurn;

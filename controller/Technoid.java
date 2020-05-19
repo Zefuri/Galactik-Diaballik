@@ -27,16 +27,21 @@ public class Technoid implements Observer {
 
             case CLICKED_LOAD: { // context : MainMenuPanel
             	GameLoader gameLoader = new GameLoader(stadium);
-            	gameLoader.loadData();
-            	stadium.loadTopTeam(gameLoader.getTopTeam());
-            	stadium.loadBotTeam(gameLoader.getBotTeam());
             	
-            	GameSaver gameSaver = new GameSaver(stadium, gameLoader.getCurrentSavePath());
+            	if (gameLoader.loadData()) {
+	            	stadium.loadTopTeam(gameLoader.getTopTeam());
+	            	stadium.loadBotTeam(gameLoader.getBotTeam());
+	            	
+	            	GameSaver gameSaver = new GameSaver(stadium, gameLoader.getCurrentSavePath());
+	            	
+	                MouseAction mouseAction = new MouseAction(holoTV, stadium, gameSaver);
+	                holoTV.addArkadiaNewsMouseListener(mouseAction);
+	                holoTV.getGamePanel().addObserver(mouseAction);
+	                holoTV.switchToGamePanel();
+            	} else {
+            		System.err.println("Either the user has cancelled the loading, or an error has occurred.");
+            	}
             	
-                MouseAction mouseAction = new MouseAction(holoTV, stadium, gameSaver);
-                holoTV.addArkadiaNewsMouseListener(mouseAction);
-                holoTV.getGamePanel().addObserver(mouseAction);
-                holoTV.switchToGamePanel();
                 break;
             }
 

@@ -41,7 +41,7 @@ public class GameLoader {
 		this.botTeam = null;
 	}
 	
-	public void loadData() {
+	public boolean loadData() {
 		//We create the 'saves' directory if it does not exist
 		try {
 			Path path = Paths.get(savesPath);
@@ -60,8 +60,7 @@ public class GameLoader {
 		String filePath = fileDialog.getDirectory() + fileName;
 		
 		if (fileName == null) {
-			System.out.println("User cancelled the choice.");
-			return;
+			return false;
 		}
 		
 		this.currentSavePath = filePath;
@@ -97,10 +96,10 @@ public class GameLoader {
 					board = new JSONObject(line).getString("board");
 				} catch (NoSuchElementException e) {
 					e.printStackTrace();
-					return;
+					return false;
 				} catch (ParseException e) {
 					e.printStackTrace();
-					return;
+					return false;
 				}
             	
 	            int index = 0; 
@@ -138,9 +137,6 @@ public class GameLoader {
             	try {
 					JSONObject jsonTurn = new JSONObject(line);
 					
-					int turnIndex = jsonTurn.getInt("Indice");
-					int nbMovesDone = jsonTurn.getInt("NbMovesDone");
-					int nbPassesDone = jsonTurn.getInt("NbPassesDone");
 					TeamPosition teamPosition = (jsonTurn.getString("Team").equals("TOP") ? TeamPosition.TOP : TeamPosition.BOTTOM);
 					Team currTeam = (teamPosition == TeamPosition.TOP ? this.topTeam : this.botTeam);
 					
@@ -152,9 +148,6 @@ public class GameLoader {
 					
 					//We create a turn with the current team
 					Turn tour = new Turn(currTeam);
-					
-					//tour.setNbMovesDone(nbMovesDone);
-					//tour.setNbPassesDone(nbPassesDone);
 					
 					//We create a new action if it exists, and we add it to the current tour
 					if (jsonAction1.length() != 0) {
@@ -203,6 +196,8 @@ public class GameLoader {
         
         scanner.close();
         System.out.println(this.stadium.getHistory());
+        
+        return true;
 	}
 	
 	private void addPlayerIfNeeded(String val, int currLine, int currColumn, Team team, int playerIndex) {
