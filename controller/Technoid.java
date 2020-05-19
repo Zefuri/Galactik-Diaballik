@@ -10,6 +10,9 @@ import patterns.Observer;
 import view.HoloTV;
 
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import static java.lang.Thread.sleep;
@@ -55,38 +58,29 @@ public class Technoid implements Observer {
 
             case CLICKED_CVC: // context : GameModePanel
                 holoTV.switchToGamePanel();
-                try {
-                    wait(2000);
-                } catch (Exception e) {
-//                    e.printStackTrace();
-                }
 
                 BallActionAI_1 AI1 = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.TOP));
                 BallActionAI_1 AI2 = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.BOTTOM));
 
-                for(int i = 0; i < 100; i++) {
-                    ArrayList<Action> AI1Actions = AI1.play(1);
-                    for(Action currentAction : AI1Actions) {
-                        stadium.actionPerformed(currentAction);
-                        holoTV.getArkadiaNews().repaint();
-                        try {
-                            wait(1000);
-                        } catch (Exception e) {
-//                            e.printStackTrace();
+                Timer timer = new Timer(50, new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        ArrayList<Action> AI1Actions = AI1.play(0);
+                        for(Action currentAction : AI1Actions) {
+                            stadium.actionPerformed(currentAction);
                         }
-                    }
 
-                    ArrayList<Action> AI2Actions = AI2.play(0);
-                    for(Action currentAction : AI2Actions) {
-                        stadium.actionPerformed(currentAction);
-                        holoTV.getArkadiaNews().repaint();
-                        try {
-                            wait(1000);
-                        } catch (Exception e) {
-//                            e.printStackTrace();
+                        ArrayList<Action> AI2Actions = AI2.play(0);
+                        for(Action currentAction : AI2Actions) {
+                            stadium.actionPerformed(currentAction);
                         }
+
+                        holoTV.getArkadiaNews().repaint();
                     }
-                }
+                });
+
+                timer.start();
+
+                // TODO : somehow finish a game
                 break;
         }
     }
