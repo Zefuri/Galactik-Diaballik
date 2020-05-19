@@ -57,7 +57,7 @@ public class HoloTV implements Runnable {
         frame.setSize(950, 800);
         frame.setVisible(true);
 
-		// playMusic();
+		playMusic();
 
 	}
 
