@@ -49,11 +49,6 @@ public class CoupAction {
 		this.beta = beta;
 		
 		this.tools = new ToolsBallAction();
-		
-	}
-	
-	public void refreshBall() {
-		this.ballPlayer = team.getBallPlayer();
 	}
 	
 	//return number of possibility action
@@ -116,7 +111,6 @@ public class CoupAction {
 		initOne(); 
 		initTwo();
 		initThree();
-		
 		oneHigh = new int[one.size()];
 		twoHigh = new int[two.size()];
 		threeHigh = new int[three.size()];
@@ -138,7 +132,14 @@ public class CoupAction {
 		for(ArrayList<Action> action : actionList){
 			index++;
 			exec(action);
-				valueList[index] = (-1) * tools.ballAvance(team);
+				if(team.getBallPlayer().getPosition().getX() == team.getButLine()   ||   stadium.antiplay(team.getEnemyTeam())) {
+					valueList[index] = Integer.MIN_VALUE;
+				} else  if(stadium.antiplay(team)) {
+					valueList[index] = Integer.MAX_VALUE;
+				} else {
+					valueList[index] = (-1) * tools.ballAvance(team);
+				}
+				
 				if(valueList[index] < avancement) {
 					avancement = valueList[index];
 				}
@@ -164,7 +165,14 @@ public class CoupAction {
 		for(ArrayList<Action> action : actionList){
 			index++;
 			exec(action);
-				valueList[index] = tools.ballAvance(team);
+				if(team.getBallPlayer().getPosition().getX() == team.getButLine()   ||   stadium.antiplay(team.getEnemyTeam())) {
+					valueList[index] = Integer.MAX_VALUE;
+				} else  if(stadium.antiplay(team)) {
+					valueList[index] = Integer.MIN_VALUE;
+				} else {
+					valueList[index] = tools.ballAvance(team);
+				}
+				
 				if(valueList[index] > avancement) {
 					avancement = valueList[index];
 				}

@@ -53,6 +53,7 @@ public class MinMaxBallAction {
 		}
 		
 		coup.initActs();
+
 	}
 
 	
