@@ -8,12 +8,23 @@ public class Turn {
 	private Team team;
 	private int nbPass;
 	private int nbMove;
+	private boolean cheatModActivated;
+
 
 	public Turn(Team team) {
 		this.actions = new Action[3];
 		this.team = team;
 		this.nbPass = 0;
 		this.nbMove = 0;
+		this.cheatModActivated = false;
+	}
+
+	public Turn(Team team, boolean cheat) {
+		this.actions = new Action[3];
+		this.team = team;
+		this.nbPass = 0;
+		this.nbMove = 0;
+		this.cheatModActivated = cheat;
 	}
 	
 	public void addAction(Action action) {
@@ -63,10 +74,14 @@ public class Turn {
 			if(actionToDelete.getType() == ActionType.PASS) {
 				actionToDelete.getPreviousPlayer().setBallPossession(true);
 				actionToDelete.getNextPlayer().setBallPossession(false);
-				this.nbPass--;
+				if(!cheatModActivated) {
+					this.nbPass--;
+				}
 			} else {
 				actionToDelete.getPreviousPlayer().setPosition(actionToDelete.getPreviousCase());
-				this.nbMove--;
+				if(!cheatModActivated) {
+					this.nbMove--;
+				}
 			}
 		} else {
 			res = ActionResult.ERROR;
@@ -91,12 +106,12 @@ public class Turn {
         for (int i = 2; i >= 0; i--) {
 			Action a = actions[i];
 
-			if (a.getType() != ActionType.END_TURN) {
+			if (a.getType() != ActionType.END_TURN && !cheatModActivated) {
 				inverseTurn.addAction(a.inverse());
 			}
 		}
 
-		if (inverseTurn.nbMove + inverseTurn.nbPass < 3) {
+		if (inverseTurn.nbMove + inverseTurn.nbPass < 3 && !cheatModActivated) {
 			inverseTurn.addAction(new Action(ActionType.END_TURN, null, null, null, null));
 		}
 

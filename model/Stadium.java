@@ -29,7 +29,7 @@ public class Stadium {
 
         this.cheatModActivated = true;
         this.history = new Historic();
-        this.history.newTurn(getCurrentTeamTurn());
+        this.history.newTurn(getCurrentTeamTurn(), cheatModActivated);
     }
     
     public Team getTeam(TeamPosition position) {
@@ -562,7 +562,7 @@ public class Stadium {
 					done = ActionResult.ERROR;
 				} else {
 					this.history.nextTurn();
-					this.history.newTurn(getCurrentTeamTurn());
+					this.history.newTurn(getCurrentTeamTurn(), cheatModActivated);
 				}
 				
 				break;
