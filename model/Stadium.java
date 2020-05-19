@@ -12,7 +12,13 @@ import model.enums.MoveDirection;
 public class Stadium {
     private Team topTeam;
     private Team bottomTeam;
-    
+
+	private Case clickedCase;
+	private Case playerAloneCase;
+	private Case playerWithBallCase;
+
+    private boolean cheatModActivated;
+
     private Player[][] board;
     
     private Historic history;
@@ -79,7 +85,7 @@ public class Stadium {
     }
 
     public void move(Player player, MoveDirection direction) {
-    	if (playerCanMove(player, direction)) {
+    	if (playerCanMove(player, direction) || cheatModActivated) {
     		simpleMove(player, direction);
     	}
     }
@@ -442,7 +448,7 @@ public class Stadium {
 		return game.toString();
 	}
 
-	private boolean isHasPlayer(StringBuilder game, int abscissa, int ordinate, boolean hasPlayer, Team bottomTeam) {
+	private boolean isHasPlayer(StringBuilder game, int abscissa, int ordinate, boolean hasPlayer, Team bottomTeam) { //to string method
 		for (Player currBotPlayer : bottomTeam.getPlayers()) {
 			Case position = currBotPlayer.getPosition();
 
@@ -604,5 +610,137 @@ public class Stadium {
 	public ActionResult resetTurn() {
 		return this.history.resetCurrentTurn();
 	}
+
+	public boolean isCheatModActivated() {
+		return cheatModActivated;
+	}
+
+	public void setCheatModActivated(boolean cheatModActivated) {
+		this.cheatModActivated = cheatModActivated;
+	}
+
+	public ActionResult performRequestedAction(Case clickedCase, Case playerWithBallCase, Case playerAloneCase) {
+		//Verify if the user click must perform a doable action
+		ActionResult result = null;
+
+		if (hasABall(clickedCase)) {
+			//There is a player with a ball on the clicked case
+			if (playerWithBallCase != null) {
+				throw new IllegalStateException("You can not pass the ball to yourself or an enemy player.");
+			} else {
+				//Change the actual player if possible
+				Player clickedPlayer = getPlayer(clickedCase);
+
+				if (clickedPlayer.canBeSelectedForPass()) {
+					if (playerAloneCase != null) {
+						getPlayer(playerAloneCase).setIfSelected(false);
+					}
+
+					setPlayerWithBallCase(clickedCase);
+					clickedPlayer.setIfSelected(true);
+				} else {
+					throw new IllegalStateException("The chosen player is not in the current playing team, or you have already made a pass this turn.");
+				}
+			}
+		} else if (hasAPlayerOnly(clickedCase)) {
+			//There is a player only on the clicked case
+			if (playerWithBallCase != null) {
+				//Do a pass if possible
+				Player previousOwner = getPlayer(playerWithBallCase);
+				Player futureOwner = getPlayer(clickedCase);
+				result = previousOwner.pass(futureOwner);
+
+				//TODO remettre le if / else if en 1 bloc apr�s impl�mentation de l'�cran de fin
+
+				if (result == ActionResult.DONE) {
+					getPlayer(playerWithBallCase).setIfSelected(false);
+					clearPlayers();
+				} else if (result == ActionResult.WIN) {
+					getPlayer(playerWithBallCase).setIfSelected(false);
+				} else {
+					throw new IllegalStateException("Either it is not your turn, or the two players are not aligned or have an opponent between them.");
+				}
+			} else {
+				//Change the actual player and change the selection value
+				Player clickedPlayer = getPlayer(clickedCase);
+
+				if (clickedPlayer.canBeSelected()) {
+					if (playerAloneCase != null) {
+						getPlayer(playerAloneCase).setIfSelected(false);
+					}
+
+					setPlayerAloneCase(clickedCase);
+					clickedPlayer.setIfSelected(true);
+				} else {
+					throw new IllegalStateException("The chosen player is not in the current playing team, or you have already made two moves this turn.");
+				}
+			}
+		} else {
+			//The case is empty
+			if (playerAloneCase != null) {
+				//If the selected case is next to the player case, we move the player
+				Player player = getPlayer(playerAloneCase);
+				MoveDirection direction = getMoveDirection(player, clickedCase);
+
+				if (direction == null) {
+					throw new IllegalStateException("Either it is not your turn, or the selected case is not situated next to the player.");
+				}
+
+				result = player.move(direction);
+
+				if (result == ActionResult.DONE) {
+					setPlayerAloneCase(clickedCase);
+				} else if (result == ActionResult.ANTIPLAY) {
+					throw new RuntimeException("Antiplay detected!");
+				} else {
+					throw new IllegalStateException("Either it is not your turn, or the selected case is not situated next to the player.");
+				}
+			} else if (playerWithBallCase != null) {
+				clearSelectedPlayer();
+				throw new IllegalStateException("You can not move a player that has the ball.");
+			} else {
+				throw new IllegalStateException("You must select a player before selecting an empty case!");
+			}
+		}
+
+		return result;
+	}
+
+	public Case getClickedCase() {
+		return clickedCase;
+	}
+
+	public void setClickedCase(Case clickedCase) {
+		this.clickedCase = clickedCase;
+	}
+
+	private void setPlayerWithBallCase(Case c) {
+		this.playerWithBallCase = new Case(c);
+		this.playerAloneCase = null;
+	}
+
+	private void clearPlayers() {
+		this.playerWithBallCase = null;
+		this.playerAloneCase = null;
+	}
+
+	private void setPlayerAloneCase(Case c) {
+		this.playerWithBallCase = null;
+		this.playerAloneCase = new Case(c);
+	}
+
+	public void clearSelectedPlayer() {
+		if (this.playerWithBallCase != null) {
+			getPlayer(this.playerWithBallCase).setIfSelected(false);
+		} else if (this.playerAloneCase != null) {
+			getPlayer(this.playerAloneCase).setIfSelected(false);
+		}
+
+		clearPlayers();
+
+		//holoTV.getArkadiaNews().repaint();
+	}
+
+
 }
 
