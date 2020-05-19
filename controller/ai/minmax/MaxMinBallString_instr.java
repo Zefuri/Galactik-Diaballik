@@ -1,4 +1,4 @@
-package controller.ai;
+package controller.ai.minmax;
 
 import model.Stadium;
 import model.Team;
@@ -7,15 +7,16 @@ import model.enums.MoveDirection;
 import model.enums.TeamPosition;
 import model.ModelConstants;
 
-public class MaxMinBallString{
+public class MaxMinBallString_instr{
 	Stadium stadium;
 	Team team;
 	CoupString coup;
 	
-	public MaxMinBallString(Stadium stadium, Team team, int alpha, int beta) {
+	public MaxMinBallString_instr(Stadium stadium, Team team, int alpha, int beta) {
 		this.stadium = stadium;
 		this.team = team;
 		this.coup = new CoupString(stadium, team, alpha, beta);
+		System.out.println(stadium.toString());
 	}
 	
 	
@@ -33,7 +34,7 @@ public class MaxMinBallString{
 		coup.init();
 				
 		if(checkingDepth != 0){
-			MinMaxBallString minCheck;
+			MinMaxBallString_instr minCheck;
 			
 			for(int i = 0; coup.canAccess()   &&   i != coup.numberOfAction(); i++){
 			
@@ -42,7 +43,7 @@ public class MaxMinBallString{
 				}
 			
 				coup.exec(i);
-					minCheck = new MinMaxBallString(stadium, team.getEnemyTeam(), coup.getAlpha(), coup.getBeta());
+					minCheck = new MinMaxBallString_instr(stadium, team.getEnemyTeam(), coup.getAlpha(), coup.getBeta());
 					minCheck.progress(checkingDepth-1);
 					coup.reportMax(i, minCheck.getWorstAvancement());
 				coup.undo(i);
@@ -57,6 +58,15 @@ public class MaxMinBallString{
 
 	
 	public static void main(String args[]){
-		//tests
+		//tests	
+		Stadium stadium = new Stadium();
+		MaxMinBallString_instr test = new MaxMinBallString_instr(stadium, stadium.getTeam(TeamPosition.BOTTOM), Integer.MIN_VALUE, Integer.MAX_VALUE);
+		test.progress((int)(args[0].charAt(args[0].length()-1)-'0'));
+		System.out.println("Pour une prévision de: "+args[0]);
+		System.out.println("Obtenu par: ");
+		for(String turn : test.getMustActs()) {
+			System.out.print(turn+" - ");
+		}
+		System.out.println("");	
 	}
 }

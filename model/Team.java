@@ -11,6 +11,7 @@ public class Team {
 	private ArrayList<Player> players;
 	private Stadium stadium;
 	private TeamPosition position;
+	private Player ballPlayer;
 
 	public Team(String name, TeamPosition position, Stadium stadium) {
 		this.name = name;
@@ -35,6 +36,7 @@ public class Team {
 			
 			if (i == 3) {
 				p.setBallPossession(true);
+				ballPlayer = p;
 			}
 			
 			addPlayer(p);
@@ -67,13 +69,11 @@ public class Team {
 	}
 	
 	public Player getBallPlayer() throws IllegalStateException {
-		for (Player p : this.players) {
-			if (p.hasBall()) {
-				return p;
-			}
-		}
-		
-		throw new IllegalStateException("No player with ball found!");
+		return ballPlayer;
+	}
+	
+	public void setBallPlayer(Player player) {
+		ballPlayer = player;
 	}
 	
 	//number of possibility pass

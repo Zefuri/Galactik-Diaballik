@@ -1,4 +1,4 @@
-package controller.ai;
+package controller.ai.minmax;
 
 import model.Stadium;
 import model.Team;
@@ -538,9 +538,9 @@ public class CoupString{
 			number = (int)(instruction.charAt(i)-'0');
 			
 			if(instruction.charAt(i+1) == 'P')
-				stadium.pass(ballPlayer, team.playerOfInt(number));
+				stadium.simplePass(ballPlayer, team.playerOfInt(number));
 			else
-				stadium.move(team.playerOfInt(number), tools.moveOfChar(instruction.charAt(i+1)));
+				stadium.simpleMove(team.playerOfInt(number), tools.moveOfChar(instruction.charAt(i+1)));
 		}
 	}
 	
@@ -565,7 +565,7 @@ public class CoupString{
 			if(instruction.charAt(i) == 'P')
 				stadium.pass(team.playerOfInt(number), ballPlayer);
 			else
-				stadium.move(team.playerOfInt(number), tools.moveOfChar(tools.reverse(instruction.charAt(i))));
+				stadium.simpleMove(team.playerOfInt(number), tools.moveOfChar(tools.reverse(instruction.charAt(i))));
 		}
 	}
 	
