@@ -12,6 +12,7 @@ public class Team {
 	private Stadium stadium;
 	private TeamPosition position;
 	private Player ballPlayer;
+	private int butLine;
 
 	public Team(String name, TeamPosition position, Stadium stadium) {
 		this.name = name;
@@ -29,9 +30,11 @@ public class Team {
 			if (position == TeamPosition.TOP) {
 				p = new Player("TOP_" + i);
 				p.setPosition(new Case(0, i));
+				this.butLine = 6;
 			} else {
 				p = new Player("BOT_" + i);
 				p.setPosition(new Case(6, i));
+				this.butLine = 0;
 			}
 			
 			if (i == 3) {
@@ -74,6 +77,10 @@ public class Team {
 	
 	public void setBallPlayer(Player player) {
 		ballPlayer = player;
+	}
+	
+	public int getButLine() {
+		return butLine;
 	}
 	
 	//number of possibility pass
