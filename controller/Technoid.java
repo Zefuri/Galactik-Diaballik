@@ -2,6 +2,8 @@ import listeners.MouseAction;
 import model.Stadium;
 import model.enums.UserInput;
 import patterns.Observer;
+import saver.GameLoader;
+import saver.GameSaver;
 import view.HoloTV;
 
 public class Technoid implements Observer {
@@ -23,16 +25,31 @@ public class Technoid implements Observer {
                 holoTV.switchToGameModePanel();
                 break;
 
-            case CLICKED_SETTINGS: // context : MainMenuPanel
-                System.out.println("Functionality not yet implemented");
+            case CLICKED_LOAD: { // context : MainMenuPanel
+            	GameLoader gameLoader = new GameLoader(stadium);
+            	gameLoader.loadData();
+            	stadium.loadTopTeam(gameLoader.getTopTeam());
+            	stadium.loadBotTeam(gameLoader.getBotTeam());
+            	
+            	GameSaver gameSaver = new GameSaver(stadium, gameLoader.getCurrentSavePath());
+            	
+                MouseAction mouseAction = new MouseAction(holoTV, stadium, gameSaver);
+                holoTV.addArkadiaNewsMouseListener(mouseAction);
+                holoTV.getGamePanel().addObserver(mouseAction);
+                holoTV.switchToGamePanel();
                 break;
+            }
 
             case CLICKED_QUIT: // context : MainMenuPanel
                 holoTV.getFrame().dispose();
                 break;
 
             case CLICKED_PVP: // context : GameModePanel
-                MouseAction mouseAction = new MouseAction(holoTV, stadium);
+            	//We also add the gameSaver and save the initial state
+            	GameSaver gameSaver = new GameSaver(stadium);
+            	gameSaver.saveToFile();
+            	
+                MouseAction mouseAction = new MouseAction(holoTV, stadium, gameSaver);
                 holoTV.addArkadiaNewsMouseListener(mouseAction);
                 holoTV.getGamePanel().addObserver(mouseAction);
                 holoTV.switchToGamePanel();

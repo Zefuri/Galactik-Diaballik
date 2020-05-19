@@ -13,15 +13,19 @@ public class Team {
 	private TeamPosition position;
 	private Player ballPlayer;
 
-	public Team(String name, TeamPosition position, Stadium stadium) {
+	public Team(String name, TeamPosition position, Stadium stadium, boolean toInit) {
 		this.name = name;
 		this.position = position;
 		this.stadium = stadium;
-		initialize();
+		this.players = new ArrayList<>();
+		
+		if (toInit) {
+			initializePlayers();
+		}
 	}
 	
-	public void initialize() {
-		players = new ArrayList<>();
+	public void initializePlayers() {
+		this.players.clear();
 		
 		for (int i = 0; i < ModelConstants.BOARD_SIZE; i++) {
 			Player p;

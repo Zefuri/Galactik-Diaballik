@@ -13,6 +13,7 @@ import model.enums.ActionType;
 import model.enums.MoveDirection;
 import patterns.Observable;
 import patterns.Observer;
+import saver.GameSaver;
 import view.HoloTV;
 
 //import ai.StupidAI;
@@ -21,6 +22,7 @@ import view.HoloTV;
 public class MouseAction extends MouseAdapter implements Observer {
 	private HoloTV holoTV;
 	private Stadium stadium;
+	private GameSaver gameSaver;
 	private Case clickedCase;
 	private Case playerAloneCase;
 	private Case playerWithBallCase;
@@ -28,9 +30,10 @@ public class MouseAction extends MouseAdapter implements Observer {
 	//private StupidAI ai;
 	private int clickNumber = 0;
 	
-	public MouseAction(HoloTV holoTV, Stadium stadium) {
+	public MouseAction(HoloTV holoTV, Stadium stadium, GameSaver gameSaver) {
 		this.holoTV = holoTV;
 		this.stadium = stadium;
+		this.gameSaver = gameSaver;
 		this.playerAloneCase = null;
 		this.playerWithBallCase = null;
 
@@ -135,8 +138,10 @@ public class MouseAction extends MouseAdapter implements Observer {
 				if (result == ActionResult.DONE) {
 					stadium.getPlayer(playerWithBallCase).setIfSelected(false);
 					clearPlayers();
+					this.gameSaver.overwriteSave();
 				} else if (result == ActionResult.WIN) {
 					stadium.getPlayer(playerWithBallCase).setIfSelected(false);
+					this.gameSaver.overwriteSave();
 				} else {
 					throw new IllegalStateException("Either it is not your turn, or the two players are not aligned or have an opponent between them.");
 				}
@@ -170,7 +175,9 @@ public class MouseAction extends MouseAdapter implements Observer {
 				
 				if (result == ActionResult.DONE) {
 					setPlayerAloneCase(clickedCase);
+					this.gameSaver.overwriteSave();
 				} else if (result == ActionResult.ANTIPLAY) {
+					this.gameSaver.overwriteSave();
 					throw new RuntimeException("Antiplay detected!");
 				} else {
 					throw new IllegalStateException("Either it is not your turn, or the selected case is not situated next to the player.");

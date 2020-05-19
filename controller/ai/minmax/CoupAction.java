@@ -1,4 +1,4 @@
-package controller.ai.minmax;
+package ai.minmax;
 
 import java.util.ArrayList;
 

@@ -55,7 +55,7 @@ public class MainMenuPanel extends JPanel implements Observable {
 
         // create the settings button
         JButton settingsButton = createButton("Option");
-        settingsButton.addActionListener(actionEvent -> notify(UserInput.CLICKED_SETTINGS));
+        settingsButton.addActionListener(actionEvent -> notify(UserInput.CLICKED_LOAD));
 
         // create the quit button
         JButton quitButton = createButton("Quitter");
