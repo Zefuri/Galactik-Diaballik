@@ -10,8 +10,13 @@
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
-#Visual Studio Code
+# Visual Studio Code
 *.code-workspace
+
+# IntellJ
+out
+.idea
+*.iml
 
 # Package Files #
 *.jar

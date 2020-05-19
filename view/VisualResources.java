@@ -16,7 +16,10 @@ public class VisualResources {
         return instance;
     }
 
-    public Color customBlue = new Color(27,148,209);
+    public Color customBlue = new Color(27, 148, 209);
+    public Color customLightBlue = new Color(115, 198,240);
+    public Color customRed = new Color(208, 0, 0);
+    public Color customGrassGreen = new Color(111, 176, 72);
 
     public Font customFont;
     public Font customFontItal;
@@ -24,6 +27,8 @@ public class VisualResources {
 
     BufferedImage userIconImage;
     BufferedImage computerIconImage;
+    BufferedImage resetIconImage;
+    BufferedImage backwardIconImage;
 
     private VisualResources(){
         // setting the custom fonts for the app
@@ -56,6 +61,8 @@ public class VisualResources {
         try{
             userIconImage = ImageIO.read(getClass().getResourceAsStream("/resources/images/man-avatar.png"));
             computerIconImage = ImageIO.read(getClass().getResourceAsStream("/resources/images/computer.png"));
+            resetIconImage = ImageIO.read(getClass().getResourceAsStream("/resources/images/reset.png"));
+            backwardIconImage = ImageIO.read(getClass().getResourceAsStream("/resources/images/backward.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

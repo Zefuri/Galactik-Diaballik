@@ -84,7 +84,7 @@ public class Stadium {
     	}
     }
 
-    private void simpleMove(Player player, MoveDirection direction){ //move player at position in the selected direction
+    public void simpleMove(Player player, MoveDirection direction){ //move player at position in the selected direction
     	// /!\ Caution: Please use the playerCanMove() function before using this one/!\
     	Case playerPos = player.getPosition();
 
@@ -235,7 +235,8 @@ public class Stadium {
         return null;
     }
 
-    private void simplePass(Player playerOne, Player playerTwo){ //player at i j pass the ball to nextI nextJ
+    public void simplePass(Player playerOne, Player playerTwo){ //player at i j pass the ball to nextI nextJ
+    	playerOne.getTeam().setBallPlayer(playerTwo);
         playerOne.setBallPossession(false);
         playerTwo.setBallPossession(true);
     }
@@ -424,43 +425,11 @@ public class Stadium {
 				game.append("|");
 				
 				boolean hasPlayer = false;
-				
-				for (Player currTopPlayer : topTeam.getPlayers()) {
-					Case position = currTopPlayer.getPosition();
-					
-					if (position.getX() == abscisse) {
-						if (position.getY() == ordonnee) {
-							hasPlayer = true;
-							
-							if (currTopPlayer.hasBall()) {
-								//game.append("a").append("num(?)").append("*");
-								game.append(currTopPlayer.getName()).append("*");
-							} else {
-								//game.append("a").append("num(?)").append(".");
-								game.append(currTopPlayer.getName()).append(".");
-							}
-						}
-					}
-				}
-				
-				for (Player currBotPlayer : bottomTeam.getPlayers()) {
-					Case position = currBotPlayer.getPosition();
-					
-					if (position.getX() == abscisse) {
-						if (position.getY() == ordonnee) {
-							hasPlayer = true;
-							
-							if (currBotPlayer.hasBall()) {
-								//game.append("b").append("num(?)").append("*");
-								game.append(currBotPlayer.getName()).append("*");
-							} else {
-								//game.append("b").append("num(?)").append(".");
-								game.append(currBotPlayer.getName()).append(".");
-							}
-						}
-					}
-				}
-				
+
+				hasPlayer = isHasPlayer(game, abscisse, ordonnee, hasPlayer, topTeam);
+
+				hasPlayer = isHasPlayer(game, abscisse, ordonnee, hasPlayer, bottomTeam);
+
 				if (!hasPlayer) {
 					game.append("______");
 				}
@@ -471,6 +440,27 @@ public class Stadium {
 		}		
 		
 		return game.toString();
+	}
+
+	private boolean isHasPlayer(StringBuilder game, int abscissa, int ordinate, boolean hasPlayer, Team bottomTeam) {
+		for (Player currBotPlayer : bottomTeam.getPlayers()) {
+			Case position = currBotPlayer.getPosition();
+
+			if (position.getX() == abscissa) {
+				if (position.getY() == ordinate) {
+					hasPlayer = true;
+
+					if (currBotPlayer.hasBall()) {
+						//game.append("b").append("num(?)").append("*");
+						game.append(currBotPlayer.getName()).append("*");
+					} else {
+						//game.append("b").append("num(?)").append(".");
+						game.append(currBotPlayer.getName()).append(".");
+					}
+				}
+			}
+		}
+		return hasPlayer;
 	}
 
 	public MoveDirection getMoveDirection(Player player, Case pos){
@@ -605,6 +595,14 @@ public class Stadium {
 	
 	public int getNbMovesDone() {
 		return this.history.getLast().getNbMoveDone();
+	}
+	
+	public ActionResult undoAction() {
+		return this.history.undoLastAction();
+	}
+	
+	public ActionResult resetTurn() {
+		return this.history.resetCurrentTurn();
 	}
 }
 

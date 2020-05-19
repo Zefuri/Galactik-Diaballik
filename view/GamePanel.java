@@ -1,18 +1,18 @@
 package view;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
 import model.Stadium;
@@ -24,6 +24,7 @@ import patterns.Observer;
 
 public class GamePanel extends JPanel implements Observable {
 	private final ObservableHandler observableHandler;
+	private final VisualResources visualResources = VisualResources.getInstance();
 
 	private Stadium stadium;	
 	private ArkadiaNews arkadiaNews;
@@ -56,11 +57,25 @@ public class GamePanel extends JPanel implements Observable {
 	
 	public void updateGamePanelInfos() {
 		this.nbTurn.setText("Tour " + (this.stadium.getTurnIndex() + 1) + " :");
-		this.whosturn.setText(this.stadium.getCurrentTeamTurn().getName() + ", à vous !");
+		
+		this.changeTeamTurnColor();
+		this.whosturn.setText(this.stadium.getCurrentTeamTurn().getName() + ", a vous !");
+		
 		this.nbPassRemaining.setText("Passe : " + (1 - this.stadium.getNbPassesDone()));
-		this.nbMoveRemaining.setText("Déplacements : " + (2 - this.stadium.getNbMovesDone()));
+		this.nbMoveRemaining.setText("Deplacements : " + (2 - this.stadium.getNbMovesDone()));
 	}
-
+	
+	private void changeTeamTurnColor() {
+		switch(this.stadium.getCurrentTeamTurn().getName()) {
+			case "snowKids" :
+				this.whosturn.setForeground(this.visualResources.customBlue);
+				break;
+			case "shadows" :
+				this.whosturn.setForeground(this.visualResources.customRed);
+				break;
+		}
+	}
+	
 	@Override
 	public void addObserver(Observer observer) {
 		observableHandler.addObserver(observer);
@@ -120,8 +135,10 @@ public class GamePanel extends JPanel implements Observable {
 		JPanel turnPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		
-		// Création et placement du JLabel annonçant le numéro du tour
+		// Crï¿½ation et placement du JLabel annonï¿½ant le numï¿½ro du tour
 		this.nbTurn = new JLabel("Tour " + (this.stadium.getTurnIndex() + 1) + " :");
+		this.nbTurn.setFont(this.visualResources.customFontItal);
+		this.nbTurn.setBorder(new EmptyBorder(0, this.getWidth()/20, 0, this.getWidth()/20));
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -129,8 +146,12 @@ public class GamePanel extends JPanel implements Observable {
 		
 		turnPanel.add(this.nbTurn, gbc);
 		
-		// Création et placement du JLabel annonçant à quelle équipe jouer
-		this.whosturn = new JLabel(this.stadium.getCurrentTeamTurn().getName() + ", à vous !");
+		// Crï¿½ation et placement du JLabel annonï¿½ant ï¿½ quelle ï¿½quipe jouer
+		this.whosturn = new JLabel(this.stadium.getCurrentTeamTurn().getName() + ", ï¿½ vous !");
+		this.whosturn.setFont(this.visualResources.customFontItal);
+		this.whosturn.setBorder(new EmptyBorder(0, this.getWidth()/20, 0, this.getWidth()/20));
+		
+		this.changeTeamTurnColor();
 		
 		gbc.gridx = 0;
 		gbc.gridy = 1;
@@ -145,8 +166,9 @@ public class GamePanel extends JPanel implements Observable {
 		JPanel actionsRemainingPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		
-		// Création et placement du JLabel annonçant le nombre de passes restantes
+		// Crï¿½ation et placement du JLabel annonï¿½ant le nombre de passes restantes
 		this.nbPassRemaining = new JLabel("Passe : " + (1 - this.stadium.getNbPassesDone()));
+		this.nbPassRemaining.setFont(this.visualResources.customFont);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -154,8 +176,9 @@ public class GamePanel extends JPanel implements Observable {
 		
 		actionsRemainingPanel.add(this.nbPassRemaining, gbc);
 		
-		// Création et placement du JLabel annonçant le nombre de déplacements restants
-		this.nbMoveRemaining = new JLabel("Déplacements : " + (2 - this.stadium.getNbMovesDone()));
+		// Crï¿½ation et placement du JLabel annonï¿½ant le nombre de dï¿½placements restants
+		this.nbMoveRemaining = new JLabel("Dï¿½placements : " + (2 - this.stadium.getNbMovesDone()));
+		this.nbMoveRemaining.setFont(this.visualResources.customFont);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 1;
@@ -171,8 +194,9 @@ public class GamePanel extends JPanel implements Observable {
 		JPanel turnButtons = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		
-		// Création et placement du JButton permettant le retour en arrière
-		this.undoButton = new JButton(" << ");
+		// Crï¿½ation et placement du JButton permettant le retour en arriï¿½re
+		this.undoButton = new JButton();
+		this.undoButton.setIcon(new ImageIcon(this.visualResources.backwardIconImage));
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -181,8 +205,9 @@ public class GamePanel extends JPanel implements Observable {
 		
 		turnButtons.add(this.undoButton, gbc);
 
-		// Création et placement du JButton permettant l'annulation du tour
-		this.resetTurnButton = new JButton("Reset");
+		// Crï¿½ation et placement du JButton permettant l'annulation du tour
+		this.resetTurnButton = new JButton();
+		this.resetTurnButton.setIcon(new ImageIcon(this.visualResources.resetIconImage));
 		
 		gbc.gridx = 2;
 		gbc.gridy = 0;
@@ -192,14 +217,18 @@ public class GamePanel extends JPanel implements Observable {
 		turnButtons.add(this.resetTurnButton, gbc);
 
 		this.gameControlPanel.add(turnButtons);
+		
+		this.undoButton.addActionListener(actionEvent -> notify(ActionType.UNDO));
+		this.resetTurnButton.addActionListener(actionEvent -> notify(ActionType.RESET));
 	}
 	
 	private void createEndTurnButtonPanel() {
 		JPanel endTurnButtonPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		
-		// Création et placement du JButton permettant la fin du tour
+		// Crï¿½ation et placement du JButton permettant la fin du tour
 		this.endTurnButton = new JButton("Fin du tour !");
+		this.endTurnButton.setFont(this.visualResources.customFontSuperItal);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -209,7 +238,7 @@ public class GamePanel extends JPanel implements Observable {
 
 		this.gameControlPanel.add(endTurnButtonPanel);
 		
-		// Ajout de la fonction "observeur/observé" au endTurnButton permettant de notifier la partie controller
+		// Ajout de la fonction "observeur/observï¿½" au endTurnButton permettant de notifier la partie controller
 		this.endTurnButton.addActionListener(actionEvent -> notify(ActionType.END_TURN));
 	}
 }
