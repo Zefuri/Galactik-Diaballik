@@ -612,5 +612,9 @@ public class Stadium {
 	public ActionResult resetTurn() {
 		return this.history.resetCurrentTurn();
 	}
+	
+	public Historic getHistory() {
+		return this.history;
+	}
 }
 

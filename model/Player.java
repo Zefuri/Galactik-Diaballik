@@ -148,4 +148,8 @@ public class Player {
 	public String toString() {
 		return "Joueur de l'équipe : " + this.getTeam().getPosition() + "\nPosition : " + this.getPosition() + "\nPossède la balle : " + this.hasBall();
 	}
+	
+	public boolean hasTheSameName(String name) {
+		return this.getName().equals(name);
+	}
 }

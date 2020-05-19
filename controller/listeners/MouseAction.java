@@ -217,14 +217,17 @@ public class MouseAction extends MouseAdapter implements Observer {
 		switch((ActionType) object) {	
 			case END_TURN : // following code is executed when the "end of turn" button is pressed
 				res = this.stadium.endTurn();
+				gameSaver.overwriteSave();
 				break;
 				
 			case UNDO :
 				res = this.stadium.undoAction();
+				gameSaver.overwriteSave();
 				break;
 			
 			case RESET :
 				res = this.stadium.resetTurn();
+				gameSaver.overwriteSave();
 				break;
 		}
 		

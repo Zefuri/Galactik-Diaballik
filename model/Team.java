@@ -163,4 +163,16 @@ public class Team {
 	public boolean isWinner() {
 		return stadium.isAWin(position);
 	}
+	
+	public Player getPlayerFromName(String name) {
+		//System.out.println("given name : " + name);
+		
+		for (Player p : this.getPlayers()) {
+			if (p.hasTheSameName(name)) {
+				return p;
+			}
+		}
+		
+		throw new IllegalStateException("There must be a player with the given name!");
+	}
 }

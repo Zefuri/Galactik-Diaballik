@@ -10,7 +10,7 @@ public class Turn {
 	private int nbMove;
 
 	public Turn(Team team) {
-		this.actions = new Action[3];
+		this.actions = new Action[]{null, null, null};
 		this.team = team;
 		this.nbPass = 0;
 		this.nbMove = 0;
@@ -32,6 +32,18 @@ public class Turn {
 	
 	public Action getAction(int index) {
 		return this.actions[index];
+	}
+	
+	public Action getFirstAction() {
+		return this.getAction(0);
+	}
+	
+	public Action getSecondAction() {
+		return this.getAction(1);
+	}
+	
+	public Action getThirdAction() {
+		return this.getAction(2);
 	}
 	
 	public Team getTeam() {
@@ -57,7 +69,7 @@ public class Turn {
 	public ActionResult undo() {
 		ActionResult res = ActionResult.DONE;
 		
-		if(this.nbMove + this.nbPass > 0) {
+		if (this.nbMove + this.nbPass > 0) {
 			Action actionToDelete = this.actions[(this.nbPass + this.nbMove) - 1];
 			
 			if(actionToDelete.getType() == ActionType.PASS) {
@@ -68,6 +80,9 @@ public class Turn {
 				actionToDelete.getPreviousPlayer().setPosition(actionToDelete.getPreviousCase());
 				this.nbMove--;
 			}
+			
+			//We clear the action properly (better for the save)
+			this.actions[this.nbPass + this.nbMove] = null;
 		} else {
 			res = ActionResult.ERROR;
 		}
@@ -76,9 +91,9 @@ public class Turn {
 	}
 	
 	public ActionResult deleteActions() {
-		ActionResult res = ActionResult.DONE;
+		ActionResult res = ActionResult.ERROR;
 		
-		while(this.nbMove + this.nbPass > 0 && res == ActionResult.DONE) {
+		while (this.nbMove + this.nbPass > 0 && res == ActionResult.DONE) {
 			res = undo();
 		}
 		
@@ -116,10 +131,20 @@ public class Turn {
 	}
 
 	public String toString(){
-		String acts = "";
+		StringBuilder builder = new StringBuilder();
+		
 		for(Action a : actions){
-			acts += a.toString();
+			builder.append((a != null) ? a.toString() : "NA\n\n");
 		}
-		return acts;
+		
+		return builder.toString();
+	}
+	
+	public void setNbMovesDone(int nbMoves) {
+		this.nbMove = nbMoves;
+	}
+	
+	public void setNbPassesDone(int nbPasses) {
+		this.nbPass = nbPasses;
 	}
 }
