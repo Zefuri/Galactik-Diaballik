@@ -77,18 +77,18 @@ public class MouseAction extends MouseAdapter implements Observer {
 		holoTV.updateGameInfos();
 		
 		if (result == ActionResult.WIN) {
-			if(stadium.getPlayer(playerAloneCase).getTeam().getName() == "snowKids") {
-				holoTV.switchToEndGamePanel(GameResult.VICTORY, stadium.getPlayer(playerAloneCase).getTeam().getName());
-			} else if(stadium.getPlayer(playerAloneCase).getTeam().getName() != null) {
-				holoTV.switchToEndGamePanel(GameResult.DEFEAT, stadium.getPlayer(playerAloneCase).getTeam().getName());
+			if(stadium.getCurrentTeamTurn().getName() == "snowKids") {
+				holoTV.switchToEndGamePanel(GameResult.VICTORY, stadium.getCurrentTeamTurn().getName());
+			} else {
+				holoTV.switchToEndGamePanel(GameResult.DEFEAT, stadium.getTeam(TeamPosition.TOP).getName());
 			}
 		}
 		
 		if (result == ActionResult.ANTIPLAY) {
-			if(stadium.getPlayer(playerAloneCase).getTeam().getName() == "snowKids") {
-				holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getPlayer(playerAloneCase).getTeam().getName());
-			} else if(stadium.getPlayer(playerAloneCase).getTeam().getName() != null) {
-				holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getPlayer(playerAloneCase).getTeam().getName());
+			if(stadium.getCurrentTeamTurn().getName()  == "snowKids") {
+				holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getCurrentTeamTurn().getName());
+			} else {
+				holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
 			}
 		}
 	}

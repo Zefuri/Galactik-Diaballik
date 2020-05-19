@@ -96,7 +96,6 @@ public class EndGamePanel extends JPanel implements Observable {
 		
 		this.gbc.gridx = 0;
 		this.gbc.gridy = 2;
-		this.gbc.fill = GridBagConstraints.HORIZONTAL;
 		
 		this.add(this.replayButton, this.gbc);
 		
@@ -106,9 +105,8 @@ public class EndGamePanel extends JPanel implements Observable {
 	private void createNewGameButton() {
 		this.newGameButton = new JButton("Nouvelle partie");
 		
-		this.gbc.gridx = 2;
+		this.gbc.gridx = 1;
 		this.gbc.gridy = 2;
-		this.gbc.fill = GridBagConstraints.HORIZONTAL;
 		
 		this.add(this.newGameButton, this.gbc);
 		
