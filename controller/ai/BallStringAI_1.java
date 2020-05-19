@@ -3,6 +3,8 @@ package controller.ai;
 import java.util.ArrayList;
 import java.util.Random;
 
+import controller.ai.minmax.MaxMinBallString;
+
 import model.Stadium;
 import model.Team;
 import model.Player;

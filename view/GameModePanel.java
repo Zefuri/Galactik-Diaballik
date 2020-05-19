@@ -17,6 +17,13 @@ public class GameModePanel extends JPanel implements Observable {
 
     private ObservableHandler observableHandler;
 
+    private JPanel pvpPanel;
+    private JPanel pvpCenterPanel;
+    private JPanel pvcPanel;
+    private JPanel pvcCenterPanel;
+    private JPanel cvcPanel;
+    private JPanel cvcCenterPanel;
+
     public GameModePanel() {
         observableHandler = new ObservableHandler();
 
@@ -40,65 +47,65 @@ public class GameModePanel extends JPanel implements Observable {
 
     /*
     Code segmentation script. Creates the clickable panels and sets their mouse adapters
-    When mouse hovers over, the borders become red
+    When mouse hovers over, the background of said panel gets lighter
      */
     private void createClickablePanels() {
         // player vs player clickable panel on second line
-        JPanel pvpPanel = createGameModeSubPanel(VisualResources.getInstance().userIconImage, "Joueur vs Joueur", VisualResources.getInstance().userIconImage);
+        pvpPanel = createGameModeSubPanel(VisualResources.getInstance().userIconImage, "Joueur vs Joueur", VisualResources.getInstance().userIconImage);
         pvpPanel.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mousePressed(MouseEvent e) {
                 GameModePanel.this.notify(UserInput.CLICKED_PVP);
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                pvpPanel.setBorder(new LineBorder(Color.RED));
+                setHover(true, pvpPanel, pvpCenterPanel);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                pvpPanel.setBorder(new LineBorder(Color.BLUE));
+                setHover(false, pvpPanel, pvpCenterPanel);
             }
         });
         this.add(pvpPanel);
 
         // player vs computer clickable panel on third line
-        JPanel pvcPanel = createGameModeSubPanel(VisualResources.getInstance().userIconImage, "Joueur vs IA", VisualResources.getInstance().computerIconImage);
+        pvcPanel = createGameModeSubPanel(VisualResources.getInstance().userIconImage, "Joueur vs IA", VisualResources.getInstance().computerIconImage);
         pvcPanel.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mousePressed(MouseEvent e) {
                 GameModePanel.this.notify(UserInput.CLICKED_PVC);
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                pvcPanel.setBorder(new LineBorder(Color.RED));
+                setHover(true, pvcPanel, pvcCenterPanel);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                pvcPanel.setBorder(new LineBorder(Color.BLUE));
+                setHover(false, pvcPanel, pvcCenterPanel);
             }
         });
         this.add(pvcPanel);
 
         // computer vs computer clickable panel on fourth line
-        JPanel cvcPanel = createGameModeSubPanel(VisualResources.getInstance().computerIconImage, "IA vs IA", VisualResources.getInstance().computerIconImage);
+        cvcPanel = createGameModeSubPanel(VisualResources.getInstance().computerIconImage, "IA vs IA", VisualResources.getInstance().computerIconImage);
         cvcPanel.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mousePressed(MouseEvent e) {
                 GameModePanel.this.notify(UserInput.CLICKED_CVC);
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                cvcPanel.setBorder(new LineBorder(Color.RED));
+                setHover(true, cvcPanel, cvcCenterPanel);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                cvcPanel.setBorder(new LineBorder(Color.BLUE));
+                setHover(false, cvcPanel, cvcCenterPanel);
             }
         });
         this.add(cvcPanel);
@@ -111,17 +118,6 @@ public class GameModePanel extends JPanel implements Observable {
         JPanel mainPanel = new JPanel(new GridLayout(1,3)); // the panel has 3 columns
         mainPanel.setBackground(VisualResources.getInstance().customBlue);
         mainPanel.setBorder(new LineBorder(Color.BLUE)); // default border color
-//        mainPanel.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseEntered(MouseEvent e) {
-//                mainPanel.setBorder(new LineBorder(Color.RED));
-//            }
-//
-//            @Override
-//            public void mouseExited(MouseEvent e) {
-//                mainPanel.setBorder(new LineBorder(Color.BLUE));
-//            }
-//        });
 
         // left picture as an ImageIcon
         JLabel leftPictureLabel = new JLabel(new ImageIcon(leftIcon));
@@ -138,11 +134,37 @@ public class GameModePanel extends JPanel implements Observable {
         centerTextLabel.setFont(VisualResources.getInstance().customFontItal.deriveFont(30f)); // written in italic
         centerTextPanel.add(centerTextLabel, gbc); // add and center with GBC
 
+        // switch gets the right center panel. Java doesn't have out parameters :`(
+        switch (text){
+            case "Joueur vs Joueur" :
+                pvpCenterPanel = centerTextPanel;
+                break;
+            case "Joueur vs IA" :
+                pvcCenterPanel = centerTextPanel;
+                break;
+            case "IA vs IA" :
+                cvcCenterPanel = centerTextPanel;
+                break;
+        }
+
         // right picture as an ImageIcon
         JLabel rightPictureLabel = new JLabel(new ImageIcon(rightIcon));
         mainPanel.add(rightPictureLabel);
 
         return mainPanel;
+    }
+
+    /*
+    Sets the background of the given panels to the right color depending on whether the mouse is hovering
+     */
+    private void setHover(boolean isHover, JPanel mainPanel, JPanel centerPanel) {
+        if (isHover) {
+            mainPanel.setBackground(VisualResources.getInstance().customLightBlue);
+            centerPanel.setBackground(VisualResources.getInstance().customLightBlue);
+        } else {
+            mainPanel.setBackground(VisualResources.getInstance().customBlue);
+            centerPanel.setBackground(VisualResources.getInstance().customBlue);
+        }
     }
 
     @Override
