@@ -2,7 +2,11 @@ package controller.listeners;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
+import controller.ai.BallActionAI_1;
+
+import model.Action;
 import model.Case;
 import model.Player;
 import model.Stadium;
@@ -10,29 +14,31 @@ import model.enums.ActionResult;
 import model.enums.ActionType;
 import model.enums.GameResult;
 import model.enums.MoveDirection;
+import model.enums.TeamPosition;
+
 import patterns.Observer;
 import view.HoloTV;
 
-//import ai.StupidAI;
-//import ai.PlayerType.Position;
 
 public class MouseAction extends MouseAdapter implements Observer {
 	private HoloTV holoTV;
 	private Stadium stadium;
+
 	private Case clickedCase;
 	private Case playerAloneCase;
 	private Case playerWithBallCase;
 
-	// private StupidAI ai;
-	// private int clickNumber = 0;
+	private BallActionAI_1 AI;
 	
-	public MouseAction(HoloTV holoTV, Stadium stadium) {
+	public MouseAction(HoloTV holoTV, Stadium stadium, boolean withAI) {
 		this.holoTV = holoTV;
 		this.stadium = stadium;
 		this.playerAloneCase = null;
 		this.playerWithBallCase = null;
 
-		//this.ai = new StupidAI(0, stadium, Position.BOTTOM);
+		if (withAI) { // initialize AI if needed
+			AI = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.BOTTOM));
+		}
 	}
 	
 	@Override
@@ -85,8 +91,6 @@ public class MouseAction extends MouseAdapter implements Observer {
 				holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getPlayer(playerAloneCase).getTeam().getName());
 			}
 		}
-
-		// TODO : make the AI play
 	}
 	
 	private Case getCase(int x, int y) {
@@ -212,6 +216,15 @@ public class MouseAction extends MouseAdapter implements Observer {
 		switch((ActionType) object) {	
 			case END_TURN : // following code is executed when the "end of turn" button is pressed
 				res = this.stadium.endTurn();
+
+				if (AI != null) {
+					ArrayList<Action> actions = AI.play(0);
+					for (Action currentAction : actions) {
+						stadium.actionPerformed(currentAction);
+					}
+					holoTV.getArkadiaNews().repaint();
+					// TODO : check end of turn for AI as well
+				}
 				break;
 				
 			case UNDO :
