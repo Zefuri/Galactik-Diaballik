@@ -13,6 +13,7 @@ import java.io.*;
 public class HoloTV implements Runnable {
 	private JFrame frame;
 	private Stadium stadium;
+	private SourceDataLine audioLine;
 
 	public GamePanel getGamePanel() {
 		return gamePanel;
@@ -68,7 +69,7 @@ public class HoloTV implements Runnable {
 			AudioInputStream audioStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("/resources/musics/full_soundtrack.wav"));
 			AudioFormat format = audioStream.getFormat();
 			DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
-			SourceDataLine audioLine = (SourceDataLine) AudioSystem.getLine(info);
+			audioLine = (SourceDataLine) AudioSystem.getLine(info);
 
 			audioLine.open(format);
 			audioLine.start();
@@ -88,6 +89,10 @@ public class HoloTV implements Runnable {
 		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void stopMusic() {
+		audioLine.stop();
 	}
 	
 	public void addArkadiaNewsMouseListener(MouseAction mouseAction) {

@@ -30,6 +30,7 @@ public class Technoid implements Observer {
                 break;
 
             case CLICKED_QUIT: // context : MainMenuPanel
+                holoTV.stopMusic();
                 holoTV.getFrame().dispose();
                 break;
 
