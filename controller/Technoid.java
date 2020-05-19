@@ -63,16 +63,16 @@ public class Technoid implements Observer {
                 BallActionAI_1 AI1 = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.TOP));
                 BallActionAI_1 AI2 = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.BOTTOM));
 
-                Timer timer = new Timer(50, new ActionListener() {
+                Timer timer = new Timer(2000, new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        ArrayList<Action> AI1Actions = AI1.play(0);
+                        ArrayList<Action> AI1Actions = AI1.play(2);
                         for(Action currentAction : AI1Actions) {
-                            stadium.actionPerformed(currentAction);
+                            stadium.actionPerformedAI(currentAction);
                         }
 
                         ArrayList<Action> AI2Actions = AI2.play(0);
                         for(Action currentAction : AI2Actions) {
-                            stadium.actionPerformed(currentAction);
+                            stadium.actionPerformedAI(currentAction);
                         }
 
                         holoTV.getArkadiaNews().repaint();
