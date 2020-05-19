@@ -15,7 +15,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-import static java.lang.Thread.sleep;
 
 public class Technoid implements Observer {
 
@@ -46,15 +45,17 @@ public class Technoid implements Observer {
                 break;
 
             case CLICKED_PVP: // context : GameModePanel
-                MouseAction mouseAction = new MouseAction(holoTV, stadium);
-                holoTV.addArkadiaNewsMouseListener(mouseAction);
-                holoTV.getGamePanel().addObserver(mouseAction);
+                MouseAction mouseActionNoAI = new MouseAction(holoTV, stadium, false);
+                holoTV.addArkadiaNewsMouseListener(mouseActionNoAI);
+                holoTV.getGamePanel().addObserver(mouseActionNoAI);
                 holoTV.switchToGamePanel();
                 break;
 
             case CLICKED_PVC: // context : GameModePanel
-                System.out.println("user chose pvc");
-                // TODO : create a MouseAction with an IA
+                MouseAction mouseActionWithAI = new MouseAction(holoTV, stadium, true);
+                holoTV.addArkadiaNewsMouseListener(mouseActionWithAI);
+                holoTV.getGamePanel().addObserver(mouseActionWithAI);
+                holoTV.switchToGamePanel();
                 break;
 
             case CLICKED_CVC: // context : GameModePanel
