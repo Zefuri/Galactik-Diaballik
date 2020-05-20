@@ -261,6 +261,12 @@ public class MouseAction extends MouseAdapter implements Observer {
 			case REDO:
 				this.stadium.redoAction();
 				break;
+				
+			case LAUNCH_VISU:
+				break;
+				
+			case PAUSE_VISU:
+				break;
 		}
 		
 		if (res == ActionResult.ERROR) {

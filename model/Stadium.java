@@ -13,8 +13,6 @@ public class Stadium {
     private Team topTeam;
     private Team bottomTeam;
     
-    private Player[][] board;
-    
     private Historic history;
 
     private boolean visualisationMode;
@@ -43,6 +41,11 @@ public class Stadium {
     public void reset() {
         topTeam.initializePlayers();
         bottomTeam.initializePlayers();
+    }
+    
+    public void replaceTeam() {
+    	topTeam.replace();
+    	bottomTeam.replace();
     }
     
     public Player getPlayer(Case position) {

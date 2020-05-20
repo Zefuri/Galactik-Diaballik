@@ -59,6 +59,10 @@ public class Technoid implements Observer {
             	if (gameLoader.loadData()) {
 	            	stadium.loadTopTeam(gameLoader.getTopTeam());
 	            	stadium.loadBotTeam(gameLoader.getBotTeam());
+
+	            	stadium.replaceTeam();
+	            	
+	            	stadium.getHistory().setToFirstTurn();
 	            	
 	            	stadium.setVisualisaionMode(true);
 	            

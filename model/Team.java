@@ -50,6 +50,18 @@ public class Team {
 		}
 	}
 	
+	public void replace() {
+		for (Player p : this.getPlayers()) {
+			int index = p.getNumero();
+			
+			if (position == TeamPosition.TOP) {
+				p.setPosition(new Case(0, index));
+			} else {
+				p.setPosition(new Case(6, index));
+			}
+		}
+	}
+	
 	public void addPlayer(Player player) {
 		player.setTeam(this);
 		getPlayers().add(player);

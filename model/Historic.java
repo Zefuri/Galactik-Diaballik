@@ -50,6 +50,8 @@ public class Historic {
     }
     
     public ActionResult undoLastAction() {
+    	System.out.println(currentTurnIndex);
+    	
     	if (!this.stadium.isInVisualisationMode()) {
     		return this.historicList.get(currentTurnIndex).undo();
     	} else {
@@ -83,6 +85,12 @@ public class Historic {
     public ActionResult resetCurrentTurn() {
     	Turn currentTurn = this.historicList.get(this.currentTurnIndex);
     	return currentTurn.deleteActions();
+    }
+    
+    public void setToFirstTurn() {
+    	this.currentTurnIndex = 0;
+    	this.getLast().setNbMovesDone(0);
+    	this.getLast().setNbPassesDone(0);
     }
     
     //For testing
