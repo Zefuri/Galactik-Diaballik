@@ -80,18 +80,18 @@ public class MouseAction extends MouseAdapter implements Observer {
 					} else {
 						holoTV.switchToEndGamePanel(GameResult.VICTORY, stadium.getCurrentTeamTurn().getName());
 					}
-					clearSelectedPlayer();
+					stadium.clearSelectedPlayer();
 				}
 
 				if (result == ActionResult.ANTIPLAY_CURRENT && AI != null) {
 					holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getCurrentTeamTurn().getName());
-					clearSelectedPlayer();
+					stadium.clearSelectedPlayer();
 				} else if(result == ActionResult.ANTIPLAY_CURRENT) {
 					holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getNotPlayingTeam().getName());
-					clearSelectedPlayer();
+					stadium.clearSelectedPlayer();
 				} else if(result == ActionResult.ANTIPLAY) {
 					holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getCurrentTeamTurn().getName());
-					clearSelectedPlayer();
+					stadium.clearSelectedPlayer();
 				}
 			}
 		} else {

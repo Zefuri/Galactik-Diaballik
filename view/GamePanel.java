@@ -1,21 +1,14 @@
 package view;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
 import model.Stadium;
 import model.enums.ActionType;
-
 import patterns.Observable;
 import patterns.ObservableHandler;
 import patterns.Observer;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 
 public class GamePanel extends JPanel implements Observable {
 	private ObservableHandler observableHandler;
@@ -286,6 +279,7 @@ public class GamePanel extends JPanel implements Observable {
 		} else {
 			this.cheatModButton.setBackground(null);
 		}
+	}
 	
 	public void overwriteComponents() {
 		this.endTurnButton.setVisible(false);

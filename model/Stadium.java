@@ -25,7 +25,7 @@ public class Stadium {
         bottomTeam = new Team("shadows", TeamPosition.BOTTOM, this, true);
 
         this.history = new Historic(this);
-        this.history.newTurn(getCurrentTeamTurn());
+        this.history.newTurn(getCurrentTeamTurn(), cheatModActivated);
         this.visualisationMode = false;
     }
     
@@ -590,7 +590,7 @@ public class Stadium {
 				
 			case END_TURN:
 					this.history.nextTurn();
-					this.history.newTurn(getCurrentTeamTurn());
+					this.history.newTurn(getCurrentTeamTurn(), cheatModActivated);
 				
 				break;
 				
