@@ -37,32 +37,33 @@ public class MinMaxBallAction {
 	public void progress(int checkingDepth) {
 		coup.init();
 		
-		if(checkingDepth != 0) {
-			MaxMinBallAction maxCheck;
-			
-			for(int i = 0; coup.canAccess()   &&   i != coup.numberOfAction(); i++) {
-			
-				if(i != 0 && coup.getAvancement() < coup.getBeta()) {
-					coup.setBeta(coup.getAvancement());
-				}
-			
-				coup.exec(i);
-					maxCheck = new MaxMinBallAction(stadium, team.getEnemyTeam(), coup.getAlpha(), coup.getBeta());
-					maxCheck.progress(checkingDepth-1);
-					if(maxCheck.canFinish()){
-						coup.reportMin(i, Integer.MAX_VALUE);
-					} else {
-						coup.reportMin(i, maxCheck.getMustAvancement());
+		if(!canFinish()){	
+			if(checkingDepth != 0) {
+				MaxMinBallAction maxCheck;
+				
+				for(int i = 0; coup.canAccess()   &&   i != coup.numberOfAction(); i++) {
+				
+					if(i != 0 && coup.getAvancement() < coup.getBeta()) {
+						coup.setBeta(coup.getAvancement());
 					}
-				coup.undo(i);
+				
+					coup.exec(i);
+						maxCheck = new MaxMinBallAction(stadium, team.getEnemyTeam(), coup.getAlpha(), coup.getBeta());
+						maxCheck.progress(checkingDepth-1);
+						if(maxCheck.canFinish()){
+							coup.reportMin(i, Integer.MAX_VALUE);
+						} else {
+							coup.reportMin(i, maxCheck.getMustAvancement());
+						}
+					coup.undo(i);
+				}
+				
+			} else {
+				coup.initValueMin();
 			}
 			
-		} else {
-			coup.initValueMin();
+			coup.initActs();
 		}
-		
-		coup.initActs();
-
 	}
 
 	
