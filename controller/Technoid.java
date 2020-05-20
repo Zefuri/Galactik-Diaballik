@@ -1,10 +1,20 @@
+import ai.BallActionAI_1;
 import listeners.MouseAction;
+import model.Action;
 import model.Stadium;
+import model.enums.TeamPosition;
 import model.enums.UserInput;
 import patterns.Observer;
 import saver.GameLoader;
 import saver.GameSaver;
 import view.HoloTV;
+
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
 
 public class Technoid implements Observer {
 
@@ -34,7 +44,7 @@ public class Technoid implements Observer {
 	            	
 	            	GameSaver gameSaver = new GameSaver(stadium, gameLoader.getCurrentSavePath());
 	            	
-	                MouseAction mouseAction = new MouseAction(holoTV, stadium, gameSaver);
+	                MouseAction mouseAction = new MouseAction(holoTV, stadium, false, gameSaver);
 	                holoTV.addArkadiaNewsMouseListener(mouseAction);
 	                holoTV.getGamePanel().addObserver(mouseAction);
 	                holoTV.switchToGamePanel();
@@ -46,28 +56,58 @@ public class Technoid implements Observer {
             }
 
             case CLICKED_QUIT: // context : MainMenuPanel
+                holoTV.stopMusic();
                 holoTV.getFrame().dispose();
                 break;
 
-            case CLICKED_PVP: // context : GameModePanel
+            case CLICKED_PVP: { // context : GameModePanel
             	//We also add the gameSaver and save the initial state
             	GameSaver gameSaver = new GameSaver(stadium);
             	gameSaver.saveToFile();
             	
-                MouseAction mouseAction = new MouseAction(holoTV, stadium, gameSaver);
-                holoTV.addArkadiaNewsMouseListener(mouseAction);
-                holoTV.getGamePanel().addObserver(mouseAction);
+                MouseAction mouseActionNoAI = new MouseAction(holoTV, stadium, false, gameSaver);
+                holoTV.addArkadiaNewsMouseListener(mouseActionNoAI);
+                holoTV.getGamePanel().addObserver(mouseActionNoAI);
+                holoTV.switchToGamePanel();
+                break;
+            }
+
+            case CLICKED_PVC: // context : GameModePanel
+            	//We also add the gameSaver and save the initial state
+            	GameSaver gameSaver = new GameSaver(stadium);
+            	gameSaver.saveToFile();
+            	
+                MouseAction mouseActionWithAI = new MouseAction(holoTV, stadium, true, gameSaver);
+                holoTV.addArkadiaNewsMouseListener(mouseActionWithAI);
+                holoTV.getGamePanel().addObserver(mouseActionWithAI);
                 holoTV.switchToGamePanel();
                 break;
 
-            case CLICKED_PVC: // context : GameModePanel
-                System.out.println("user chose pvc");
-                // TODO : create a MouseAction with an IA
-                break;
-
             case CLICKED_CVC: // context : GameModePanel
-                System.out.println("user chose cvc");
-                // TODO : loop on two AIs
+                holoTV.switchToGamePanel();
+
+                BallActionAI_1 AI1 = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.TOP));
+                BallActionAI_1 AI2 = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.BOTTOM));
+
+                Timer timer = new Timer(2000, new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        ArrayList<Action> AI1Actions = AI1.randomPlay();
+                        for(Action currentAction : AI1Actions) {
+                            stadium.actionPerformedAI(currentAction);
+                        }
+
+                        ArrayList<Action> AI2Actions = AI2.play(1);
+                        for(Action currentAction : AI2Actions) {
+                            stadium.actionPerformedAI(currentAction);
+                        }
+
+                        holoTV.getArkadiaNews().repaint();
+                    }
+                });
+
+                timer.start();
+
+                // TODO : somehow finish a game
                 break;
         }
     }

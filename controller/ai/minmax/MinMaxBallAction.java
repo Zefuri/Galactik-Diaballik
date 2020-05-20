@@ -19,6 +19,11 @@ public class MinMaxBallAction {
 	}
 	
 	
+	public boolean canFinish() {
+		return coup.canFinish();
+	}
+	
+	
 	public ArrayList<ArrayList<Action>> getWorstActs(){
 		return coup.getActs();
 	}
@@ -44,7 +49,11 @@ public class MinMaxBallAction {
 				coup.exec(i);
 					maxCheck = new MaxMinBallAction(stadium, team.getEnemyTeam(), coup.getAlpha(), coup.getBeta());
 					maxCheck.progress(checkingDepth-1);
-					coup.reportMin(i, maxCheck.getMustAvancement());
+					if(maxCheck.canFinish()){
+						coup.reportMin(i, Integer.MAX_VALUE);
+					} else {
+						coup.reportMin(i, maxCheck.getMustAvancement());
+					}
 				coup.undo(i);
 			}
 			
@@ -53,6 +62,7 @@ public class MinMaxBallAction {
 		}
 		
 		coup.initActs();
+
 	}
 
 	

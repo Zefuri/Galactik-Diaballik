@@ -1,9 +1,10 @@
 package listeners;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
+import ai.BallActionAI_1;
 import model.Action;
 import model.Case;
 import model.Player;
@@ -11,33 +12,34 @@ import model.Stadium;
 import model.enums.ActionResult;
 import model.enums.ActionType;
 import model.enums.MoveDirection;
-import patterns.Observable;
+import model.enums.TeamPosition;
 import patterns.Observer;
 import saver.GameSaver;
 import view.HoloTV;
 
-//import ai.StupidAI;
-//import ai.PlayerType.Position;
 
 public class MouseAction extends MouseAdapter implements Observer {
 	private HoloTV holoTV;
 	private Stadium stadium;
+
 	private GameSaver gameSaver;
+
 	private Case clickedCase;
 	private Case playerAloneCase;
 	private Case playerWithBallCase;
 
-	//private StupidAI ai;
-	private int clickNumber = 0;
+	private BallActionAI_1 AI;
 	
-	public MouseAction(HoloTV holoTV, Stadium stadium, GameSaver gameSaver) {
+	public MouseAction(HoloTV holoTV, Stadium stadium, boolean withAI, GameSaver gameSaver) {
 		this.holoTV = holoTV;
 		this.stadium = stadium;
 		this.gameSaver = gameSaver;
 		this.playerAloneCase = null;
 		this.playerWithBallCase = null;
 
-		//this.ai = new StupidAI(0, stadium, Position.BOTTOM);
+		if (withAI) { // initialize AI if needed
+			AI = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.BOTTOM));
+		}
 	}
 	
 	@Override
@@ -86,8 +88,6 @@ public class MouseAction extends MouseAdapter implements Observer {
 			System.out.println("The enemy team made an antiplay: Team \"" + stadium.getPlayer(playerWithBallCase).getTeam().getName() + "\" have won the match!");
 			holoTV.getGamePanel().showAntiPlayPopUp(stadium.getPlayer(playerWithBallCase).getTeam().getName());
 		}
-
-		// TODO : make the AI play
 	}
 	
 	private Case getCase(int x, int y) {
@@ -217,7 +217,20 @@ public class MouseAction extends MouseAdapter implements Observer {
 		switch((ActionType) object) {	
 			case END_TURN : // following code is executed when the "end of turn" button is pressed
 				res = this.stadium.endTurn();
+				
 				gameSaver.overwriteSave();
+
+				if (AI != null) {
+					ArrayList<Action> actions = AI.play(0);
+					
+					for (Action currentAction : actions) {
+						stadium.actionPerformed(currentAction);
+					}
+					
+					holoTV.getArkadiaNews().repaint();
+					// TODO : check end of turn for AI as well
+				}
+
 				break;
 				
 			case UNDO :

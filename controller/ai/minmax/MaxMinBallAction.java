@@ -17,16 +17,35 @@ public class MaxMinBallAction {
 		this.stadium = stadium;
 		this.team = team;
 		this.coup = new CoupAction(stadium, team, alpha, beta);
-		
 	}
 	
 	
-	public ArrayList<ArrayList<Action>> getMustActs(){
+	public boolean canFinish() {
+		return coup.canFinish();
+	}
+	
+	
+	public void init() {
+		coup.init();
+	}
+	
+	
+	public int numberOfAction() {
+		return coup.numberOfAction();
+	}
+	
+	
+	public ArrayList<Action> getTurn(int numero) {
+		return coup.getTurn(numero);
+	}
+	
+	
+	public ArrayList<ArrayList<Action>> getMustActs() {
 		return coup.getActs();
 	}
 	
 	
-	public int getMustAvancement(){
+	public int getMustAvancement() {
 		return coup.getAvancement();
 	}
 	
@@ -46,7 +65,11 @@ public class MaxMinBallAction {
 				coup.exec(i);
 					minCheck = new MinMaxBallAction(stadium, team.getEnemyTeam(), coup.getAlpha(), coup.getBeta());
 					minCheck.progress(checkingDepth-1);
-					coup.reportMax(i, minCheck.getWorstAvancement());
+					if(minCheck.canFinish()){
+						coup.reportMax(i, Integer.MIN_VALUE);
+					} else {
+						coup.reportMax(i, minCheck.getWorstAvancement());
+					}
 				coup.undo(i);
 			}
 			
@@ -55,6 +78,7 @@ public class MaxMinBallAction {
 		}
 		
 		coup.initActs();
+		
 	}
 
 	

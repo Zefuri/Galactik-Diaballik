@@ -591,6 +591,49 @@ public class Stadium {
         return done;
 	}
 	
+		public ActionResult actionPerformedAI(Action action) { //what controller must use
+        ActionResult done = ActionResult.DONE;
+        Turn currentTurn = this.history.getLast();
+
+		switch (action.getType()) {
+			case MOVE:
+				Player player = action.getMovedPlayer();
+				MoveDirection dir = action.getDirection();
+					simpleMove(player, dir);
+					currentTurn.addAction(action);
+					unselectPlayerIfNeeded(player);
+				
+				break;
+				
+			case PASS:
+				Player firstPlayer = action.getPreviousPlayer();
+				Player secondPlayer = action.getNextPlayer();
+					simplePass(firstPlayer, secondPlayer);
+					currentTurn.addAction(action);
+				
+				break;
+				
+			case END_TURN:
+					this.history.nextTurn();
+					this.history.newTurn(getCurrentTeamTurn());
+				
+				break;
+				
+			default:
+				throw new IllegalStateException("Please select a valid action type!");
+		}
+		
+        if (this.isAWin(currentTurn.getTeam().getPosition())) {
+        	done = ActionResult.WIN;
+        }
+        
+        if (this.antiplay(currentTurn.getTeam())) {
+        	done = ActionResult.ANTIPLAY;
+        }
+
+        return done;
+	}
+	
 	private void unselectPlayerIfNeeded(Player p) {
 		if (getNbPassesDone() == ModelConstants.MAX_MOVES_PER_TOUR) {
 			p.setIfSelected(false);
