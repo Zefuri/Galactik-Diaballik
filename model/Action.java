@@ -114,6 +114,6 @@ public class Action {
 //		
 //		return "FAIL";
 		
-		return ("Type : " + this.type + "\nCase départ : " + this.previousCase + "\nCase arrivée : " + this.nextCase + "\nJoueur départ : " + this.previousPlayer.getName() + "\nJoueur arrivée : " + this.nextPlayer.getName() + "\n\n");
+		return ("Type : " + this.type + "\nCase depart : " + this.previousCase + "\nCase arrivee : " + this.nextCase + "\nJoueur depart : " + this.previousPlayer.getName() + "\nJoueur arrivee : " + this.nextPlayer.getName() + "\n\n");
 	}
 }
