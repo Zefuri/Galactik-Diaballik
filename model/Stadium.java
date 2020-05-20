@@ -25,6 +25,13 @@ public class Stadium {
         this.history.newTurn(getCurrentTeamTurn());
     }
     
+    public void resetStadium() {
+    	this.reset();
+
+        this.history = new Historic();
+        this.history.newTurn(getCurrentTeamTurn());
+    }
+    
     public Team getTeam(TeamPosition position) {
         return position == TeamPosition.TOP ? topTeam : bottomTeam;
     }

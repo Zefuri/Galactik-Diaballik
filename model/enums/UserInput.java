@@ -8,5 +8,5 @@ public enum UserInput {
     CLICKED_PVC,
     CLICKED_CVC,
     CLICKED_MAIN_MENU,
-    CLICKED_REPLAY
+    CLICKED_REWIND
 }

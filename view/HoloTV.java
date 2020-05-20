@@ -34,6 +34,9 @@ public class HoloTV implements Runnable {
 
 		// Create the GamePanel and himself create and add an ArkadiaNews
 		this.gamePanel = new GamePanel(stadium);
+		
+		// Create the end game panel
+		this.endGamePanel = new EndGamePanel();
 	}
 
 	public JFrame getFrame() {
@@ -131,7 +134,7 @@ public class HoloTV implements Runnable {
 		gameModePanel.addObserver(observer);
 	}
 	public void addObserverEndGamePanel(Observer observer) {
-		gameModePanel.addObserver(observer);
+		endGamePanel.addObserver(observer);
 	}
 
 	/*
@@ -149,9 +152,15 @@ public class HoloTV implements Runnable {
 		frame.validate();  // very important
 	}
 	
+	public void switchToMainMenuPanel() {
+		frame.getContentPane().removeAll();
+		frame.add(mainMenuPanel);
+		frame.validate();  // very important
+	}
+	
 	public void switchToEndGamePanel(GameResult gameResult, String teamName) {
 		// create the end game panel
-		this.endGamePanel = new EndGamePanel(gameResult, teamName);
+		this.endGamePanel.initialize(gameResult, teamName);
 		
 		// replacing the current panel
 		frame.getContentPane().removeAll();

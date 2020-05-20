@@ -34,11 +34,14 @@ public class EndGamePanel extends JPanel implements Observable {
 	private JButton newGameButton;
 	private JButton replayButton;
 	
-	public EndGamePanel(GameResult gameResult, String teamName) {
+	public EndGamePanel() {
 		super(new GridBagLayout());
 		
+		this.observableHandler = new ObservableHandler();
 		this.gbc = new GridBagConstraints();
-		
+	}
+	
+	public void initialize(GameResult gameResult, String teamName) {
 		this.setGameResult(gameResult, teamName);
 		this.createReplayButton();
 		this.createNewGameButton();
@@ -102,7 +105,7 @@ public class EndGamePanel extends JPanel implements Observable {
 	}
 	
 	private void createReplayButton() {
-		this.replayButton = new JButton("Rejouer la partie");
+		this.replayButton = new JButton("Revoir la partie");
 		this.replayButton.setFont(this.visualResources.customFontItal);
 		this.replayButton.setPreferredSize(new Dimension(300, 50));
 		
@@ -114,7 +117,7 @@ public class EndGamePanel extends JPanel implements Observable {
 		
 		this.add(this.replayButton, this.gbc);
 		
-		this.replayButton.addActionListener(actionEvent -> notify(UserInput.CLICKED_REPLAY));
+		this.replayButton.addActionListener(actionEvent -> notify(UserInput.CLICKED_REWIND));
 	}
 	
 	private void createNewGameButton() {

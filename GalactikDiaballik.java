@@ -12,6 +12,7 @@ public class GalactikDiaballik {
 		holoTV.addObserverMainMenuPanel(technoid);
 		holoTV.addObserverGameModePanel(technoid);
 		holoTV.addObserverEndGamePanel(technoid);
+		
 		holoTV.run(); // must be the last line
 	}
 }
