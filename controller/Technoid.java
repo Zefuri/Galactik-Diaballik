@@ -66,12 +66,12 @@ public class Technoid implements Observer {
 
                 Timer timer = new Timer(2000, new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        ArrayList<Action> AI1Actions = AI1.randomPlay();
+                        ArrayList<Action> AI1Actions = AI1.play(2);
                         for(Action currentAction : AI1Actions) {
                             stadium.actionPerformedAI(currentAction);
                         }
 
-                        ArrayList<Action> AI2Actions = AI2.play(2);
+                        ArrayList<Action> AI2Actions = AI2.randomPlay();
                         for(Action currentAction : AI2Actions) {
                             stadium.actionPerformedAI(currentAction);
                         }
