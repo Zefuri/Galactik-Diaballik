@@ -20,6 +20,11 @@ public class MaxMinBallAction {
 	}
 	
 	
+	public boolean canFinish() {
+		return coup.canFinish();
+	}
+	
+	
 	public void init() {
 		coup.init();
 	}
@@ -60,7 +65,11 @@ public class MaxMinBallAction {
 				coup.exec(i);
 					minCheck = new MinMaxBallAction(stadium, team.getEnemyTeam(), coup.getAlpha(), coup.getBeta());
 					minCheck.progress(checkingDepth-1);
-					coup.reportMax(i, minCheck.getWorstAvancement());
+					if(minCheck.canFinish()){
+						coup.reportMax(i, Integer.MIN_VALUE);
+					} else {
+						coup.reportMax(i, minCheck.getWorstAvancement());
+					}
 				coup.undo(i);
 			}
 			
