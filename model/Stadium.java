@@ -27,7 +27,7 @@ public class Stadium {
         topTeam = new Team("snowKids", TeamPosition.TOP, this);
         bottomTeam = new Team("shadows", TeamPosition.BOTTOM, this);
 
-        this.cheatModActivated = true;
+        this.cheatModActivated = false;
         this.history = new Historic();
         this.history.newTurn(getCurrentTeamTurn(), cheatModActivated);
     }
@@ -615,8 +615,8 @@ public class Stadium {
 		return cheatModActivated;
 	}
 
-	public void setCheatModActivated(boolean cheatModActivated) {
-		this.cheatModActivated = cheatModActivated;
+	public void switchCheatModActivated() {
+		this.cheatModActivated = !cheatModActivated;
 	}
 
 	public ActionResult performRequestedAction() {
