@@ -118,7 +118,7 @@ public class EndGamePanel extends JPanel implements Observable {
 		
 		this.add(this.replayButton, this.gbc);
 		
-		this.replayButton.addActionListener(actionEvent -> notify(UserInput.CLICKED_REWIND));
+		this.replayButton.addActionListener(actionEvent -> notify(UserInput.CLICKED_VISU));
 	}
 	
 	private void createNewGameButton() {
