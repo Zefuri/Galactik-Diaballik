@@ -1,11 +1,9 @@
 package ai.abandonVersion;
 
-import model.Stadium;
+import model.ModelConstants;
 import model.Team;
-import model.Player;
 import model.enums.MoveDirection;
 import model.enums.TeamPosition;
-import model.ModelConstants;
 
 public class ToolsBallString {
 	
