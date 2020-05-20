@@ -55,7 +55,7 @@ public class Historic {
     	} else {
     		if (this.historicList.get(currentTurnIndex).undoGoesToPreviousTour()) {
     			if (currentTurnIndex != 0) {
-    				return this.historicList.get(currentTurnIndex--).undo();
+    				return this.historicList.get(--currentTurnIndex).undo();
     			} else {
     				//We already are on the first tour, so we throw an error
     				return ActionResult.ERROR;
@@ -69,11 +69,11 @@ public class Historic {
     public void redoNextAction() {
     	//Usable only in visualization mode
     	if (this.historicList.get(currentTurnIndex).redoGoesToNextTour()) {
-    		if (this.currentTurnIndex == this.historicList.size()) {
+    		if (this.currentTurnIndex == this.historicList.size() - 1 || this.historicList.get(currentTurnIndex + 1).isEmpty()) {
     			//We are on the last tour, so we do not do anything
     			System.err.println("You reached the last tour.");
     		} else {
-    			this.historicList.get(currentTurnIndex++).redo();
+    			this.historicList.get(++currentTurnIndex).redo();
     		}
     	} else {
     		this.historicList.get(currentTurnIndex).redo();

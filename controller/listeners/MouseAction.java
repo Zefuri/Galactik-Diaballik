@@ -253,17 +253,13 @@ public class MouseAction extends MouseAdapter implements Observer {
 				break;
 			
 			case RESET :
-				//TODO Supprimer une fois bouton redo ajouté
-				if (!this.visualisationMode) {
-					res = this.stadium.resetTurn();
-					gameSaver.overwriteSave();
-				} else {
-					this.stadium.redoAction();
-				}
-				
+				res = this.stadium.resetTurn();
+				gameSaver.overwriteSave();
+			
 				break;
 				
 			case REDO:
+				this.stadium.redoAction();
 				break;
 		}
 		

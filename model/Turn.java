@@ -108,7 +108,7 @@ public class Turn {
 	public ActionResult deleteActions() {
 		ActionResult res = ActionResult.ERROR;
 		
-		while (this.nbMove + this.nbPass > 0 && res == ActionResult.DONE) {
+		while (this.nbMove + this.nbPass > 0) {
 			res = undo();
 		}
 		
@@ -172,10 +172,10 @@ public class Turn {
 			return true;
 		}
 		
-		if (this.nbPass + this.nbMove != 0) {
-			return (this.actions[this.nbPass + this.nbMove] == null);
-		}
-		
-		return false;
+		return (this.actions[this.nbPass + this.nbMove] == null);
 	}
+	
+	public boolean isEmpty() {
+		return this.actions[0] == null && this.actions[1] == null && this.actions[2] == null;
+	} 
 }

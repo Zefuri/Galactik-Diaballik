@@ -66,6 +66,7 @@ public class Technoid implements Observer {
 	                holoTV.addArkadiaNewsMouseListener(mouseAction);
 	                holoTV.getGamePanel().addObserver(mouseAction);
 	                holoTV.switchToGamePanel();
+	                holoTV.getGamePanel().overwriteComponents();
 	                
 	                //TODO Si besoin mettre le stadium et la holotv en mode visu
             	} else {
