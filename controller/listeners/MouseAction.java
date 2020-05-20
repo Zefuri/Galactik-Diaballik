@@ -92,14 +92,14 @@ public class MouseAction extends MouseAdapter implements Observer {
 				clearSelectedPlayer();
 			}
 			
-			if (result == ActionResult.ANTIPLAY_TOP && AI != null) {
-				holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
+			if (result == ActionResult.ANTIPLAY_CURRENT && AI != null) {
+				holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getCurrentTeamTurn().getName());
 				clearSelectedPlayer();
-			} else if(result == ActionResult.ANTIPLAY_TOP) {
-				holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getTeam(TeamPosition.BOTTOM).getName());
+			} else if(result == ActionResult.ANTIPLAY_CURRENT) {
+				holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getNotPlayingTeam().getName());
 				clearSelectedPlayer();
-			} else if(result == ActionResult.ANTIPLAY_BOT) {
-				holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
+			} else if(result == ActionResult.ANTIPLAY) {
+				holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getCurrentTeamTurn().getName());
 				clearSelectedPlayer();
 			}
 		} else {
@@ -194,7 +194,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 				if (result == ActionResult.DONE) {
 					setPlayerAloneCase(clickedCase);
 					this.gameSaver.overwriteSave();
-				} else if (result == ActionResult.ANTIPLAY_TOP || result == ActionResult.ANTIPLAY_BOT) {
+				} else if (result == ActionResult.ANTIPLAY_CURRENT || result == ActionResult.ANTIPLAY) {
 					this.gameSaver.overwriteSave();
 					System.out.println("Antiplay detected!");
 				} else {
@@ -250,13 +250,13 @@ public class MouseAction extends MouseAdapter implements Observer {
 					}
 					
 					if(result == ActionResult.WIN) {
-						holoTV.switchToEndGamePanel(GameResult.DEFEAT, stadium.getTeam(TeamPosition.TOP).getName());
+						holoTV.switchToEndGamePanel(GameResult.DEFEAT, stadium.getNotPlayingTeam().getName());
 					}
 
-					if(result == ActionResult.ANTIPLAY_TOP) {
-						holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
-					} else if(result == ActionResult.ANTIPLAY_BOT) {
-						holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
+					if(result == ActionResult.ANTIPLAY_CURRENT) {
+						holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getCurrentTeamTurn().getName());
+					} else if(result == ActionResult.ANTIPLAY) {
+						holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getNotPlayingTeam().getName());
 					}
 					
 					holoTV.getArkadiaNews().repaint();

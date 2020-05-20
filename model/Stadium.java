@@ -583,13 +583,28 @@ public class Stadium {
         	done = ActionResult.WIN;
         }
         
-        if(this.antiplay(this.getTeam(TeamPosition.TOP))) {
-        	done = ActionResult.ANTIPLAY_TOP;
-        } else if(this.antiplay(this.getTeam(TeamPosition.BOTTOM))) {
-        	done = ActionResult.ANTIPLAY_BOT;
+        if(this.antiplay(currentTurn.getTeam())) {
+        	done = ActionResult.ANTIPLAY_CURRENT;
+        } else if(this.antiplay(this.getNotPlayingTeam())) {
+        	done = ActionResult.ANTIPLAY;
         }
 
         return done;
+	}
+	
+	public Team getNotPlayingTeam() {
+		Team res = null;
+		
+		switch (getCurrentTeamTurn().getPosition()) {
+			case TOP:
+				res = getTeam(TeamPosition.BOTTOM);
+				break;
+			case BOTTOM:
+				res = getTeam(TeamPosition.TOP);
+				break;
+		}
+		
+		return res;
 	}
 	
 	public ActionResult actionPerformedAI(Action action) { //what controller must use
@@ -626,10 +641,10 @@ public class Stadium {
         	done = ActionResult.WIN;
         }
         
-        if(this.antiplay(this.getTeam(TeamPosition.TOP))) {
-        	done = ActionResult.ANTIPLAY_TOP;
-        } else if(this.antiplay(this.getTeam(TeamPosition.BOTTOM))){
-        	done = ActionResult.ANTIPLAY_BOT;
+        if(this.antiplay(currentTurn.getTeam())) {
+        	done = ActionResult.ANTIPLAY_CURRENT;
+        } else if(this.antiplay(this.getNotPlayingTeam())) {
+        	done = ActionResult.ANTIPLAY;
         }
 
         return done;
