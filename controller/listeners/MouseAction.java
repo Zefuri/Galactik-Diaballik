@@ -52,7 +52,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 	}
 	
 	@Override
-	public void mouseClicked(MouseEvent e) {
+	public void mousePressed(MouseEvent e) {
 		if (!this.visualisationMode) {
 			if (!isAITurn) {
 				ActionResult result = null;
@@ -89,14 +89,14 @@ public class MouseAction extends MouseAdapter implements Observer {
 					clearSelectedPlayer();
 				}
 
-				if (result == ActionResult.ANTIPLAY_TOP && AI != null) {
-					holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
+				if (result == ActionResult.ANTIPLAY_CURRENT && AI != null) {
+					holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getCurrentTeamTurn().getName());
 					clearSelectedPlayer();
-				} else if(result == ActionResult.ANTIPLAY_TOP) {
-					holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getTeam(TeamPosition.BOTTOM).getName());
+				} else if(result == ActionResult.ANTIPLAY_CURRENT) {
+					holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getNotPlayingTeam().getName());
 					clearSelectedPlayer();
-				} else if(result == ActionResult.ANTIPLAY_BOT) {
-					holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
+				} else if(result == ActionResult.ANTIPLAY) {
+					holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getCurrentTeamTurn().getName());
 					clearSelectedPlayer();
 				}
 			}
@@ -310,10 +310,10 @@ public class MouseAction extends MouseAdapter implements Observer {
 			}
 
 			// check if ANTIPLAY and switch to the end panel
-			if(actionResult == ActionResult.ANTIPLAY_TOP) {
+			if(actionResult == ActionResult.ANTIPLAY) {
 				timer.stop();
 				holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
-			} else if(actionResult == ActionResult.ANTIPLAY_BOT) {
+			} else if(actionResult == ActionResult.ANTIPLAY_CURRENT) {
 				timer.stop();
 				holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
 			}

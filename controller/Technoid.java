@@ -169,14 +169,14 @@ public class Technoid implements Observer {
             holoTV.switchToEndGamePanel(GameResult.VICTORY, !firstAIsTurn ? stadium.getTeam(TeamPosition.TOP).getName() : stadium.getTeam(TeamPosition.BOTTOM).getName());
         }
 
-        if (actionResult == ActionResult.ANTIPLAY_TOP) {
+        if (actionResult == ActionResult.ANTIPLAY) {
             timer.stop();
-            holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getTeam(TeamPosition.BOTTOM).getName());
+            holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, firstAIsTurn ? stadium.getTeam(TeamPosition.TOP).getName() : stadium.getTeam(TeamPosition.BOTTOM).getName());
         }
 
-        if (actionResult == ActionResult.ANTIPLAY_BOT) {
+        if (actionResult == ActionResult.ANTIPLAY_CURRENT) {
             timer.stop();
-            holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
+            holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, firstAIsTurn ? stadium.getTeam(TeamPosition.BOTTOM).getName() : stadium.getTeam(TeamPosition.TOP).getName());
         }
 
         // when no more actions are left, switch player
