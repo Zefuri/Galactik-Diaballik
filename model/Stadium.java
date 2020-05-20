@@ -554,17 +554,12 @@ public class Stadium {
         	done = ActionResult.WIN;
         }
         
-        if (this.antiplay(currentTurn.getTeam())) {
-        	switch (currentTurn.getTeam().getPosition()) {
-				case TOP:
-					done = ActionResult.ANTIPLAY_TOP;
-					break;
-				case BOTTOM:
-					done = ActionResult.ANTIPLAY_BOT;
-					break;
-        	}
+        if (this.antiplay(this.getCurrentTeamTurn())) {
+        	done = ActionResult.ANTIPLAY_CURRENT;
+        } else if(this.antiplay(this.getNotPlayingTeam())){
+        	done = ActionResult.ANTIPLAY;
         }
-
+        
         return done;
 	}
 	
@@ -604,18 +599,28 @@ public class Stadium {
         	done = ActionResult.WIN;
         }
         
-        if (this.antiplay(currentTurn.getTeam())) {
-        	switch (currentTurn.getTeam().getPosition()) {
-				case TOP:
-					done = ActionResult.ANTIPLAY_TOP;
-					break;
-				case BOTTOM:
-					done = ActionResult.ANTIPLAY_BOT;
-					break;
-        	}
+        if (this.antiplay(this.getCurrentTeamTurn())) {
+        	done = ActionResult.ANTIPLAY_CURRENT;
+        } else if(this.antiplay(this.getNotPlayingTeam())){
+        	done = ActionResult.ANTIPLAY;
         }
 
         return done;
+	}
+	
+	public Team getNotPlayingTeam() {
+		Team res = null;
+
+		switch (getCurrentTeamTurn().getPosition()) {
+			case TOP:
+				res = getTeam(TeamPosition.BOTTOM);
+				break;
+			case BOTTOM:
+				res = getTeam(TeamPosition.TOP);
+				break;
+		}
+
+		return res;
 	}
 	
 	private void unselectPlayerIfNeeded(Player p) {
