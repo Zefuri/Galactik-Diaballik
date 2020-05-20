@@ -12,15 +12,12 @@ import static java.lang.Math.abs;
 public class Stadium {
     private Team topTeam;
     private Team bottomTeam;
-    private Player[][] board;
 
     private Historic history;
 
     private boolean visualisationMode;
     
     public Stadium() {
-        this.board = new Player [ModelConstants.BOARD_SIZE][ModelConstants.BOARD_SIZE];
-        this.initBoard();
         topTeam = new Team("snowKids", TeamPosition.TOP, this, true);
         bottomTeam = new Team("shadows", TeamPosition.BOTTOM, this, true);
 
@@ -29,20 +26,9 @@ public class Stadium {
         this.visualisationMode = false;
     }
     
-    public void initBoard() {
-        for(int i = 0; i != board.length; i++) {
-        	for(int j = 0; j != board.length; j++) {
-        		board[i][j] = null;
-        	}
-        }
-    }
-    
-    public void setBoard(int ligne, int colonne, Player player) {
-    	board[ligne][colonne] = player;
-    }
-    
     public void resetStadium() {
     	this.reset();
+
         this.history = new Historic(this);
         this.history.newTurn(getCurrentTeamTurn());
     }
@@ -60,19 +46,37 @@ public class Stadium {
     }
 
     public void reset() {
-    	this.initBoard();
         topTeam.initializePlayers();
         bottomTeam.initializePlayers();
     }
     
     public void replaceTeam() {
-    	this.initBoard();
     	topTeam.replace();
     	bottomTeam.replace();
     }
     
     public Player getPlayer(Case position) {
-    	return board[position.getX()][position.getY()];
+    	for (Player p : topTeam.getPlayers()) {
+    		Case currPos = p.getPosition();
+    		
+    		if (currPos.getX() == position.getX()) {
+    			if (currPos.getY() == position.getY()) {
+    				return p;
+    			}
+    		}
+    	}
+    	
+    	for (Player p : bottomTeam.getPlayers()) {
+    		Case currPos = p.getPosition();
+    		
+    		if (currPos.getX() == position.getX()) {
+    			if (currPos.getY() == position.getY()) {
+    				return p;
+    			}
+    		}
+    	}
+    	
+    	return null;
     }
     
     public boolean hasABall(Case position) {
@@ -104,27 +108,19 @@ public class Stadium {
     public void simpleMove(Player player, MoveDirection direction){ //move player at position in the selected direction
     	// /!\ Caution: Please use the playerCanMove() function before using this one/!\
     	Case playerPos = player.getPosition();
-    	
-		int previousX = player.getPosition().getX();
-		int previousY = player.getPosition().getY();
-		board[previousX][previousY] = null;
-		
+
 		switch (direction) {
 			case UP:
 				player.getPosition().setX(playerPos.getX() - 1);
-				board[previousX-1][previousY] = player;
 				break;
 			case DOWN:
 				player.getPosition().setX(playerPos.getX() + 1);
-				board[previousX+1][previousY] = player;
 				break;
 			case RIGHT:
 				player.getPosition().setY(playerPos.getY() + 1);
-				board[previousX][previousY+1] = player;
 				break;
 			case LEFT:
 				player.getPosition().setY(playerPos.getY() - 1);
-				board[previousX][previousY-1] = player;
 				break;
 			default:
 				throw new IllegalStateException("Wrong input direction");
@@ -132,36 +128,32 @@ public class Stadium {
     }
 
 
-	public boolean playerCanMove(Player player){
-		return playerCanMove(player, MoveDirection.UP) || playerCanMove(player, MoveDirection.RIGHT) || playerCanMove(player, MoveDirection.DOWN) || playerCanMove(player, MoveDirection.LEFT);
-	}
-
-    public boolean playerCanMove(Player player, MoveDirection direction) {
+    public boolean booleanCanMove(MoveDirection direction, Player currPlayer, int i, int j) {
     	boolean canMove = true;
-    	int ligne = player.getPosition().getX();
-    	int colonne = player.getPosition().getY();
     	
 		switch (direction) {
 			case UP:
-				if (ligne <= 0 || board[ligne-1][colonne] != null) {
+				if (i <= 0 || currPlayer.getPosition().equals(new Case(i - 1, j))) {
 					canMove = false;
 				}
 				break;
 				
 			case DOWN:
-				if (ligne >= 6 || board[ligne+1][colonne] != null) {
+				if (i >= 6 || currPlayer.getPosition().equals(new Case(i + 1, j))) {
 					canMove = false;
 				}
+
 				break;
 
 			case LEFT:
-				if (colonne <= 0 || board[ligne][colonne-1] != null) {
+				if (j <= 0 || currPlayer.getPosition().equals(new Case(i, j - 1))) {
 					canMove = false;
 				}
+
 				break;
 
 			case RIGHT:
-				if (colonne >= 6 || board[ligne][colonne+1] != null) {
+				if (j >= 6 || currPlayer.getPosition().equals(new Case(i, j + 1))) {
 					canMove = false;
 				}
 				break;
@@ -174,6 +166,45 @@ public class Stadium {
 		
 		return canMove;
 	}
+
+
+	public boolean playerCanMove(Player player){
+		return playerCanMove(player, MoveDirection.UP) || playerCanMove(player, MoveDirection.RIGHT) || playerCanMove(player, MoveDirection.DOWN) || playerCanMove(player, MoveDirection.LEFT);
+	}
+
+    public boolean playerCanMove(Player player, MoveDirection direction) {
+    	boolean canMove = true;
+        int i = player.getPosition().getX();
+        int j = player.getPosition().getY();
+        
+        if (player.hasBall()) {
+			canMove = false;
+		} 
+		
+		if (canMove) {
+        	for (Player currPlayer : player.getTeam().getPlayers()) {
+        		//For each player of the ally team, we check if he is not badly positioned
+	            canMove = booleanCanMove(direction, currPlayer, i, j);
+	            
+				if (!canMove) {
+					break;
+				}
+			}
+		}
+        	
+		if (canMove) {
+        	for (Player currPlayer : player.getTeam().getEnemyTeam().getPlayers()) {
+        		//For each player of the enemy team, we check if he is not badly positioned
+        		canMove = booleanCanMove(direction, currPlayer, i, j);
+        		
+				if (!canMove) {
+					break;
+				}
+        	}
+        }
+        
+        return canMove;
+    }
 
     public MoveDirection direction(Player playerOne, Player playerTwo) {
     	Case playerOnePos = playerOne.getPosition();
@@ -460,7 +491,7 @@ public class Stadium {
 		return this.history.getCurrentTurnIndex();
 	}
 
-	public ActionResult actionPerformed(Action action) { // what controller must use
+	public ActionResult actionPerformed(Action action) { //what controller must use
         ActionResult done = ActionResult.DONE;
         Turn currentTurn = this.history.getLast();
 
@@ -523,28 +554,18 @@ public class Stadium {
         	done = ActionResult.WIN;
         }
         
-        if(this.antiplay(currentTurn.getTeam())) {
-        	done = ActionResult.ANTIPLAY_CURRENT;
-        } else if(this.antiplay(this.getNotPlayingTeam())) {
-        	done = ActionResult.ANTIPLAY;
+        if (this.antiplay(currentTurn.getTeam())) {
+        	switch (currentTurn.getTeam().getPosition()) {
+				case TOP:
+					done = ActionResult.ANTIPLAY_TOP;
+					break;
+				case BOTTOM:
+					done = ActionResult.ANTIPLAY_BOT;
+					break;
+        	}
         }
 
         return done;
-	}
-	
-	public Team getNotPlayingTeam() {
-		Team res = null;
-		
-		switch (getCurrentTeamTurn().getPosition()) {
-			case TOP:
-				res = getTeam(TeamPosition.BOTTOM);
-				break;
-			case BOTTOM:
-				res = getTeam(TeamPosition.TOP);
-				break;
-		}
-		
-		return res;
 	}
 	
 	public ActionResult actionPerformedAI(Action action) { //what controller must use
@@ -555,16 +576,18 @@ public class Stadium {
 			case MOVE:
 				Player player = action.getMovedPlayer();
 				MoveDirection dir = action.getDirection();
-				simpleMove(player, dir);
-				currentTurn.addAction(action);
-				unselectPlayerIfNeeded(player);
+					simpleMove(player, dir);
+					currentTurn.addAction(action);
+					unselectPlayerIfNeeded(player);
+				
 				break;
 				
 			case PASS:
 				Player firstPlayer = action.getPreviousPlayer();
 				Player secondPlayer = action.getNextPlayer();
-				simplePass(firstPlayer, secondPlayer);
-				currentTurn.addAction(action);
+					simplePass(firstPlayer, secondPlayer);
+					currentTurn.addAction(action);
+				
 				break;
 				
 			case END_TURN:
@@ -581,10 +604,15 @@ public class Stadium {
         	done = ActionResult.WIN;
         }
         
-        if(this.antiplay(currentTurn.getTeam())) {
-        	done = ActionResult.ANTIPLAY_CURRENT;
-        } else if(this.antiplay(this.getNotPlayingTeam())) {
-        	done = ActionResult.ANTIPLAY;
+        if (this.antiplay(currentTurn.getTeam())) {
+        	switch (currentTurn.getTeam().getPosition()) {
+				case TOP:
+					done = ActionResult.ANTIPLAY_TOP;
+					break;
+				case BOTTOM:
+					done = ActionResult.ANTIPLAY_BOT;
+					break;
+        	}
         }
 
         return done;
