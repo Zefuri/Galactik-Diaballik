@@ -132,7 +132,7 @@ public class Technoid implements Observer {
                 AI2 = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.BOTTOM));
 
                 AIActions = new ArrayList<>();
-                timer = new Timer(200, new EVETimer(this));
+                timer = new Timer(50, new EVETimer(this));
                 timer.start();
 
                 break;
@@ -162,12 +162,17 @@ public class Technoid implements Observer {
 
         if (actionResult == ActionResult.WIN) {
             timer.stop();
-            holoTV.switchToEndGamePanel(GameResult.VICTORY, firstAIsTurn ? stadium.getTeam(TeamPosition.TOP).getName() : stadium.getTeam(TeamPosition.BOTTOM).getName());
+            holoTV.switchToEndGamePanel(GameResult.VICTORY, !firstAIsTurn ? stadium.getTeam(TeamPosition.TOP).getName() : stadium.getTeam(TeamPosition.BOTTOM).getName());
         }
 
         if (actionResult == ActionResult.ANTIPLAY_TOP) {
             timer.stop();
             holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getTeam(TeamPosition.BOTTOM).getName());
+        }
+
+        if (actionResult == ActionResult.ANTIPLAY_BOT) {
+            timer.stop();
+            holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
         }
 
         if (AIActions.size() == 0) {
