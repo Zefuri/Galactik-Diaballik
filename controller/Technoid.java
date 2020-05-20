@@ -10,13 +10,8 @@ import patterns.Observer;
 import saver.GameLoader;
 import saver.GameSaver;
 import view.HoloTV;
-import view.Repainter;
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static java.lang.Thread.sleep;
 
@@ -232,7 +227,7 @@ public class Technoid implements Observer {
 				holoTV.switchToMainMenuPanel();
 				break;
 			case CLICKED_REWIND:
-				System.out.println("Fonctionnalité en cours d'implémentation");
+				System.out.println("Fonctionnalite en cours d'implementation");
 				break;
         }
     }

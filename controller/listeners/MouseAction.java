@@ -1,25 +1,19 @@
 package controller.listeners;
 
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-
 import controller.ai.BallActionAI_1;
-
 import model.Action;
 import model.Case;
 import model.Player;
 import model.Stadium;
-import model.enums.ActionResult;
-import model.enums.ActionType;
-import model.enums.GameResult;
-import model.enums.MoveDirection;
-import model.enums.TeamPosition;
-
+import model.enums.*;
 import patterns.Observer;
 import saver.GameSaver;
 import view.HoloTV;
+
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 public class MouseAction extends MouseAdapter implements Observer {
 	private HoloTV holoTV;
@@ -32,6 +26,8 @@ public class MouseAction extends MouseAdapter implements Observer {
 	private Case playerWithBallCase;
 
 	private BallActionAI_1 AI;
+	private boolean isAITurn;
+	private ArrayList<Action> AIActions;
 	
 	private boolean visualisationMode;
 	
@@ -45,6 +41,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 
 		if (withAI) { // initialize AI if needed
 			AI = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.BOTTOM));
+			isAITurn = false;
 		}
 	}
 	
@@ -72,13 +69,6 @@ public class MouseAction extends MouseAdapter implements Observer {
 				System.out.println(ex.toString());
 				//ex.printStackTrace();
 			}
-	
-			// provisoire
-	//		clickNumber++;
-	//
-	//		if (clickNumber%3 == 0 && clickNumber != 0) {
-	//			ai.play();
-	//		}
 			
 			holoTV.getArkadiaNews().repaint();
 			holoTV.updateGameInfos();
@@ -239,28 +229,30 @@ public class MouseAction extends MouseAdapter implements Observer {
 				gameSaver.overwriteSave();
 
 				if (AI != null) {
-					ArrayList<Action> actions = AI.play(1);
-          
-					ActionResult result;
-					int indexAction = 0;
-					Action currentAction = actions.get(indexAction);
-					
-					while(((result = stadium.actionPerformedAI(currentAction)) == ActionResult.DONE) && indexAction < actions.size()) {
-						currentAction = actions.get(indexAction);
-					}
-					
-					if(result == ActionResult.WIN) {
-						holoTV.switchToEndGamePanel(GameResult.DEFEAT, stadium.getTeam(TeamPosition.TOP).getName());
-					}
+					isAITurn = true;
 
-					if(result == ActionResult.ANTIPLAY_TOP) {
-						holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
-					} else if(result == ActionResult.ANTIPLAY_BOT) {
-						holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
-					}
-					
-					holoTV.getArkadiaNews().repaint();
-					holoTV.updateGameInfos();
+//					ArrayList<Action> actions = AI.play(1);
+//
+//					ActionResult result;
+//					int indexAction = 0;
+//					Action currentAction = actions.get(indexAction);
+//
+//					while(((result = stadium.actionPerformedAI(currentAction)) == ActionResult.DONE) && indexAction < actions.size()) {
+//						currentAction = actions.get(indexAction);
+//					}
+//
+//					if(result == ActionResult.WIN) {
+//						holoTV.switchToEndGamePanel(GameResult.DEFEAT, stadium.getTeam(TeamPosition.TOP).getName());
+//					}
+//
+//					if(result == ActionResult.ANTIPLAY_TOP) {
+//						holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
+//					} else if(result == ActionResult.ANTIPLAY_BOT) {
+//						holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
+//					}
+//
+//					holoTV.getArkadiaNews().repaint();
+//					holoTV.updateGameInfos();
 				}
 
 				break;
@@ -309,5 +301,11 @@ public class MouseAction extends MouseAdapter implements Observer {
 		clearPlayers();
 		
 		holoTV.getArkadiaNews().repaint();
+	}
+
+	public void playAI() {
+		if (isAITurn) {
+
+		}
 	}
 }
