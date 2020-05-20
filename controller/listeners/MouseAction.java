@@ -236,7 +236,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 				
 				gameSaver.overwriteSave();
 
-				if (AI != null) {
+				if (AI != null && res != ActionResult.ERROR) {
 					isAITurn = true;
 				}
 
@@ -294,7 +294,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 		if (isAITurn) {
 			// if we got no actions available then it's the beginning of the AIs turn.
 			if (AIActions.size() == 0) {
-				AIActions = AI.play(1); // generate the next actions
+				AIActions = AI.play(0); // generate the next actions
 			}
 
 			ActionResult actionResult = stadium.actionPerformedAI(AIActions.get(0)); // perform the first action in queue...
