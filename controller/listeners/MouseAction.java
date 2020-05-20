@@ -1,9 +1,5 @@
 package controller.listeners;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-
 import controller.ai.BallActionAI_1;
 import model.Action;
 import model.Case;
@@ -15,6 +11,10 @@ import model.enums.MoveDirection;
 import model.enums.TeamPosition;
 import patterns.Observer;
 import view.HoloTV;
+
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 
 public class MouseAction extends MouseAdapter implements Observer {
@@ -211,11 +211,24 @@ public class MouseAction extends MouseAdapter implements Observer {
 				res = this.stadium.endTurn();
 
 				if (AI != null) {
-					ArrayList<Action> actions = AI.play(0);
+					ArrayList<Action> actions = AI.play(1);
 					for (Action currentAction : actions) {
-						stadium.actionPerformed(currentAction);
+						ActionResult result = stadium.actionPerformedAI(currentAction);
+
+						if (result == ActionResult.WIN) {
+							//TODO Impl�menter le passage � l'�cran de fin
+							System.out.println("Team \"" + stadium.getPlayer(playerWithBallCase).getTeam().getName() + "\" have won the match!");
+							holoTV.getGamePanel().showEndGamePopUp(stadium.getPlayer(playerWithBallCase).getTeam().getName());
+						}
+
+						if (result == ActionResult.ANTIPLAY) {
+							//TODO Impl�menter le passage � l'�cran de fin
+							System.out.println("The enemy team made an antiplay: Team \"" + stadium.getPlayer(playerWithBallCase).getTeam().getName() + "\" have won the match!");
+							holoTV.getGamePanel().showAntiPlayPopUp(stadium.getPlayer(playerWithBallCase).getTeam().getName());
+						}
 					}
 					holoTV.getArkadiaNews().repaint();
+					holoTV.updateGameInfos();
 					// TODO : check end of game for AI as well
 				}
 				break;
