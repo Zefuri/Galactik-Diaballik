@@ -132,7 +132,7 @@ public class Technoid implements Observer {
                 AI2 = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.BOTTOM));
 
                 AIActions = new ArrayList<>();
-                timer = new Timer(50, new EVETimer(this));
+                timer = new Timer(200, new EVETimer(this)); // AIs play every 0.2 seconds
                 timer.start();
 
                 break;
@@ -145,9 +145,12 @@ public class Technoid implements Observer {
         }
     }
 
+    /*
+    method is called by the timer to make the AIs play in an AI vs AI context
+     */
     public void playAI() {
-        if (AIActions.size() == 0) {
-            if (firstAIsTurn) {
+        if (AIActions.size() == 0) { // if it's the beginning of a new turn
+            if (firstAIsTurn) { // generate the actions
                 AIActions = AI1.play(1);
             } else {
                 AIActions = AI2.play(0);
@@ -160,6 +163,7 @@ public class Technoid implements Observer {
         holoTV.getArkadiaNews().repaint(); // show the new move
         holoTV.updateGameInfos();
 
+        // test all win scenarios
         if (actionResult == ActionResult.WIN) {
             timer.stop();
             holoTV.switchToEndGamePanel(GameResult.VICTORY, !firstAIsTurn ? stadium.getTeam(TeamPosition.TOP).getName() : stadium.getTeam(TeamPosition.BOTTOM).getName());
@@ -175,6 +179,7 @@ public class Technoid implements Observer {
             holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
         }
 
+        // when no more actions are left, switch player
         if (AIActions.size() == 0) {
             firstAIsTurn = !firstAIsTurn;
         }
