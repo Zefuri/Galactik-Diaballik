@@ -50,8 +50,6 @@ public class Historic {
     }
     
     public ActionResult undoLastAction() {
-    	System.out.println(currentTurnIndex);
-    	
     	if (!this.stadium.isInVisualisationMode()) {
     		return this.historicList.get(currentTurnIndex).undo();
     	} else {
@@ -71,15 +69,11 @@ public class Historic {
     public boolean redoNextAction() {
     	//Usable only in visualization mode
     	if (this.historicList.get(currentTurnIndex).redoGoesToNextTour()) {
-    		
-    		
     		if (this.currentTurnIndex == this.historicList.size() - 1 || this.historicList.get(currentTurnIndex + 1).isEmpty()) {
     			//We are on the last tour, so we do not do anything
     			System.err.println("You reached the last tour.");
     			return false;
     		} else {
-    			
-    			System.out.println(currentTurnIndex + "/" + this.historicList.size());
     			this.historicList.get(++currentTurnIndex).redo();
     		}
     	} else {

@@ -77,7 +77,7 @@ public class GameSaver {
 			builder.append(SaverConstants.NEXT_LINE);
 		}
 		
-		System.out.println(builder.toString());
+		//System.out.println(builder.toString());
 		
 		return builder;
 	}
