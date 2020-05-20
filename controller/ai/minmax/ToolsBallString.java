@@ -1,4 +1,4 @@
-package ai.minmax;
+package controller.ai.minmax;
 
 import model.Stadium;
 import model.Team;

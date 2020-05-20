@@ -2,7 +2,7 @@ package view;
 
 import javax.sound.sampled.*;
 import javax.swing.JFrame;
-import listeners.MouseAction;
+import controller.listeners.MouseAction;
 import model.Stadium;
 import patterns.Observer;
 

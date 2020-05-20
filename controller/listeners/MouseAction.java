@@ -1,10 +1,10 @@
-package listeners;
+package controller.listeners;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-import ai.BallActionAI_1;
+import controller.ai.BallActionAI_1;
 import model.Action;
 import model.Case;
 import model.Player;
@@ -221,7 +221,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 				gameSaver.overwriteSave();
 
 				if (AI != null) {
-					ArrayList<Action> actions = AI.play(0);
+					ArrayList<Action> actions = AI.play(1);
 					
 					for (Action currentAction : actions) {
 						stadium.actionPerformed(currentAction);
