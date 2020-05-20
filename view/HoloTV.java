@@ -2,6 +2,7 @@ package view;
 
 import javax.sound.sampled.*;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import controller.listeners.MouseAction;
 
@@ -140,18 +141,21 @@ public class HoloTV implements Runnable {
 		frame.getContentPane().removeAll();
 		frame.add(gameModePanel);
 		frame.validate();  // very important
+		SwingUtilities.updateComponentTreeUI(frame);
 	}
 
 	public void switchToGamePanel() {
 		frame.getContentPane().removeAll();
 		frame.add(gamePanel);
 		frame.validate();  // very important
+		SwingUtilities.updateComponentTreeUI(frame);
 	}
 	
 	public void switchToMainMenuPanel() {
 		frame.getContentPane().removeAll();
 		frame.add(mainMenuPanel);
 		frame.validate();  // very important
+		SwingUtilities.updateComponentTreeUI(frame);
 	}
 	
 	public void switchToEndGamePanel(GameResult gameResult, String teamName) {
@@ -162,5 +166,6 @@ public class HoloTV implements Runnable {
 		frame.getContentPane().removeAll();
 		frame.add(endGamePanel);
 		frame.validate();
+		SwingUtilities.updateComponentTreeUI(frame);
 	}
 }
