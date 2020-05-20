@@ -6,5 +6,6 @@ public enum ActionType {
     END_TURN,
     UNDO,
     RESET,
+    CHEAT
     REDO
 }

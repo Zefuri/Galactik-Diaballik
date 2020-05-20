@@ -35,8 +35,8 @@ public class Historic {
         this.currentTurnIndex++;
     }
 
-    public void newTurn(Team currentTeamTurn) {
-        this.historicList.add(new Turn(currentTeamTurn));
+    public void newTurn(Team currentTeamTurn, boolean cheat) {
+        this.historicList.add(new Turn(currentTeamTurn, cheat));
     }
     
     public void removeLastTurn() {

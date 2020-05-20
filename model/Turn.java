@@ -8,20 +8,31 @@ public class Turn {
 	private Team team;
 	private int nbPass;
 	private int nbMove;
+	private boolean cheatModActivated;
+
 
 	public Turn(Team team) {
 		this.actions = new Action[]{null, null, null};
 		this.team = team;
 		this.nbPass = 0;
 		this.nbMove = 0;
+		this.cheatModActivated = false;
+	}
+
+	public Turn(Team team, boolean cheat) {
+		this.actions = new Action[3];
+		this.team = team;
+		this.nbPass = 0;
+		this.nbMove = 0;
+		this.cheatModActivated = cheat;
 	}
 	
 	public void addAction(Action action) {
 		this.actions[this.nbMove + this.nbPass] = action;
 		
-		if (action.getType() == ActionType.PASS) {
+		if (action.getType() == ActionType.PASS && !cheatModActivated) {
 			this.nbPass++;
-		} else if (action.getType() == ActionType.MOVE) {
+		} else if (action.getType() == ActionType.MOVE && !cheatModActivated) {
 			this.nbMove++;
 		}
 	}
@@ -75,10 +86,14 @@ public class Turn {
 			if(actionToDelete.getType() == ActionType.PASS) {
 				actionToDelete.getPreviousPlayer().setBallPossession(true);
 				actionToDelete.getNextPlayer().setBallPossession(false);
-				this.nbPass--;
+				if(!cheatModActivated) {
+					this.nbPass--;
+				}
 			} else {
 				actionToDelete.getPreviousPlayer().setPosition(actionToDelete.getPreviousCase());
-				this.nbMove--;
+				if(!cheatModActivated) {
+					this.nbMove--;
+				}
 			}
 			
 			//We clear the action properly (better for the save) if we are not in visualization mode
@@ -173,6 +188,10 @@ public class Turn {
 		}
 		
 		return (this.actions[this.nbPass + this.nbMove] == null);
+	}
+
+	public void switchCheatModActivated() {
+		this.cheatModActivated = !cheatModActivated;
 	}
 	
 	public boolean isEmpty() {
