@@ -1,11 +1,13 @@
 package model;
 
-import static java.lang.Math.abs;
-
-import model.enums.TeamPosition;
 import model.enums.ActionResult;
 import model.enums.ActionType;
 import model.enums.MoveDirection;
+import model.enums.TeamPosition;
+
+import java.util.HashMap;
+
+import static java.lang.Math.abs;
 
 public class Stadium {
     private Team topTeam;
@@ -303,13 +305,11 @@ public class Stadium {
         boolean result = false;
         
         int contact = 0;
-        
-        for (Player currPlayer : team.getPlayers()) {
-            //No neighbor on the left nor the right, so no antiplay
-            if (!allyOnBothSides(currPlayer)){
-                return false;
-            }
+		if (!allyMakeAStraightLine(team)){
+			return false;
+		}
 
+        for (Player currPlayer : team.getPlayers()) {
             if (inContactWithOpponent(currPlayer)) {
             	contact++;
             }
@@ -322,89 +322,29 @@ public class Stadium {
         return result;
     }
 
-    private boolean allyOnBothSides(Player p){
-		Case playerPos = p.getPosition();
-		boolean allyOnTheLeft = false;
-		boolean allyOnTheRight = false;
-
-		if (playerPos.getY() <= 0){
-			allyOnTheLeft = true;
+    private boolean allyMakeAStraightLine(Team team) {
+		boolean result = true;
+		HashMap<Integer, Integer> index = new HashMap<>();
+		for (Player currPlayer : team.getPlayers()) {
+			Case position = currPlayer.getPosition();
+			index.putIfAbsent(position.getY(), position.getX());
 		}
-		if (playerPos.getY() >= 6){
-			allyOnTheRight = true;
-		}
-		for (Player currPlayer : p.getTeam().getPlayers()) {
-			Case currPlayerPos = currPlayer.getPosition();
-
-			if (currPlayerPos.getY() == playerPos.getY() - 1){
-				if (currPlayerPos.getX() == playerPos.getX() + 1 || currPlayerPos.getX() == playerPos.getX() - 1 ){
-					allyOnTheLeft = true;
-				}
-			}
-			if (currPlayerPos.getY() == playerPos.getY() + 1){
-				if (currPlayerPos.getX() == playerPos.getX() + 1 || currPlayerPos.getX() == playerPos.getX() - 1 ){
-					allyOnTheRight = true;
-				}
-			}
-			if (allyOnTheLeft && allyOnTheRight){
-				break;
-			}
-		}
-		return allyOnTheLeft && allyOnTheRight;
-	}
-
-    private boolean allyOnTheLeft(Player p) {
-    	Case playerPos = p.getPosition();
-    	boolean allyOnTheLeft = false;
-
-    	if (playerPos.getY() <= 0){
-    		allyOnTheLeft = true;
-		}
-    	else{
-    		for (Player currPlayer : p.getTeam().getPlayers()) {
-				Case currPlayerPos = currPlayer.getPosition();
-
-				if (currPlayerPos.getY() == playerPos.getY() - 1){
-					if (currPlayerPos.getX() == playerPos.getX() + 1 || currPlayerPos.getX() == playerPos.getX() - 1 ){
-						allyOnTheLeft = true;
-					}
-				}
-
-
-					if (allyOnTheLeft) {
+		if (index.size() != 7) {
+			result = false;
+		}else{
+			for (int i = 1; i < 6; i++)  {
+				int before = index.get(i - 1);
+				int after = index.get( i + 1);
+				int now = index.get(i);
+					if ((!(before + 1 == now || before == now || before - 1 == now)) ||
+							!(after + 1 == now || after == now || after - 1 == now)){
+						result = false;
 						break;
-					}
-			}
-		}
-    	
-    	return allyOnTheLeft;
-    }
-    
-    private boolean allyOnTheRight(Player p) {
-    	Case playerPos = p.getPosition();
-    	boolean allyOnTheRight = false;
-
-		if (playerPos.getY() >= 6){
-			allyOnTheRight = true;
-		}
-		else{
-			for (Player currPlayer : p.getTeam().getPlayers()) {
-				Case currPlayerPos = currPlayer.getPosition();
-
-				if (currPlayerPos.getY() == playerPos.getY() + 1){
-					if (currPlayerPos.getX() == playerPos.getX() + 1 || currPlayerPos.getX() == playerPos.getX() - 1 ){
-						allyOnTheRight = true;
-					}
-				}
-
-				if (allyOnTheRight) {
-					break;
 				}
 			}
 		}
-    	
-    	return allyOnTheRight;
-    }
+		return result;
+	}
     
     private boolean inContactWithOpponent(Player p) {
     	Case playerPos = p.getPosition();
