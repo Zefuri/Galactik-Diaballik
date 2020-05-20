@@ -56,12 +56,12 @@ public class GameLoader {
 		fileDialog.setVisible(true);
 		
 		String fileName = fileDialog.getFile();
-		String filePath = Paths.get(fileDialog.getDirectory(), fileName).toString();
 		
 		if (fileName == null) {
 			return false;
 		}
 		
+		String filePath = Paths.get(fileDialog.getDirectory(), fileName).toString();
 		this.currentSavePath = filePath;
 		
 		//We open the save file
