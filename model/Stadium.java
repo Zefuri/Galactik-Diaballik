@@ -114,15 +114,15 @@ public class Stadium {
 				break;
 			case DOWN:
 				player.getPosition().setX(playerPos.getX() + 1);
-				board[previousX+1][previousY];
+				board[previousX+1][previousY] = player;
 				break;
 			case RIGHT:
 				player.getPosition().setY(playerPos.getY() + 1);
-				board[previousX][previousY+1];
+				board[previousX][previousY+1] = player;
 				break;
 			case LEFT:
 				player.getPosition().setY(playerPos.getY() - 1);
-				board[previousX][previousY-1];
+				board[previousX][previousY-1] = player;
 				break;
 			default:
 				throw new IllegalStateException("Wrong input direction");
@@ -586,7 +586,7 @@ public class Stadium {
         if (this.antiplay(this.getTeam(TeamPosition.TOP))) {
         	done = ActionResult.ANTIPLAY_TOP;
         } else if(this.antiplay(this.getTeam(TeamPosition.BOTTOM))){
-        	done = ActionResult.ANTIPLAY_BOTTOM;
+        	done = ActionResult.ANTIPLAY_BOT;
         }
 
         return done;
@@ -631,7 +631,7 @@ public class Stadium {
         if (this.antiplay(this.getTeam(TeamPosition.TOP))) {
         	done = ActionResult.ANTIPLAY_TOP;
         } else if(this.antiplay(this.getTeam(TeamPosition.BOTTOM))){
-        	done = ActionResult.ANTIPLAY_BOTTOM;
+        	done = ActionResult.ANTIPLAY_BOT;
         }
 
         return done;

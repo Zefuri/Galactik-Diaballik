@@ -34,12 +34,12 @@ public class Team {
 			if (position == TeamPosition.TOP) {
 				p = new Player("TOP_" + i);
 				p.setPosition(new Case(0, i));
-				stadium.set(0,i,p);
+				stadium.setBoard(0,i,p);
 				this.butLine = 6;
 			} else {
 				p = new Player("BOT_" + i);
 				p.setPosition(new Case(6, i));
-				stadium.set(6,i,p);
+				stadium.setBoard(6,i,p);
 				this.butLine = 0;
 			}
 			
@@ -59,10 +59,10 @@ public class Team {
 			
 			if (position == TeamPosition.TOP) {
 				p.setPosition(new Case(0, index));
-				stadium.set(0,index,p);
+				stadium.setBoard(0,index,p);
 			} else {
 				p.setPosition(new Case(6, index));
-				stadium.set(0,index,p);
+				stadium.setBoard(0,index,p);
 			}
 			
 			if (index == 3) {
