@@ -7,13 +7,19 @@ import model.Stadium;
 import model.enums.TeamPosition;
 import model.enums.UserInput;
 import patterns.Observer;
+import saver.GameLoader;
+import saver.GameSaver;
 import view.HoloTV;
+import view.Repainter;
 
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static java.lang.Thread.sleep;
 
 
 public class Technoid implements Observer {
@@ -28,14 +34,32 @@ public class Technoid implements Observer {
 
     @Override
     public void update(Object object) {
+    	GameSaver gameSaver;
+    	
         switch ((UserInput) object) {
             case CLICKED_PLAY: // context : MainMenuPanel
                 holoTV.switchToGameModePanel();
                 break;
 
-            case CLICKED_SETTINGS: // context : MainMenuPanel
-                System.out.println("Functionality not yet implemented");
+            case CLICKED_LOAD: { // context : MainMenuPanel
+            	GameLoader gameLoader = new GameLoader(stadium);
+            	
+            	if (gameLoader.loadData()) {
+	            	stadium.loadTopTeam(gameLoader.getTopTeam());
+	            	stadium.loadBotTeam(gameLoader.getBotTeam());
+	            	
+	            	gameSaver = new GameSaver(stadium, gameLoader.getCurrentSavePath());
+	            	
+	                MouseAction mouseAction = new MouseAction(holoTV, stadium, false, gameSaver);
+	                holoTV.addArkadiaNewsMouseListener(mouseAction);
+	                holoTV.getGamePanel().addObserver(mouseAction);
+	                holoTV.switchToGamePanel();
+            	} else {
+            		System.err.println("Either the user has cancelled the loading, or an error has occurred.");
+            	}
+            	
                 break;
+            }
 
             case CLICKED_QUIT: // context : MainMenuPanel
                 holoTV.stopMusic();
@@ -43,8 +67,13 @@ public class Technoid implements Observer {
                 break;
 
             case CLICKED_PVP: // context : GameModePanel
-            	stadium.resetStadium();
-                MouseAction mouseActionNoAI = new MouseAction(holoTV, stadium, false);
+            	//We also add the gameSaver and save the initial state
+            	gameSaver = new GameSaver(stadium);
+            	gameSaver.saveToFile();
+            	
+                MouseAction mouseActionNoAI = new MouseAction(holoTV, stadium, false, gameSaver);
+                
+                stadium.resetStadium();
                 holoTV.addArkadiaNewsMouseListener(mouseActionNoAI);
                 holoTV.getGamePanel().addObserver(mouseActionNoAI);
                 holoTV.updateGameInfos();
@@ -52,8 +81,13 @@ public class Technoid implements Observer {
                 break;
 
             case CLICKED_PVC: // context : GameModePanel
-            	stadium.resetStadium();
-                MouseAction mouseActionWithAI = new MouseAction(holoTV, stadium, true);
+            	//We also add the gameSaver and save the initial state
+            	gameSaver = new GameSaver(stadium);
+            	gameSaver.saveToFile();
+            	
+                MouseAction mouseActionWithAI = new MouseAction(holoTV, stadium, true, gameSaver);
+                
+                stadium.resetStadium();
                 holoTV.addArkadiaNewsMouseListener(mouseActionWithAI);
                 holoTV.getGamePanel().addObserver(mouseActionWithAI);
                 holoTV.updateGameInfos();
@@ -63,28 +97,107 @@ public class Technoid implements Observer {
             case CLICKED_CVC: // context : GameModePanel
             	stadium.resetStadium();
             	holoTV.updateGameInfos();
-                holoTV.switchToGamePanel();
+            	
+                Thread thread1 = new Thread() {
+                    @Override
+                    public void run() {
+                        holoTV.switchToGamePanel();
+                    }
+                };
+//                holoTV.switchToGamePanel();
+                thread1.run();
 
                 BallActionAI_1 AI1 = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.TOP));
                 BallActionAI_1 AI2 = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.BOTTOM));
 
-                Timer timer = new Timer(2000, new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        ArrayList<Action> AI1Actions = AI1.randomPlay();
-                        for(Action currentAction : AI1Actions) {
-                            stadium.actionPerformedAI(currentAction);
-                        }
-
-                        ArrayList<Action> AI2Actions = AI2.play(1);
-                        for(Action currentAction : AI2Actions) {
-                            stadium.actionPerformedAI(currentAction);
-                        }
-
+                Thread thread = new Thread() {
+                    @Override
+                    public void run() {
                         holoTV.getArkadiaNews().repaint();
                     }
-                });
+                };
 
-                timer.start();
+                for (int i = 0 ; i < 10; i++) {
+                    ArrayList<Action> AI1Actions = AI1.randomPlay();
+                    for(Action currentAction : AI1Actions) {
+                        stadium.actionPerformedAI(currentAction);
+
+                        thread.run();
+
+                        try {
+                            sleep(50);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    ArrayList<Action> AI2Actions = AI2.play(0);
+                    for(Action currentAction : AI2Actions) {
+                        stadium.actionPerformedAI(currentAction);
+
+                        thread.run();
+
+                        try {
+                            sleep(50);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+//                for (int i = 0; i < 10; i++) {
+//                    ArrayList<Action> AI1Actions = AI1.randomPlay();
+//                    for(Action currentAction : AI1Actions) {
+//                        stadium.actionPerformedAI(currentAction);
+//
+//                        Repainter.getInstance().isRepainted = false;
+//                        holoTV.getArkadiaNews().repaint();
+//                        while (!Repainter.getInstance().isRepainted) {
+//                            continue;
+//                        }
+//
+//                        try {
+//                            sleep(50);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//
+//                    ArrayList<Action> AI2Actions = AI2.play(0);
+//                    for(Action currentAction : AI2Actions) {
+//                        stadium.actionPerformedAI(currentAction);
+//
+//                        Repainter.getInstance().isRepainted = false;
+//                        holoTV.getArkadiaNews().repaint();
+//                        while (!Repainter.getInstance().isRepainted) {
+//                            continue;
+//                        }
+//
+//                        try {
+//                            sleep(50);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
+
+//                Timer timer = new Timer(2000, new ActionListener() {
+//                    public void actionPerformed(ActionEvent e) {
+//                        ArrayList<Action> AI1Actions = AI1.randomPlay();
+//                        for(Action currentAction : AI1Actions) {
+//                            stadium.actionPerformedAI(currentAction);
+//                        }
+//
+//                        ArrayList<Action> AI2Actions = AI2.play(1);
+//                        for(Action currentAction : AI2Actions) {
+//                            stadium.actionPerformedAI(currentAction);
+//                        }
+//
+//                        holoTV.getArkadiaNews().repaint();
+//                    }
+//                });
+//
+//                timer.start();
 
                 // TODO : somehow finish a game
                 break;

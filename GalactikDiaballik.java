@@ -7,7 +7,7 @@ public class GalactikDiaballik {
 		Stadium stadium = new Stadium();
 		HoloTV holoTV = new HoloTV(stadium);
 		Technoid technoid = new Technoid(holoTV, stadium);
-
+		
 		holoTV.addObserverMainMenuPanel(technoid);
 		holoTV.addObserverGameModePanel(technoid);
 		holoTV.addObserverEndGamePanel(technoid);

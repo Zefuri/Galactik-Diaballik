@@ -1,5 +1,7 @@
 package model;
 
+import java.util.regex.Pattern;
+
 public class Case {
 	private int x, y;
 	
@@ -16,6 +18,10 @@ public class Case {
 	public Case(Case c) {
 		this.x = c.getX();
 		this.y = c.getY();
+	}
+	
+	public Case(String s) {
+		this.parseJSONedCase(s);
 	}
 
 	void setX(int x) {
@@ -48,6 +54,19 @@ public class Case {
 		s.append("Case (" + this.x + "," + this.y + ")");
 		
 		return s.toString();
+	}
+	
+	public String JSONed() {
+		return "(" + this.x + "," + this.y + ")";
+	}
+	
+	public void parseJSONedCase(String jsonedCase) {
+		if (Pattern.matches("[(][0-9][,][0-9][)]", jsonedCase)) {
+			this.x = Integer.parseInt("" + jsonedCase.charAt(1));
+			this.y = Integer.parseInt("" + jsonedCase.charAt(3));
+		} else {
+			throw new IllegalStateException("The given case does not have the good format!");
+		}
 	}
 	
 	public boolean equals(Case c) {
