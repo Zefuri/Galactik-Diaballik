@@ -1,20 +1,16 @@
 package model;
 
-import static java.lang.Math.abs;
-
-import java.util.ArrayList;
-
-import model.enums.TeamPosition;
 import model.enums.ActionResult;
 import model.enums.ActionType;
 import model.enums.MoveDirection;
+import model.enums.TeamPosition;
+
+import static java.lang.Math.abs;
 
 public class Stadium {
     private Team topTeam;
     private Team bottomTeam;
-    
-    private Player[][] board;
-    
+
     private Historic history;
 
     public Stadium() {
@@ -301,7 +297,7 @@ public class Stadium {
             if (!leftFriend || !rightFriend){
                 return false;
             }
-            
+
             if (inContactWithOpponent(currPlayer)) {
             	contact++;
             }
@@ -317,30 +313,25 @@ public class Stadium {
     private boolean allyOnTheLeft(Player p) {
     	Case playerPos = p.getPosition();
     	boolean allyOnTheLeft = false;
-    	
-    	for (Player currPlayer : p.getTeam().getPlayers()) {
-    		Case currPlayerPos = currPlayer.getPosition();
-    		
-    		if (currPlayerPos.getY() <= 0) {
-    			allyOnTheLeft = true;
-    		} else if (currPlayerPos.getX() == playerPos.getX()) {
-    			if (currPlayerPos.getY() == playerPos.getY() - 1) {
-    				allyOnTheLeft = true;
-    			}
-    		} else if (currPlayerPos.getX() == playerPos.getX() - 1) {
-    			if (currPlayerPos.getY() == playerPos.getY() - 1) {
-    				allyOnTheLeft = true;
-    			}
-    		} else if (currPlayerPos.getX() == playerPos.getX() + 1) {
-    			if (currPlayerPos.getY() == playerPos.getY() - 1) {
-    				allyOnTheLeft = true;
-    			}
-    		}
-    		
-    		if (allyOnTheLeft) {
-    			break;
-    		}
-    	}
+
+    	if (playerPos.getY() <= 0){
+    		allyOnTheLeft = true;
+		}
+    	else{
+    		for (Player currPlayer : p.getTeam().getPlayers()) {
+				Case currPlayerPos = currPlayer.getPosition();
+
+				if (currPlayerPos.getY() == playerPos.getY() - 1){
+					if (currPlayerPos.getX() == playerPos.getX() + 1 || currPlayerPos.getX() == playerPos.getX() - 1 ){
+						allyOnTheLeft = true;
+					}
+				}
+
+					if (allyOnTheLeft) {
+						break;
+					}
+			}
+		}
     	
     	return allyOnTheLeft;
     }
@@ -348,30 +339,25 @@ public class Stadium {
     private boolean allyOnTheRight(Player p) {
     	Case playerPos = p.getPosition();
     	boolean allyOnTheRight = false;
-    	
-    	for (Player currPlayer : p.getTeam().getPlayers()) {
-    		Case currPlayerPos = currPlayer.getPosition();
-    		
-    		if (currPlayerPos.getY() >= 6) {
-    			allyOnTheRight = true;
-    		} else if (currPlayerPos.getX() == playerPos.getX() - 1) {
-    			if (currPlayerPos.getY() == playerPos.getY() + 1) {
-    				allyOnTheRight = true;
-    			}
-    		} else if (currPlayerPos.getX() == playerPos.getX()) {
-    			if (currPlayerPos.getY() == playerPos.getY() + 1) {
-    				allyOnTheRight = true;
-    			}
-    		} else if (currPlayerPos.getX() == playerPos.getX() + 1) {
-    			if (currPlayerPos.getY() == playerPos.getY() + 1) {
-    				allyOnTheRight = true;
-    			}
-    		}
-    		
-    		if (allyOnTheRight) {
-    			break;
-    		}
-    	}
+
+		if (playerPos.getY() >= 6){
+			allyOnTheRight = true;
+		}
+		else{
+			for (Player currPlayer : p.getTeam().getPlayers()) {
+				Case currPlayerPos = currPlayer.getPosition();
+
+				if (currPlayerPos.getY() == playerPos.getY() + 1){
+					if (currPlayerPos.getX() == playerPos.getX() + 1 || currPlayerPos.getX() == playerPos.getX() - 1 ){
+						allyOnTheRight = true;
+					}
+				}
+
+				if (allyOnTheRight) {
+					break;
+				}
+			}
+		}
     	
     	return allyOnTheRight;
     }
