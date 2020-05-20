@@ -297,12 +297,9 @@ public class Stadium {
         
         int contact = 0;
         
-        for (Player currPlayer : team.getPlayers()) { 
-            boolean leftFriend = allyOnTheLeft(currPlayer);
-            boolean rightFriend = allyOnTheRight(currPlayer);
-            
+        for (Player currPlayer : team.getPlayers()) {
             //No neighbor on the left nor the right, so no antiplay
-            if (!leftFriend || !rightFriend){
+            if (!allyOnBothSides(currPlayer)){
                 return false;
             }
 
@@ -317,7 +314,38 @@ public class Stadium {
         
         return result;
     }
-    
+
+    private boolean allyOnBothSides(Player p){
+		Case playerPos = p.getPosition();
+		boolean allyOnTheLeft = false;
+		boolean allyOnTheRight = false;
+
+		if (playerPos.getY() <= 0){
+			allyOnTheLeft = true;
+		}
+		if (playerPos.getY() >= 6){
+			allyOnTheRight = true;
+		}
+		for (Player currPlayer : p.getTeam().getPlayers()) {
+			Case currPlayerPos = currPlayer.getPosition();
+
+			if (currPlayerPos.getY() == playerPos.getY() - 1){
+				if (currPlayerPos.getX() == playerPos.getX() + 1 || currPlayerPos.getX() == playerPos.getX() - 1 ){
+					allyOnTheLeft = true;
+				}
+			}
+			if (currPlayerPos.getY() == playerPos.getY() + 1){
+				if (currPlayerPos.getX() == playerPos.getX() + 1 || currPlayerPos.getX() == playerPos.getX() - 1 ){
+					allyOnTheRight = true;
+				}
+			}
+			if (allyOnTheLeft && allyOnTheRight){
+				break;
+			}
+		}
+		return allyOnTheLeft && allyOnTheRight;
+	}
+
     private boolean allyOnTheLeft(Player p) {
     	Case playerPos = p.getPosition();
     	boolean allyOnTheLeft = false;
@@ -334,6 +362,7 @@ public class Stadium {
 						allyOnTheLeft = true;
 					}
 				}
+
 
 					if (allyOnTheLeft) {
 						break;
