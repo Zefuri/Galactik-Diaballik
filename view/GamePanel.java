@@ -34,6 +34,7 @@ public class GamePanel extends JPanel implements Observable {
 	private JLabel nbMoveRemaining;
 	private JButton undoButton;
 	private JButton resetTurnButton;
+	private JButton redoButton;
 	private JButton endTurnButton;
 	
 	public GamePanel(Stadium stadium) {
@@ -90,7 +91,7 @@ public class GamePanel extends JPanel implements Observable {
 	
 	public void showEndGamePopUp(String teamName) {
 		int input = JOptionPane.showOptionDialog(null, "The team \"" + teamName + "\" won the game!", "Game over", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
-		
+
 		if (input == JOptionPane.OK_OPTION || input == JOptionPane.CANCEL_OPTION || input == JOptionPane.CLOSED_OPTION) {
 			System.exit(0);
 		}
@@ -102,6 +103,14 @@ public class GamePanel extends JPanel implements Observable {
 		if (input == JOptionPane.OK_OPTION || input == JOptionPane.CANCEL_OPTION || input == JOptionPane.CLOSED_OPTION) {
 			System.exit(0);
 		}
+	}
+	
+	public void showFirstTurnReachedPopup() {
+		JOptionPane.showMessageDialog(null, "You reached the first turn of this game!");
+	}
+	
+	public void showLastTurnReachedPopup() {
+		JOptionPane.showMessageDialog(null, "You reached the last turn of this game!");
 	}
 	
 	private void setMargin() {
@@ -213,11 +222,24 @@ public class GamePanel extends JPanel implements Observable {
 		gbc.weightx = 0.5;
 		
 		turnButtons.add(this.resetTurnButton, gbc);
+		
+		//Création et placement du JButton permettant de rejouer une action (en avant), invisible au départ
+		this.redoButton = new JButton();
+		this.redoButton.setIcon(new ImageIcon(this.visualResources.forwardIconImage));
+		this.redoButton.setVisible(false);
+		
+		gbc.gridx = 2;
+		gbc.gridy = 0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		
+		turnButtons.add(this.redoButton, gbc);
 
 		this.gameControlPanel.add(turnButtons);
 		
 		this.undoButton.addActionListener(actionEvent -> notify(ActionType.UNDO));
 		this.resetTurnButton.addActionListener(actionEvent -> notify(ActionType.RESET));
+		this.redoButton.addActionListener(actionEvent -> notify(ActionType.REDO));
 	}
 	
 	private void createEndTurnButtonPanel() {
@@ -238,5 +260,11 @@ public class GamePanel extends JPanel implements Observable {
 		
 		// Ajout de la fonction "observeur/observï¿½" au endTurnButton permettant de notifier la partie controller
 		this.endTurnButton.addActionListener(actionEvent -> notify(ActionType.END_TURN));
+	}
+	
+	public void overwriteComponents() {
+		this.endTurnButton.setVisible(false);
+		this.resetTurnButton.setVisible(false);
+		this.redoButton.setVisible(true);
 	}
 }

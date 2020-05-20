@@ -1,5 +1,10 @@
 package controller.listeners;
 
+
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+
 import controller.ai.BallActionAI_1;
 
 import model.Action;
@@ -16,11 +21,6 @@ import patterns.Observer;
 import saver.GameSaver;
 import view.HoloTV;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-
-
 public class MouseAction extends MouseAdapter implements Observer {
 	private HoloTV holoTV;
 	private Stadium stadium;
@@ -33,12 +33,15 @@ public class MouseAction extends MouseAdapter implements Observer {
 
 	private BallActionAI_1 AI;
 	
+	private boolean visualisationMode;
+	
 	public MouseAction(HoloTV holoTV, Stadium stadium, boolean withAI, GameSaver gameSaver) {
 		this.holoTV = holoTV;
 		this.stadium = stadium;
 		this.gameSaver = gameSaver;
 		this.playerAloneCase = null;
 		this.playerWithBallCase = null;
+		this.visualisationMode = stadium.isInVisualisationMode();
 
 		if (withAI) { // initialize AI if needed
 			AI = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.BOTTOM));
@@ -47,57 +50,61 @@ public class MouseAction extends MouseAdapter implements Observer {
 	
 	@Override
 	public void mousePressed(MouseEvent e) {
-		super.mousePressed(e);
-		ActionResult result = null;
-		
-		//We get the position of the case (meaning its position in the game grid)
-		try {
-			this.clickedCase = getCase(e.getY(), e.getX());
-		} catch (IllegalStateException ex) {
-			//The gameboard is a square, so the player is able to click on the right/bottom of the screen
-			System.out.println("Please click on a gameboard case!");
-		}
-		
-		try {
-			result = performRequestedAction();
-		} catch (IllegalStateException ex) {
-			//Means that the user performed an undoable action
-			System.out.println(ex.toString());
-			//ex.printStackTrace();
-		} catch (RuntimeException ex) {
-			//Means that the user performed a doable action but an error occurred
-			System.out.println(ex.toString());
-			//ex.printStackTrace();
-		}
-
-		// provisoire
-//		clickNumber++;
-//
-//		if (clickNumber%3 == 0 && clickNumber != 0) {
-//			ai.play();
-//		}
-		
-		holoTV.getArkadiaNews().repaint();
-		holoTV.updateGameInfos();
-		
-		if (result == ActionResult.WIN) {
-			if(stadium.getCurrentTeamTurn() == stadium.getTeam(TeamPosition.BOTTOM) && AI != null) {
-				holoTV.switchToEndGamePanel(GameResult.DEFEAT, stadium.getTeam(TeamPosition.TOP).getName());
-			} else {
-				holoTV.switchToEndGamePanel(GameResult.VICTORY, stadium.getCurrentTeamTurn().getName());
+		if (!this.visualisationMode) {
+			ActionResult result = null;
+			
+			//We get the position of the case (meaning its position in the game grid)
+			try {
+				this.clickedCase = getCase(e.getY(), e.getX());
+			} catch (IllegalStateException ex) {
+				//The gameboard is a square, so the player is able to click on the right/bottom of the screen
+				System.out.println("Please click on a gameboard case!");
 			}
-			clearSelectedPlayer();
-		}
-		
-		if (result == ActionResult.ANTIPLAY_TOP && AI != null) {
-			holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
-			clearSelectedPlayer();
-		} else if(result == ActionResult.ANTIPLAY_TOP) {
-			holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getTeam(TeamPosition.BOTTOM).getName());
-			clearSelectedPlayer();
-		} else if(result == ActionResult.ANTIPLAY_BOT) {
-			holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
-			clearSelectedPlayer();
+			
+			try {
+				result = performRequestedAction();
+			} catch (IllegalStateException ex) {
+				//Means that the user performed an undoable action
+				System.out.println(ex.toString());
+				//ex.printStackTrace();
+			} catch (RuntimeException ex) {
+				//Means that the user performed a doable action but an error occurred
+				System.out.println(ex.toString());
+				//ex.printStackTrace();
+			}
+	
+			// provisoire
+	//		clickNumber++;
+	//
+	//		if (clickNumber%3 == 0 && clickNumber != 0) {
+	//			ai.play();
+	//		}
+			
+			holoTV.getArkadiaNews().repaint();
+			holoTV.updateGameInfos();
+			
+			if (result == ActionResult.WIN) {
+				if(stadium.getCurrentTeamTurn() == stadium.getTeam(TeamPosition.BOTTOM) && AI != null) {
+					holoTV.switchToEndGamePanel(GameResult.DEFEAT, stadium.getTeam(TeamPosition.TOP).getName());
+				} else {
+					holoTV.switchToEndGamePanel(GameResult.VICTORY, stadium.getCurrentTeamTurn().getName());
+				}
+				clearSelectedPlayer();
+			}
+			
+			if (result == ActionResult.ANTIPLAY_TOP && AI != null) {
+				holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
+				clearSelectedPlayer();
+			} else if(result == ActionResult.ANTIPLAY_TOP) {
+				holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getTeam(TeamPosition.BOTTOM).getName());
+				clearSelectedPlayer();
+			} else if(result == ActionResult.ANTIPLAY_BOT) {
+				holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
+				clearSelectedPlayer();
+			}
+		} else {
+			//We are in visualization mode, so we do not want the user to perform actions other than undo/redo
+			System.err.println("You might not press anything else than the undo/redo action buttons!");
 		}
 	}
 	
@@ -259,13 +266,29 @@ public class MouseAction extends MouseAdapter implements Observer {
 				break;
 				
 			case UNDO :
-				res = this.stadium.undoAction();
-				gameSaver.overwriteSave();
+				if (!this.visualisationMode) {
+					res = this.stadium.undoAction();
+					gameSaver.overwriteSave();
+				} else {
+					res = this.stadium.undoAction();
+					
+					if (res == ActionResult.ERROR) {
+						this.holoTV.getGamePanel().showFirstTurnReachedPopup();
+					}
+				}
+				
 				break;
 			
 			case RESET :
 				res = this.stadium.resetTurn();
 				gameSaver.overwriteSave();
+			
+				break;
+				
+			case REDO:
+				if (!this.stadium.redoAction()) {
+					this.holoTV.getGamePanel().showLastTurnReachedPopup();
+				}
 				break;
 		}
 		

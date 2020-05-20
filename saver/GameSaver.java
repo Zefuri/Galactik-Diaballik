@@ -25,7 +25,7 @@ import model.enums.TeamPosition;
 public class GameSaver {
 	private Stadium stadium;
 	
-	private static final String savesPath = System.getProperty("user.dir") + "\\saves\\";
+	private static final String savesPath = Paths.get(System.getProperty("user.dir").toString(), "saves").toString();
 	private static final String savePrefix = "save-";
 	private static final String saveSuffix = ".sv";
 	
@@ -77,7 +77,7 @@ public class GameSaver {
 			builder.append(SaverConstants.NEXT_LINE);
 		}
 		
-		System.out.println(builder.toString());
+		//System.out.println(builder.toString());
 		
 		return builder;
 	}
@@ -138,11 +138,11 @@ public class GameSaver {
 	
 	private String generateSaveName() {
 		int index = 1;
-		String savePath = savesPath + savePrefix + index + saveSuffix;
+		String savePath = Paths.get(savesPath, savePrefix + index + saveSuffix).toString();
 		File f = new File(savePath);
 		
 		while (f.isFile()) { 
-		    savePath = savesPath + savePrefix + ++index + saveSuffix;
+		    savePath = Paths.get(savesPath, savePrefix + ++index + saveSuffix).toString();
 		    f = new File(savePath);
 		}
 		

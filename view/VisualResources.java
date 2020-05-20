@@ -28,6 +28,9 @@ public class VisualResources {
     BufferedImage computerIconImage;
     BufferedImage resetIconImage;
     BufferedImage backwardIconImage;
+    BufferedImage forwardIconImage;
+    BufferedImage playIconImage;
+    BufferedImage pauseIconImage;
 
     private VisualResources(){
         // setting the custom fonts for the app
@@ -62,6 +65,7 @@ public class VisualResources {
             computerIconImage = ImageIO.read(getClass().getResourceAsStream("/resources/images/computer.png"));
             resetIconImage = ImageIO.read(getClass().getResourceAsStream("/resources/images/reset.png"));
             backwardIconImage = ImageIO.read(getClass().getResourceAsStream("/resources/images/backward.png"));
+            forwardIconImage = ImageIO.read(getClass().getResourceAsStream("/resources/images/forward.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

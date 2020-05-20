@@ -26,7 +26,7 @@ import model.enums.ActionType;
 import model.enums.TeamPosition;
 
 public class GameLoader {
-	private static final String savesPath = System.getProperty("user.dir") + "\\saves\\";
+	private static final String savesPath = Paths.get(System.getProperty("user.dir").toString(), "saves").toString();
 	private String currentSavePath;
 	
 	private Stadium stadium;
@@ -56,12 +56,12 @@ public class GameLoader {
 		fileDialog.setVisible(true);
 		
 		String fileName = fileDialog.getFile();
-		String filePath = fileDialog.getDirectory() + fileName;
 		
 		if (fileName == null) {
 			return false;
 		}
 		
+		String filePath = Paths.get(fileDialog.getDirectory(), fileName).toString();
 		this.currentSavePath = filePath;
 		
 		//We open the save file
@@ -88,7 +88,7 @@ public class GameLoader {
             String line = scanner.nextLine();
 
             if (currLine == 0) {
-            	//We read the board
+            	//We read the board on the first line
             	String board;
             	
             	try {
@@ -133,68 +133,73 @@ public class GameLoader {
 	            }
             } else {
             	//We read all the saved turns
+            	JSONObject jsonTurn;
+            	JSONObject jsonAction1;
+            	JSONObject jsonAction2;
+            	JSONObject jsonAction3;
+            	
             	try {
-					JSONObject jsonTurn = new JSONObject(line);
-					
-					TeamPosition teamPosition = (jsonTurn.getString("Team").equals("TOP") ? TeamPosition.TOP : TeamPosition.BOTTOM);
-					Team currTeam = (teamPosition == TeamPosition.TOP ? this.topTeam : this.botTeam);
+					jsonTurn = new JSONObject(line);
 					
 					JSONArray jsonActions = jsonTurn.getJSONArray("Actions");
 					
-					JSONObject jsonAction1 = new JSONObject(jsonActions.getString(0));
-					JSONObject jsonAction2 = new JSONObject(jsonActions.getString(1));
-					JSONObject jsonAction3 = new JSONObject(jsonActions.getString(2));
+					jsonAction1 = new JSONObject(jsonActions.getString(0));
+					jsonAction2 = new JSONObject(jsonActions.getString(1));
+					jsonAction3 = new JSONObject(jsonActions.getString(2));
+				} catch (ParseException e) {
+					throw new RuntimeException("The system could not read the savefile properly.");
+				}
+            	
+            	TeamPosition teamPosition = (jsonTurn.getString("Team").equals("TOP") ? TeamPosition.TOP : TeamPosition.BOTTOM);
+				Team currTeam = (teamPosition == TeamPosition.TOP ? this.topTeam : this.botTeam);
+				
+				//We create a turn with the current team
+				Turn tour = new Turn(currTeam);
+				
+				//We create a new action if it exists, and we add it to the current tour
+				if (jsonAction1.length() != 0) {
+					ActionType typeAction1 = (jsonAction1.getString("Type").equals("MOVE") ? ActionType.MOVE : ActionType.PASS);
+					Case caseDepart1 = new Case(jsonAction1.getString("CaseDepart"));
+					Case caseArrivee1 = new Case(jsonAction1.getString("CaseArrivee"));
+					String nomJoueurDepart1 = jsonAction1.getString("Joueur1");
+					String nomJoueurArrivee1 = jsonAction1.getString("Joueur2");
 					
-					//We create a turn with the current team
-					Turn tour = new Turn(currTeam);
+					Action action1 = new Action(typeAction1, currTeam.getPlayerFromName(nomJoueurDepart1), currTeam.getPlayerFromName(nomJoueurArrivee1), caseDepart1, caseArrivee1);
+					tour.addAction(action1);
 					
-					//We create a new action if it exists, and we add it to the current tour
-					if (jsonAction1.length() != 0) {
-						ActionType typeAction1 = (jsonAction1.getString("Type").equals("MOVE") ? ActionType.MOVE : ActionType.PASS);
-						Case caseDepart1 = new Case(jsonAction1.getString("CaseDepart"));
-						Case caseArrivee1 = new Case(jsonAction1.getString("CaseArrivee"));
-						String nomJoueurDepart1 = jsonAction1.getString("Joueur1");
-						String nomJoueurArrivee1 = jsonAction1.getString("Joueur2");
+					if (jsonAction2.length() != 0) {
+						ActionType typeAction2 = (jsonAction2.getString("Type").equals("MOVE") ? ActionType.MOVE : ActionType.PASS);
+						Case caseDepart2 = new Case(jsonAction2.getString("CaseDepart"));
+						Case caseArrivee2 = new Case(jsonAction2.getString("CaseArrivee"));
+						String nomJoueurDepart2 = jsonAction2.getString("Joueur1");
+						String nomJoueurArrivee2 = jsonAction2.getString("Joueur2");
 						
-						Action action1 = new Action(typeAction1, currTeam.getPlayerFromName(nomJoueurDepart1), currTeam.getPlayerFromName(nomJoueurArrivee1), caseDepart1, caseArrivee1);
-						tour.addAction(action1);
+						Action action2 = new Action(typeAction2, currTeam.getPlayerFromName(nomJoueurDepart2), currTeam.getPlayerFromName(nomJoueurArrivee2), caseDepart2, caseArrivee2);
+						tour.addAction(action2);
 						
-						if (jsonAction2.length() != 0) {
-							ActionType typeAction2 = (jsonAction2.getString("Type").equals("MOVE") ? ActionType.MOVE : ActionType.PASS);
-							Case caseDepart2 = new Case(jsonAction2.getString("CaseDepart"));
-							Case caseArrivee2 = new Case(jsonAction2.getString("CaseArrivee"));
-							String nomJoueurDepart2 = jsonAction2.getString("Joueur1");
-							String nomJoueurArrivee2 = jsonAction2.getString("Joueur2");
+						if (jsonAction3.length() != 0) {
+							ActionType typeAction3 = (jsonAction3.getString("Type").equals("MOVE") ? ActionType.MOVE : ActionType.PASS);
+							Case caseDepart3 = new Case(jsonAction3.getString("CaseDepart"));
+							Case caseArrivee3 = new Case(jsonAction3.getString("CaseArrivee"));
+							String nomJoueurDepart3 = jsonAction3.getString("Joueur1");
+							String nomJoueurArrivee3 = jsonAction3.getString("Joueur2");
 							
-							Action action2 = new Action(typeAction2, currTeam.getPlayerFromName(nomJoueurDepart2), currTeam.getPlayerFromName(nomJoueurArrivee2), caseDepart2, caseArrivee2);
-							tour.addAction(action2);
-							
-							if (jsonAction3.length() != 0) {
-								ActionType typeAction3 = (jsonAction3.getString("Type").equals("MOVE") ? ActionType.MOVE : ActionType.PASS);
-								Case caseDepart3 = new Case(jsonAction3.getString("CaseDepart"));
-								Case caseArrivee3 = new Case(jsonAction3.getString("CaseArrivee"));
-								String nomJoueurDepart3 = jsonAction3.getString("Joueur1");
-								String nomJoueurArrivee3 = jsonAction3.getString("Joueur2");
-								
-								Action action3 = new Action(typeAction3, currTeam.getPlayerFromName(nomJoueurDepart3), currTeam.getPlayerFromName(nomJoueurArrivee3), caseDepart3, caseArrivee3);
-								tour.addAction(action3);
-							}
+							Action action3 = new Action(typeAction3, currTeam.getPlayerFromName(nomJoueurDepart3), currTeam.getPlayerFromName(nomJoueurArrivee3), caseDepart3, caseArrivee3);
+							tour.addAction(action3);
 						}
 					}
-					
-					//we add the tour to the history
-					this.stadium.getHistory().addTurn(tour);
-					
-				} catch (ParseException e) {
-					e.printStackTrace();
 				}
+				
+				//we add the tour to the history
+				this.stadium.getHistory().addTurn(tour);
+				
             }
             
             currLine++;
         }    
         
         scanner.close();
-        System.out.println(this.stadium.getHistory());
+        //System.out.println(this.stadium.getHistory());
         
         return true;
 	}

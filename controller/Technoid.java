@@ -12,7 +12,6 @@ import saver.GameSaver;
 import view.HoloTV;
 import view.Repainter;
 
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -59,6 +58,33 @@ public class Technoid implements Observer {
             	}
             	
                 break;
+            }
+            
+            case CLICKED_VISU: {
+            	GameLoader gameLoader = new GameLoader(stadium);
+            	
+            	if (gameLoader.loadData()) {
+	            	stadium.loadTopTeam(gameLoader.getTopTeam());
+	            	stadium.loadBotTeam(gameLoader.getBotTeam());
+
+	            	stadium.replaceTeam();
+	            	
+	            	stadium.getHistory().setToFirstTurn();
+	            	
+	            	stadium.setVisualisaionMode(true);
+	            
+	                MouseAction mouseAction = new MouseAction(holoTV, stadium, false, null);
+	                holoTV.addArkadiaNewsMouseListener(mouseAction);
+	                holoTV.getGamePanel().addObserver(mouseAction);
+	                holoTV.switchToGamePanel();
+	                holoTV.getGamePanel().overwriteComponents();
+	                
+	                //TODO Si besoin mettre le stadium et la holotv en mode visu
+            	} else {
+            		System.err.println("Either the user has cancelled the loading, or an error has occurred.");
+            	}
+            	
+            	break;
             }
 
             case CLICKED_QUIT: // context : MainMenuPanel
@@ -113,6 +139,7 @@ public class Technoid implements Observer {
                 Thread thread = new Thread() {
                     @Override
                     public void run() {
+
                         holoTV.getArkadiaNews().repaint();
                     }
                 };

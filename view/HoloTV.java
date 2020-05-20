@@ -2,6 +2,7 @@ package view;
 
 import javax.sound.sampled.*;
 import javax.swing.JFrame;
+
 import javax.swing.SwingUtilities;
 
 import controller.listeners.MouseAction;

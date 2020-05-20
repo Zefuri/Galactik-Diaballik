@@ -10,23 +10,24 @@ import model.enums.MoveDirection;
 public class Stadium {
     private Team topTeam;
     private Team bottomTeam;
-    
-    private Player[][] board;
-    
+
     private Historic history;
 
+    private boolean visualisationMode;
+    
     public Stadium() {
         topTeam = new Team("snowKids", TeamPosition.TOP, this, true);
         bottomTeam = new Team("shadows", TeamPosition.BOTTOM, this, true);
 
-        this.history = new Historic();
+        this.history = new Historic(this);
         this.history.newTurn(getCurrentTeamTurn());
+        this.visualisationMode = false;
     }
     
     public void resetStadium() {
     	this.reset();
 
-        this.history = new Historic();
+        this.history = new Historic(this);
         this.history.newTurn(getCurrentTeamTurn());
     }
     
@@ -45,6 +46,11 @@ public class Stadium {
     public void reset() {
         topTeam.initializePlayers();
         bottomTeam.initializePlayers();
+    }
+    
+    public void replaceTeam() {
+    	topTeam.replace();
+    	bottomTeam.replace();
     }
     
     public Player getPlayer(Case position) {
@@ -298,15 +304,12 @@ public class Stadium {
         
         int contact = 0;
         
-        for (Player currPlayer : team.getPlayers()) { 
-            boolean leftFriend = allyOnTheLeft(currPlayer);
-            boolean rightFriend = allyOnTheRight(currPlayer);
-            
+        for (Player currPlayer : team.getPlayers()) {
             //No neighbor on the left nor the right, so no antiplay
-            if (!leftFriend || !rightFriend){
+            if (!allyOnBothSides(currPlayer)){
                 return false;
             }
-            
+
             if (inContactWithOpponent(currPlayer)) {
             	contact++;
             }
@@ -318,34 +321,61 @@ public class Stadium {
         
         return result;
     }
-    
+
+    private boolean allyOnBothSides(Player p){
+		Case playerPos = p.getPosition();
+		boolean allyOnTheLeft = false;
+		boolean allyOnTheRight = false;
+
+		if (playerPos.getY() <= 0){
+			allyOnTheLeft = true;
+		}
+		if (playerPos.getY() >= 6){
+			allyOnTheRight = true;
+		}
+		for (Player currPlayer : p.getTeam().getPlayers()) {
+			Case currPlayerPos = currPlayer.getPosition();
+
+			if (currPlayerPos.getY() == playerPos.getY() - 1){
+				if (currPlayerPos.getX() == playerPos.getX() + 1 || currPlayerPos.getX() == playerPos.getX() - 1 ){
+					allyOnTheLeft = true;
+				}
+			}
+			if (currPlayerPos.getY() == playerPos.getY() + 1){
+				if (currPlayerPos.getX() == playerPos.getX() + 1 || currPlayerPos.getX() == playerPos.getX() - 1 ){
+					allyOnTheRight = true;
+				}
+			}
+			if (allyOnTheLeft && allyOnTheRight){
+				break;
+			}
+		}
+		return allyOnTheLeft && allyOnTheRight;
+	}
+
     private boolean allyOnTheLeft(Player p) {
     	Case playerPos = p.getPosition();
     	boolean allyOnTheLeft = false;
-    	
-    	for (Player currPlayer : p.getTeam().getPlayers()) {
-    		Case currPlayerPos = currPlayer.getPosition();
-    		
-    		if (currPlayerPos.getY() <= 0) {
-    			allyOnTheLeft = true;
-    		} else if (currPlayerPos.getX() == playerPos.getX()) {
-    			if (currPlayerPos.getY() == playerPos.getY() - 1) {
-    				allyOnTheLeft = true;
-    			}
-    		} else if (currPlayerPos.getX() == playerPos.getX() - 1) {
-    			if (currPlayerPos.getY() == playerPos.getY() - 1) {
-    				allyOnTheLeft = true;
-    			}
-    		} else if (currPlayerPos.getX() == playerPos.getX() + 1) {
-    			if (currPlayerPos.getY() == playerPos.getY() - 1) {
-    				allyOnTheLeft = true;
-    			}
-    		}
-    		
-    		if (allyOnTheLeft) {
-    			break;
-    		}
-    	}
+
+    	if (playerPos.getY() <= 0){
+    		allyOnTheLeft = true;
+		}
+    	else{
+    		for (Player currPlayer : p.getTeam().getPlayers()) {
+				Case currPlayerPos = currPlayer.getPosition();
+
+				if (currPlayerPos.getY() == playerPos.getY() - 1){
+					if (currPlayerPos.getX() == playerPos.getX() + 1 || currPlayerPos.getX() == playerPos.getX() - 1 ){
+						allyOnTheLeft = true;
+					}
+				}
+
+
+					if (allyOnTheLeft) {
+						break;
+					}
+			}
+		}
     	
     	return allyOnTheLeft;
     }
@@ -353,30 +383,25 @@ public class Stadium {
     private boolean allyOnTheRight(Player p) {
     	Case playerPos = p.getPosition();
     	boolean allyOnTheRight = false;
-    	
-    	for (Player currPlayer : p.getTeam().getPlayers()) {
-    		Case currPlayerPos = currPlayer.getPosition();
-    		
-    		if (currPlayerPos.getY() >= 6) {
-    			allyOnTheRight = true;
-    		} else if (currPlayerPos.getX() == playerPos.getX() - 1) {
-    			if (currPlayerPos.getY() == playerPos.getY() + 1) {
-    				allyOnTheRight = true;
-    			}
-    		} else if (currPlayerPos.getX() == playerPos.getX()) {
-    			if (currPlayerPos.getY() == playerPos.getY() + 1) {
-    				allyOnTheRight = true;
-    			}
-    		} else if (currPlayerPos.getX() == playerPos.getX() + 1) {
-    			if (currPlayerPos.getY() == playerPos.getY() + 1) {
-    				allyOnTheRight = true;
-    			}
-    		}
-    		
-    		if (allyOnTheRight) {
-    			break;
-    		}
-    	}
+
+		if (playerPos.getY() >= 6){
+			allyOnTheRight = true;
+		}
+		else{
+			for (Player currPlayer : p.getTeam().getPlayers()) {
+				Case currPlayerPos = currPlayer.getPosition();
+
+				if (currPlayerPos.getY() == playerPos.getY() + 1){
+					if (currPlayerPos.getX() == playerPos.getX() + 1 || currPlayerPos.getX() == playerPos.getX() - 1 ){
+						allyOnTheRight = true;
+					}
+				}
+
+				if (allyOnTheRight) {
+					break;
+				}
+			}
+		}
     	
     	return allyOnTheRight;
     }
@@ -671,12 +696,24 @@ public class Stadium {
 		return this.history.undoLastAction();
 	}
 	
+	public boolean redoAction() {
+		return this.history.redoNextAction();
+	}
+	
 	public ActionResult resetTurn() {
 		return this.history.resetCurrentTurn();
 	}
 	
 	public Historic getHistory() {
 		return this.history;
+	}
+	
+	public boolean isInVisualisationMode() {
+		return this.visualisationMode;
+	}
+	
+	public void setVisualisaionMode(boolean visu) {
+		this.visualisationMode = visu;
 	}
 }
 
