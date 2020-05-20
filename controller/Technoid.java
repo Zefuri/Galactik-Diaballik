@@ -5,6 +5,7 @@ import controller.listeners.MouseAction;
 import model.Action;
 import model.Stadium;
 import model.enums.ActionResult;
+import model.enums.GameResult;
 import model.enums.TeamPosition;
 import model.enums.UserInput;
 import patterns.Observer;
@@ -159,7 +160,15 @@ public class Technoid implements Observer {
         holoTV.getArkadiaNews().repaint(); // show the new move
         holoTV.updateGameInfos();
 
-        // TODO : implement end game panel
+        if (actionResult == ActionResult.WIN) {
+            timer.stop();
+            holoTV.switchToEndGamePanel(GameResult.VICTORY, firstAIsTurn ? stadium.getTeam(TeamPosition.TOP).getName() : stadium.getTeam(TeamPosition.BOTTOM).getName());
+        }
+
+        if (actionResult == ActionResult.ANTIPLAY_TOP) {
+            timer.stop();
+            holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getTeam(TeamPosition.BOTTOM).getName());
+        }
 
         if (AIActions.size() == 0) {
             firstAIsTurn = !firstAIsTurn;
