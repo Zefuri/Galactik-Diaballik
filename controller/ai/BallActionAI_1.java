@@ -15,15 +15,19 @@ public class BallActionAI_1{
 	
 	MaxMinBallAction brain;
 	Random randomgene;
+	Stadium stadium;
 	Team team;
 	
 	public BallActionAI_1(Stadium stadium, Team team) {
+		this.stadium = stadium;
 		this.team = team;
-		brain = new MaxMinBallAction(stadium, team, Integer.MIN_VALUE, Integer.MAX_VALUE);
 		randomgene = new Random();
 	}
 	
 	public ArrayList<Action> play(int depth) {
+		//creation of MinMax tree
+		this.brain = new MaxMinBallAction(stadium, team, Integer.MIN_VALUE, Integer.MAX_VALUE);
+		
 		//creation of result ArrayList
 		ArrayList<Action> chooseActs = new ArrayList<>();
 		
@@ -45,6 +49,19 @@ public class BallActionAI_1{
 		chooseActs.add(action);
 		
 		return chooseActs;		
+	}
+	
+	public ArrayList<Action> randomPlay() {
+		//creation of MinMax tree
+		this.brain = new MaxMinBallAction(stadium, team, Integer.MIN_VALUE, Integer.MAX_VALUE);
+		brain.init();
+		ArrayList<Action> turn = new ArrayList<>();
+		for(Action act : brain.getTurn(randomgene.nextInt(brain.numberOfAction()))) {
+			turn.add(act);
+		}
+		turn.add(new Action(ActionType.END_TURN, null, null, null, null));
+		
+		return turn;
 	}
 	
 	public static void main(String args[]){
