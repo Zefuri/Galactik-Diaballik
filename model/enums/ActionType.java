@@ -6,7 +6,5 @@ public enum ActionType {
     END_TURN,
     UNDO,
     RESET,
-    REDO,
-    LAUNCH_VISU,
-    PAUSE_VISU
+    REDO
 }

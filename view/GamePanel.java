@@ -93,7 +93,7 @@ public class GamePanel extends JPanel implements Observable {
 	
 	public void showEndGamePopUp(String teamName) {
 		int input = JOptionPane.showOptionDialog(null, "The team \"" + teamName + "\" won the game!", "Game over", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
-		
+
 		if (input == JOptionPane.OK_OPTION || input == JOptionPane.CANCEL_OPTION || input == JOptionPane.CLOSED_OPTION) {
 			System.exit(0);
 		}
@@ -105,6 +105,14 @@ public class GamePanel extends JPanel implements Observable {
 		if (input == JOptionPane.OK_OPTION || input == JOptionPane.CANCEL_OPTION || input == JOptionPane.CLOSED_OPTION) {
 			System.exit(0);
 		}
+	}
+	
+	public void showFirstTurnReachedPopup() {
+		JOptionPane.showMessageDialog(null, "You reached the first turn of this game!");
+	}
+	
+	public void showLastTurnReachedPopup() {
+		JOptionPane.showMessageDialog(null, "You reached the last turn of this game!");
 	}
 	
 	private void setMargin() {

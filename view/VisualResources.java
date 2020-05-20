@@ -67,8 +67,6 @@ public class VisualResources {
             resetIconImage = ImageIO.read(getClass().getResourceAsStream("/resources/images/reset.png"));
             backwardIconImage = ImageIO.read(getClass().getResourceAsStream("/resources/images/backward.png"));
             forwardIconImage = ImageIO.read(getClass().getResourceAsStream("/resources/images/forward.png"));
-            playIconImage = ImageIO.read(getClass().getResourceAsStream("/resources/images/play.png"));
-            pauseIconImage = ImageIO.read(getClass().getResourceAsStream("/resources/images/pause.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

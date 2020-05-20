@@ -68,18 +68,21 @@ public class Historic {
     	}
     }
     
-    public void redoNextAction() {
+    public boolean redoNextAction() {
     	//Usable only in visualization mode
     	if (this.historicList.get(currentTurnIndex).redoGoesToNextTour()) {
     		if (this.currentTurnIndex == this.historicList.size() - 1 || this.historicList.get(currentTurnIndex + 1).isEmpty()) {
     			//We are on the last tour, so we do not do anything
     			System.err.println("You reached the last tour.");
+    			return false;
     		} else {
     			this.historicList.get(++currentTurnIndex).redo();
     		}
     	} else {
     		this.historicList.get(currentTurnIndex).redo();
     	}
+    	
+    	return true;
     }
     
     public ActionResult resetCurrentTurn() {

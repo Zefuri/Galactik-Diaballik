@@ -658,8 +658,8 @@ public class Stadium {
 		return this.history.undoLastAction();
 	}
 	
-	public void redoAction() {
-		this.history.redoNextAction();
+	public boolean redoAction() {
+		return this.history.redoNextAction();
 	}
 	
 	public ActionResult resetTurn() {

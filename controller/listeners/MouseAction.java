@@ -4,6 +4,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
+import javax.swing.SwingUtilities;
+
 import ai.BallActionAI_1;
 import model.Action;
 import model.Case;
@@ -248,6 +250,10 @@ public class MouseAction extends MouseAdapter implements Observer {
 					gameSaver.overwriteSave();
 				} else {
 					res = this.stadium.undoAction();
+					
+					if (res == ActionResult.ERROR) {
+						this.holoTV.getGamePanel().showFirstTurnReachedPopup();
+					}
 				}
 				
 				break;
@@ -259,14 +265,9 @@ public class MouseAction extends MouseAdapter implements Observer {
 				break;
 				
 			case REDO:
-				this.stadium.redoAction();
-				break;
-				
-			case LAUNCH_VISU:
-				launchVisu();
-				break;
-				
-			case PAUSE_VISU:
+				if (!this.stadium.redoAction()) {
+					this.holoTV.getGamePanel().showLastTurnReachedPopup();
+				}
 				break;
 		}
 		
@@ -275,10 +276,6 @@ public class MouseAction extends MouseAdapter implements Observer {
 		}
 		
 		this.holoTV.updateGameInfos();
-	}
-	
-	private void launchVisu() {
-		
 	}
 	
 	private void clearSelectedPlayer() {
