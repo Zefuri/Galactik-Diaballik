@@ -529,7 +529,7 @@ public class Stadium {
 				MoveDirection dir = action.getDirection();
 				
 				if (currentTurn.getNbMoveDone() >= ModelConstants.MAX_MOVES_PER_TOUR
-						|| (player.getTeam().getPosition() != currentTurn.getTeam().getPosition())
+						|| ((player.getTeam().getPosition() != currentTurn.getTeam().getPosition()) && !cheatModActivated)
 						|| !playerCanMove(player, dir)) {
 					done = ActionResult.ERROR;
 				} else {
@@ -545,8 +545,8 @@ public class Stadium {
 				Player secondPlayer = action.getNextPlayer();
 				
 				if (currentTurn.getNbPassDone() == ModelConstants.MAX_PASSES_PER_TOUR
-						|| (firstPlayer.getTeam().getPosition() != currentTurn.getTeam().getPosition())
-						|| (secondPlayer.getTeam().getPosition() != currentTurn.getTeam().getPosition())
+						|| ((firstPlayer.getTeam().getPosition() != currentTurn.getTeam().getPosition())  && !cheatModActivated)
+						|| ((secondPlayer.getTeam().getPosition() != currentTurn.getTeam().getPosition())  && !cheatModActivated)
 						|| !playerCanPass(firstPlayer, secondPlayer)) {
 					done = ActionResult.ERROR;
 				} else {
