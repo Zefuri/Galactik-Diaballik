@@ -15,6 +15,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static java.lang.Thread.sleep;
 
@@ -62,7 +63,15 @@ public class Technoid implements Observer {
                 break;
 
             case CLICKED_CVC: // context : GameModePanel
-                holoTV.switchToGamePanel();
+                Thread thread1 = new Thread() {
+                    @Override
+                    public void run() {
+                        holoTV.switchToGamePanel();
+                    }
+                };
+//                holoTV.switchToGamePanel();
+                thread1.run();
+
 
                 BallActionAI_1 AI1 = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.TOP));
                 BallActionAI_1 AI2 = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.BOTTOM));
@@ -79,7 +88,7 @@ public class Technoid implements Observer {
                     for(Action currentAction : AI1Actions) {
                         stadium.actionPerformedAI(currentAction);
 
-                        thread.start();
+                        thread.run();
 
                         try {
                             sleep(50);
@@ -92,7 +101,7 @@ public class Technoid implements Observer {
                     for(Action currentAction : AI2Actions) {
                         stadium.actionPerformedAI(currentAction);
 
-                        thread.start();
+                        thread.run();
 
                         try {
                             sleep(50);

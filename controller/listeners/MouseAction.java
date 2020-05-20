@@ -216,7 +216,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 						stadium.actionPerformed(currentAction);
 					}
 					holoTV.getArkadiaNews().repaint();
-					// TODO : check end of turn for AI as well
+					// TODO : check end of game for AI as well
 				}
 				break;
 				

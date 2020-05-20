@@ -101,8 +101,6 @@ public class ArkadiaNews extends JComponent {
 		        drawable.drawLine(caseSize * j, caseSize * (i + 1), caseSize * (j + 1), caseSize * (i + 1));
             }
         }
-
-        Repainter.getInstance().isRepainted = true;
 	}
 	
 	public int getCaseSize() {
