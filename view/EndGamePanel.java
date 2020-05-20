@@ -1,14 +1,20 @@
 package view;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 import model.enums.GameResult;
 import model.enums.UserInput;
+
 import patterns.Observable;
 import patterns.ObservableHandler;
 import patterns.Observer;
@@ -73,19 +79,23 @@ public class EndGamePanel extends JPanel implements Observable {
 			break;
 		}
 		
-		this.resultLabel.setFont(this.visualResources.customFontSuperItal);
+		this.resultLabel.setFont(this.visualResources.customFontSuperItal.deriveFont(80f));
+		this.resultLabel.setBorder(new EmptyBorder(0, 0, 0, 20));
+		
 		this.resultDescriptionLabel.setFont(this.visualResources.customFontItal);
+		this.resultDescriptionLabel.setBorder(new EmptyBorder(0, 0, 0, 20));
 		
 		this.gbc.gridx = 0;
 		this.gbc.gridy = 0;
-		this.gbc.gridwidth = 3;
+		this.gbc.gridwidth = 2;
 		this.gbc.anchor = GridBagConstraints.CENTER;
 		
 		this.add(this.resultLabel, this.gbc);
 		
 		this.gbc.gridx = 0;
 		this.gbc.gridy = 1;
-		this.gbc.anchor = 3;
+		this.gbc.gridwidth = 2;
+		this.gbc.insets = new Insets(0, 0, 50, 0);
 		this.gbc.anchor = GridBagConstraints.CENTER;
 		
 		this.add(this.resultDescriptionLabel, this.gbc);
@@ -93,9 +103,14 @@ public class EndGamePanel extends JPanel implements Observable {
 	
 	private void createReplayButton() {
 		this.replayButton = new JButton("Rejouer la partie");
+		this.replayButton.setFont(this.visualResources.customFontItal);
+		this.replayButton.setPreferredSize(new Dimension(300, 50));
 		
 		this.gbc.gridx = 0;
 		this.gbc.gridy = 2;
+		this.gbc.gridwidth = 1;
+		this.gbc.insets = new Insets(0, 0, 50, 20);
+		this.gbc.fill = GridBagConstraints.BOTH;
 		
 		this.add(this.replayButton, this.gbc);
 		
@@ -104,10 +119,15 @@ public class EndGamePanel extends JPanel implements Observable {
 	
 	private void createNewGameButton() {
 		this.newGameButton = new JButton("Nouvelle partie");
+		this.newGameButton.setFont(this.visualResources.customFontItal);
+		this.newGameButton.setPreferredSize(new Dimension(300, 50));
 		
 		this.gbc.gridx = 1;
 		this.gbc.gridy = 2;
-		
+		this.gbc.gridwidth = 1;
+		this.gbc.insets = new Insets(0, 0, 50, 0);
+		this.gbc.fill = GridBagConstraints.BOTH;
+
 		this.add(this.newGameButton, this.gbc);
 		
 		this.newGameButton.addActionListener(actionEvent -> notify(UserInput.CLICKED_PLAY));
@@ -115,10 +135,12 @@ public class EndGamePanel extends JPanel implements Observable {
 	
 	private void createMainMenuButton() {
 		this.mainMenuButton = new JButton("Menu principal");
+		this.mainMenuButton.setFont(this.visualResources.customFontItal);
 		
-		this.gbc.gridx = 1;
+		this.gbc.gridx = 0;
 		this.gbc.gridy = 3;
-		this.gbc.fill = GridBagConstraints.HORIZONTAL;
+		this.gbc.gridwidth = 2;
+		this.gbc.fill = GridBagConstraints.BOTH;
 		
 		this.add(this.mainMenuButton, this.gbc);
 		
