@@ -20,12 +20,27 @@ public class MaxMinBallAction {
 	}
 	
 	
-	public ArrayList<ArrayList<Action>> getMustActs(){
+	public void init() {
+		coup.init();
+	}
+	
+	
+	public int numberOfAction() {
+		return coup.numberOfAction();
+	}
+	
+	
+	public ArrayList<Action> getTurn(int numero) {
+		return coup.getTurn(numero);
+	}
+	
+	
+	public ArrayList<ArrayList<Action>> getMustActs() {
 		return coup.getActs();
 	}
 	
 	
-	public int getMustAvancement(){
+	public int getMustAvancement() {
 		return coup.getAvancement();
 	}
 	

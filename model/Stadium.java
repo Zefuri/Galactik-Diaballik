@@ -591,57 +591,30 @@ public class Stadium {
 			case MOVE:
 				Player player = action.getMovedPlayer();
 				MoveDirection dir = action.getDirection();
-				
-				if (currentTurn.getNbMoveDone() >= ModelConstants.MAX_MOVES_PER_TOUR
-						|| (player.getTeam().getPosition() != currentTurn.getTeam().getPosition())
-						|| !playerCanMove(player, dir)) {
-					done = ActionResult.ERROR;
-				} else {
 					simpleMove(player, dir);
 					currentTurn.addAction(action);
 					unselectPlayerIfNeeded(player);
-				}
 				
 				break;
 				
 			case PASS:
 				Player firstPlayer = action.getPreviousPlayer();
 				Player secondPlayer = action.getNextPlayer();
-				
-				if (currentTurn.getNbPassDone() == ModelConstants.MAX_PASSES_PER_TOUR
-						|| (firstPlayer.getTeam().getPosition() != currentTurn.getTeam().getPosition())
-						|| (secondPlayer.getTeam().getPosition() != currentTurn.getTeam().getPosition())
-						|| !playerCanPass(firstPlayer, secondPlayer)) {
-					done = ActionResult.ERROR;
-				} else {
 					simplePass(firstPlayer, secondPlayer);
 					currentTurn.addAction(action);
-				}
 				
 				break;
 				
 			case END_TURN:
-				if ((currentTurn.getNbMoveDone() + currentTurn.getNbPassDone()) == 0) {
-					//You can not end your turn without performing at least 1 action
-					done = ActionResult.ERROR;
-				} else {
 					this.history.nextTurn();
 					this.history.newTurn(getCurrentTeamTurn());
-				}
 				
 				break;
 				
 			default:
 				throw new IllegalStateException("Please select a valid action type!");
 		}
-        /*
-         * Certainly useless now
-         * 
-        if (this.nbPasses == ModelConstants.MAX_PASSES_PER_TOUR && this.nbMoves == ModelConstants.MAX_MOVES_PER_TOUR) {
-            this.resetTurnVariables();
-            this.currentTurnIndex++;
-        }
-       	*/
+		
         if (this.isAWin(currentTurn.getTeam().getPosition())) {
         	done = ActionResult.WIN;
         }

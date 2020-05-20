@@ -56,6 +56,17 @@ public class CoupAction {
 		return one.size() + two.size() + three.size();
 	}
 	
+	//return trun with numero reference
+	public ArrayList<Action> getTurn(int numero) {
+		if(numero < one.size()) {
+			return one.get(numero);
+		} else if(numero - one.size() < two.size()) {
+			return two.get(numero - one.size());
+		} else {
+			return three.get(numero - one.size() - two.size());
+		}
+	}
+	
 	//return list of turn can make with one act
 	public ArrayList<ArrayList<Action>> getOne() {
 		return one;

@@ -51,6 +51,19 @@ public class BallActionAI_1{
 		return chooseActs;		
 	}
 	
+	public ArrayList<Action> randomPlay() {
+		//creation of MinMax tree
+		this.brain = new MaxMinBallAction(stadium, team, Integer.MIN_VALUE, Integer.MAX_VALUE);
+		brain.init();
+		ArrayList<Action> turn = new ArrayList<>();
+		for(Action act : brain.getTurn(randomgene.nextInt(brain.numberOfAction()))) {
+			turn.add(act);
+		}
+		turn.add(new Action(ActionType.END_TURN, null, null, null, null));
+		
+		return turn;
+	}
+	
 	public static void main(String args[]){
 		//test
 		Stadium stadium = new Stadium();
