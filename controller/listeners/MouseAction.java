@@ -246,6 +246,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 					Action currentAction = actions.get(indexAction);
 					
 					while(((result = stadium.actionPerformedAI(currentAction)) == ActionResult.DONE) && indexAction < actions.size()) {
+						indexAction++;
 						currentAction = actions.get(indexAction);
 					}
 					
