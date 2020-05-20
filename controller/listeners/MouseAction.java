@@ -1,14 +1,14 @@
 package controller.listeners;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
 import model.Case;
 import model.Stadium;
 import model.enums.ActionResult;
 import model.enums.ActionType;
 import patterns.Observer;
 import view.HoloTV;
+
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 //import ai.StupidAI;
 //import ai.PlayerType.Position;

@@ -137,4 +137,8 @@ public class Turn {
 		}
 		return acts;
 	}
+
+	public void switchCheatModActivated() {
+		this.cheatModActivated = !cheatModActivated;
+	}
 }

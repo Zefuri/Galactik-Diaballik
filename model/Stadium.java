@@ -1,13 +1,11 @@
 package model;
 
-import static java.lang.Math.abs;
-
-import java.util.ArrayList;
-
-import model.enums.TeamPosition;
 import model.enums.ActionResult;
 import model.enums.ActionType;
 import model.enums.MoveDirection;
+import model.enums.TeamPosition;
+
+import static java.lang.Math.abs;
 
 public class Stadium {
     private Team topTeam;
@@ -557,7 +555,7 @@ public class Stadium {
 				break;
 				
 			case END_TURN:
-				if ((currentTurn.getNbMoveDone() + currentTurn.getNbPassDone()) == 0) {
+				if ((currentTurn.getNbMoveDone() + currentTurn.getNbPassDone() == 0) && !cheatModActivated) {
 					//You can not end your turn without performing at least 1 action
 					done = ActionResult.ERROR;
 				} else {
@@ -617,6 +615,7 @@ public class Stadium {
 
 	public void switchCheatModActivated() {
 		this.cheatModActivated = !cheatModActivated;
+		this.history.getLast().switchCheatModActivated();
 	}
 
 	public ActionResult performRequestedAction() {
