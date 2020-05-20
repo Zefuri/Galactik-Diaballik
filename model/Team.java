@@ -53,11 +53,16 @@ public class Team {
 	public void replace() {
 		for (Player p : this.getPlayers()) {
 			int index = p.getNumero();
+			p.setBallPossession(false);
 			
 			if (position == TeamPosition.TOP) {
 				p.setPosition(new Case(0, index));
 			} else {
 				p.setPosition(new Case(6, index));
+			}
+			
+			if (index == 3) {
+				p.setBallPossession(true);
 			}
 		}
 	}

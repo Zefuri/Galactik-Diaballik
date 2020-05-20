@@ -71,11 +71,15 @@ public class Historic {
     public boolean redoNextAction() {
     	//Usable only in visualization mode
     	if (this.historicList.get(currentTurnIndex).redoGoesToNextTour()) {
+    		
+    		
     		if (this.currentTurnIndex == this.historicList.size() - 1 || this.historicList.get(currentTurnIndex + 1).isEmpty()) {
     			//We are on the last tour, so we do not do anything
     			System.err.println("You reached the last tour.");
     			return false;
     		} else {
+    			
+    			System.out.println(currentTurnIndex + "/" + this.historicList.size());
     			this.historicList.get(++currentTurnIndex).redo();
     		}
     	} else {
@@ -92,8 +96,11 @@ public class Historic {
     
     public void setToFirstTurn() {
     	this.currentTurnIndex = 0;
-    	this.getLast().setNbMovesDone(0);
-    	this.getLast().setNbPassesDone(0);
+    	
+    	for (int i = 0; i < this.historicList.size(); i++) {
+    		this.historicList.get(i).setNbMovesDone(0);
+    		this.historicList.get(i).setNbPassesDone(0);
+    	}
     }
     
     //For testing

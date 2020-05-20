@@ -244,6 +244,8 @@ public class MouseAction extends MouseAdapter implements Observer {
 					for (Action currentAction : actions) {
 						ActionResult result = stadium.actionPerformedAI(currentAction);
 
+						gameSaver.overwriteSave();
+						
 						if (result == ActionResult.WIN) {
 							//TODO Impl�menter le passage � l'�cran de fin
 							System.out.println("Team \"" + stadium.getPlayer(playerWithBallCase).getTeam().getName() + "\" have won the match!");

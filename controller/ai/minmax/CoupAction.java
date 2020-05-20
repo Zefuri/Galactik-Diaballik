@@ -241,7 +241,7 @@ public class CoupAction {
 		if(stadium.playerCanMove(player, direction)){
 			ArrayList<Action> actionOne = new ArrayList<>();
 			Case previousCase = new Case(player.getPosition().getX(), player.getPosition().getY());
-			actionOne.add(new Action(ActionType.MOVE, null, player, previousCase, tools.nextCase(player.getPosition(), direction)));
+			actionOne.add(new Action(ActionType.MOVE, player, player, previousCase, tools.nextCase(player.getPosition(), direction)));
 			one.add(actionOne);
 			exec(actionOne);
 				if(stadium.antiplay(team.getEnemyTeam())){
@@ -336,7 +336,7 @@ public class CoupAction {
 			actionTwo.add(actLook.get(0));
 			Case previousCase = new Case(player.getPosition().getX(), player.getPosition().getY());
 			
-			Action newAction = new Action(ActionType.MOVE, null, player, previousCase, tools.nextCase(player.getPosition(), deplacement));
+			Action newAction = new Action(ActionType.MOVE, player, player, previousCase, tools.nextCase(player.getPosition(), deplacement));
 			
 			actionTwo.add(newAction);
 			two.add(actionTwo);
@@ -373,7 +373,7 @@ public class CoupAction {
 				actionTwo.add(action);
 				Case previousPlayerCase = new Case(player.getPosition().getX(), player.getPosition().getY());
 			
-				Action newAction = new Action(ActionType.MOVE, null, player, previousPlayerCase, previousCase);
+				Action newAction = new Action(ActionType.MOVE, player, player, previousPlayerCase, previousCase);
 			
 				actionTwo.add(newAction);
 				two.add(actionTwo);
@@ -407,7 +407,7 @@ public class CoupAction {
 			actionTwo.add(action);
 			Case previousCase = new Case(ballPlayer.getPosition().getX(), ballPlayer.getPosition().getY());
 		
-			Action newAction = new Action(ActionType.MOVE, null, ballPlayer, previousCase, tools.nextCase(ballPlayer.getPosition(), deplacement));
+			Action newAction = new Action(ActionType.MOVE, ballPlayer, ballPlayer, previousCase, tools.nextCase(ballPlayer.getPosition(), deplacement));
 		
 			actionTwo.add(newAction);
 			 two.add(actionTwo);
@@ -503,7 +503,7 @@ public class CoupAction {
 			actionThree.add(actLook.get(1));
 			Case previousCase = new Case(player.getPosition().getX(), player.getPosition().getY());
 		
-			Action newAction = new Action(ActionType.MOVE, null, player, previousCase, tools.nextCase(player.getPosition(), deplacement));
+			Action newAction = new Action(ActionType.MOVE, player, player, previousCase, tools.nextCase(player.getPosition(), deplacement));
 		
 			actionThree.add(newAction);
 			three.add(actionThree);
@@ -537,7 +537,7 @@ public class CoupAction {
 			actionThree.add(action.get(1));
 			Case previousCase = new Case(ballPlayer.getPosition().getX(), ballPlayer.getPosition().getY());
 			
-			Action newAction = new Action(ActionType.MOVE, null, ballPlayer, previousCase, tools.nextCase(ballPlayer.getPosition(), deplacement));
+			Action newAction = new Action(ActionType.MOVE, ballPlayer, ballPlayer, previousCase, tools.nextCase(ballPlayer.getPosition(), deplacement));
 		
 			actionThree.add(newAction);
 			three.add(actionThree);
