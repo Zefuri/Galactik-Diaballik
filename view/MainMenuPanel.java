@@ -58,7 +58,7 @@ public class MainMenuPanel extends JPanel implements Observable {
         settingsButton.addActionListener(actionEvent -> notify(UserInput.CLICKED_SETTINGS));
 
         // create the visualize button
-        JButton visualizeButton = createButton("Visualizer partie");
+        JButton visualizeButton = createButton("Visualiser partie");
         visualizeButton.addActionListener(actionEvent -> System.out.println("user clicked visualize"));
 
         // create the quit button
