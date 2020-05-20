@@ -17,12 +17,15 @@ public class Stadium {
     
     private Historic history;
 
+    private boolean visualisationMode;
+    
     public Stadium() {
         topTeam = new Team("snowKids", TeamPosition.TOP, this, true);
         bottomTeam = new Team("shadows", TeamPosition.BOTTOM, this, true);
 
-        this.history = new Historic();
+        this.history = new Historic(this);
         this.history.newTurn(getCurrentTeamTurn());
+        this.visualisationMode = false;
     }
     
     public Team getTeam(TeamPosition position) {
@@ -652,12 +655,24 @@ public class Stadium {
 		return this.history.undoLastAction();
 	}
 	
+	public void redoAction() {
+		this.history.redoNextAction();
+	}
+	
 	public ActionResult resetTurn() {
 		return this.history.resetCurrentTurn();
 	}
 	
 	public Historic getHistory() {
 		return this.history;
+	}
+	
+	public boolean isInVisualisationMode() {
+		return this.visualisationMode;
+	}
+	
+	public void setVisualisaionMode(boolean visu) {
+		this.visualisationMode = visu;
 	}
 }
 

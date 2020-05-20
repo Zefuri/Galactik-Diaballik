@@ -7,9 +7,11 @@ import model.enums.ActionResult;
 public class Historic {
     ArrayList<Turn> historicList;
     private int currentTurnIndex;
+    private Stadium stadium;
 
-    public Historic(){
+    public Historic(Stadium stadium){
          this.historicList = new ArrayList<Turn>();
+         this.stadium = stadium;
          currentTurnIndex = 0;
     }
 
@@ -48,7 +50,34 @@ public class Historic {
     }
     
     public ActionResult undoLastAction() {
-    	return this.historicList.get(currentTurnIndex).undo();
+    	if (!this.stadium.isInVisualisationMode()) {
+    		return this.historicList.get(currentTurnIndex).undo();
+    	} else {
+    		if (this.historicList.get(currentTurnIndex).undoGoesToPreviousTour()) {
+    			if (currentTurnIndex != 0) {
+    				return this.historicList.get(currentTurnIndex--).undo();
+    			} else {
+    				//We already are on the first tour, so we throw an error
+    				return ActionResult.ERROR;
+    			}
+    		} else {
+    			return this.historicList.get(currentTurnIndex).undo();
+    		}
+    	}
+    }
+    
+    public void redoNextAction() {
+    	//Usable only in visualization mode
+    	if (this.historicList.get(currentTurnIndex).redoGoesToNextTour()) {
+    		if (this.currentTurnIndex == this.historicList.size()) {
+    			//We are on the last tour, so we do not do anything
+    			System.err.println("You reached the last tour.");
+    		} else {
+    			this.historicList.get(currentTurnIndex++).redo();
+    		}
+    	} else {
+    		this.historicList.get(currentTurnIndex).redo();
+    	}
     }
     
     public ActionResult resetCurrentTurn() {

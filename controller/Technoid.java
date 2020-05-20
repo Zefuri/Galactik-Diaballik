@@ -24,8 +24,6 @@ public class Technoid implements Observer {
     public Technoid(HoloTV holoTV, Stadium stadium) {
         this.holoTV = holoTV;
         this.stadium = stadium;
-
-
     }
 
     @Override
@@ -53,6 +51,28 @@ public class Technoid implements Observer {
             	}
             	
                 break;
+            }
+            
+            case CLICKED_VISU: {
+            	GameLoader gameLoader = new GameLoader(stadium);
+            	
+            	if (gameLoader.loadData()) {
+	            	stadium.loadTopTeam(gameLoader.getTopTeam());
+	            	stadium.loadBotTeam(gameLoader.getBotTeam());
+	            	
+	            	stadium.setVisualisaionMode(true);
+	            
+	                MouseAction mouseAction = new MouseAction(holoTV, stadium, false, null);
+	                holoTV.addArkadiaNewsMouseListener(mouseAction);
+	                holoTV.getGamePanel().addObserver(mouseAction);
+	                holoTV.switchToGamePanel();
+	                
+	                //TODO Si besoin mettre le stadium et la holotv en mode visu
+            	} else {
+            		System.err.println("Either the user has cancelled the loading, or an error has occurred.");
+            	}
+            	
+            	break;
             }
 
             case CLICKED_QUIT: // context : MainMenuPanel

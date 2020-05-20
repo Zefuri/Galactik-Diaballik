@@ -30,12 +30,15 @@ public class MouseAction extends MouseAdapter implements Observer {
 
 	private BallActionAI_1 AI;
 	
+	private boolean visualisationMode;
+	
 	public MouseAction(HoloTV holoTV, Stadium stadium, boolean withAI, GameSaver gameSaver) {
 		this.holoTV = holoTV;
 		this.stadium = stadium;
 		this.gameSaver = gameSaver;
 		this.playerAloneCase = null;
 		this.playerWithBallCase = null;
+		this.visualisationMode = stadium.isInVisualisationMode();
 
 		if (withAI) { // initialize AI if needed
 			AI = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.BOTTOM));
@@ -45,48 +48,54 @@ public class MouseAction extends MouseAdapter implements Observer {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		super.mouseClicked(e);
-		ActionResult result = null;
 		
-		//We get the position of the case (meaning its position in the game grid)
-		try {
-			this.clickedCase = getCase(e.getY(), e.getX());
-		} catch (IllegalStateException ex) {
-			//The gameboard is a square, so the player is able to click on the right/bottom of the screen
-			System.out.println("Please click on a gameboard case!");
-		}
-		
-		try {
-			result = performRequestedAction();
-		} catch (IllegalStateException ex) {
-			//Means that the user performed an undoable action
-			System.out.println(ex.toString());
-			//ex.printStackTrace();
-		} catch (RuntimeException ex) {
-			//Means that the user performed a doable action but an error occurred
-			System.out.println(ex.toString());
-			//ex.printStackTrace();
-		}
-
-		// provisoir
-//		clickNumber++;
-//
-//		if (clickNumber%3 == 0 && clickNumber != 0) {
-//			ai.play();
-//		}
-		
-		holoTV.getArkadiaNews().repaint();
-		holoTV.updateGameInfos();
-		
-		if (result == ActionResult.WIN) {
-			//TODO Implï¿½menter le passage ï¿½ l'ï¿½cran de fin
-			System.out.println("Team \"" + stadium.getPlayer(playerWithBallCase).getTeam().getName() + "\" have won the match!");
-			holoTV.getGamePanel().showEndGamePopUp(stadium.getPlayer(playerWithBallCase).getTeam().getName());
-		}
-		
-		if (result == ActionResult.ANTIPLAY) {
-			//TODO Implï¿½menter le passage ï¿½ l'ï¿½cran de fin
-			System.out.println("The enemy team made an antiplay: Team \"" + stadium.getPlayer(playerWithBallCase).getTeam().getName() + "\" have won the match!");
-			holoTV.getGamePanel().showAntiPlayPopUp(stadium.getPlayer(playerWithBallCase).getTeam().getName());
+		if (!this.visualisationMode) {
+			ActionResult result = null;
+			
+			//We get the position of the case (meaning its position in the game grid)
+			try {
+				this.clickedCase = getCase(e.getY(), e.getX());
+			} catch (IllegalStateException ex) {
+				//The gameboard is a square, so the player is able to click on the right/bottom of the screen
+				System.out.println("Please click on a gameboard case!");
+			}
+			
+			try {
+				result = performRequestedAction();
+			} catch (IllegalStateException ex) {
+				//Means that the user performed an undoable action
+				System.out.println(ex.toString());
+				//ex.printStackTrace();
+			} catch (RuntimeException ex) {
+				//Means that the user performed a doable action but an error occurred
+				System.out.println(ex.toString());
+				//ex.printStackTrace();
+			}
+	
+			// provisoir
+	//		clickNumber++;
+	//
+	//		if (clickNumber%3 == 0 && clickNumber != 0) {
+	//			ai.play();
+	//		}
+			
+			holoTV.getArkadiaNews().repaint();
+			holoTV.updateGameInfos();
+			
+			if (result == ActionResult.WIN) {
+				//TODO Implï¿½menter le passage ï¿½ l'ï¿½cran de fin
+				System.out.println("Team \"" + stadium.getPlayer(playerWithBallCase).getTeam().getName() + "\" have won the match!");
+				holoTV.getGamePanel().showEndGamePopUp(stadium.getPlayer(playerWithBallCase).getTeam().getName());
+			}
+			
+			if (result == ActionResult.ANTIPLAY) {
+				//TODO Implï¿½menter le passage ï¿½ l'ï¿½cran de fin
+				System.out.println("The enemy team made an antiplay: Team \"" + stadium.getPlayer(playerWithBallCase).getTeam().getName() + "\" have won the match!");
+				holoTV.getGamePanel().showAntiPlayPopUp(stadium.getPlayer(playerWithBallCase).getTeam().getName());
+			}
+		} else {
+			//We are in visualization mode, so we do not want the user to perform actions other than undo/redo
+			System.err.println("You might not press anything else than the undo/redo action buttons!");
 		}
 	}
 	
@@ -234,13 +243,27 @@ public class MouseAction extends MouseAdapter implements Observer {
 				break;
 				
 			case UNDO :
-				res = this.stadium.undoAction();
-				gameSaver.overwriteSave();
+				if (!this.visualisationMode) {
+					res = this.stadium.undoAction();
+					gameSaver.overwriteSave();
+				} else {
+					res = this.stadium.undoAction();
+				}
+				
 				break;
 			
 			case RESET :
-				res = this.stadium.resetTurn();
-				gameSaver.overwriteSave();
+				//TODO Supprimer une fois bouton redo ajouté
+				if (!this.visualisationMode) {
+					res = this.stadium.resetTurn();
+					gameSaver.overwriteSave();
+				} else {
+					this.stadium.redoAction();
+				}
+				
+				break;
+				
+			case REDO:
 				break;
 		}
 		

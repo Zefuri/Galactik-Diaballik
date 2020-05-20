@@ -81,13 +81,28 @@ public class Turn {
 				this.nbMove--;
 			}
 			
-			//We clear the action properly (better for the save)
-			this.actions[this.nbPass + this.nbMove] = null;
+			//We clear the action properly (better for the save) if we are not in visualization mode
+			if (!this.team.getStadium().isInVisualisationMode()) {
+				this.actions[this.nbPass + this.nbMove] = null;
+			}
 		} else {
 			res = ActionResult.ERROR;
 		}
 		
 		return res;
+	}
+	
+	public void redo() {
+		Action actionToPerform = this.actions[this.nbPass + this.nbMove];
+		
+		if (actionToPerform.getType() == ActionType.PASS) {
+			actionToPerform.getPreviousPlayer().setBallPossession(false);
+			actionToPerform.getNextPlayer().setBallPossession(true);
+			this.nbPass++;
+		} else {
+			actionToPerform.getPreviousPlayer().setPosition(actionToPerform.getNextCase());
+			this.nbMove++;
+		}
 	}
 	
 	public ActionResult deleteActions() {
@@ -146,5 +161,21 @@ public class Turn {
 	
 	public void setNbPassesDone(int nbPasses) {
 		this.nbPass = nbPasses;
+	}
+	
+	public boolean undoGoesToPreviousTour() {
+		return this.nbPass + this.nbMove == 0;
+	}
+	
+	public boolean redoGoesToNextTour() {
+		if (this.nbMove + this.nbPass == 3) {
+			return true;
+		}
+		
+		if (this.nbPass + this.nbMove != 0) {
+			return (this.actions[this.nbPass + this.nbMove] == null);
+		}
+		
+		return false;
 	}
 }
