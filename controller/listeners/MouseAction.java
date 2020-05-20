@@ -192,7 +192,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 				if (result == ActionResult.DONE) {
 					setPlayerAloneCase(clickedCase);
 					this.gameSaver.overwriteSave();
-				} else if (result == ActionResult.ANTIPLAY_TOP || result == ActionResult.ANTIPLAY_BOT) {
+				} else if (result == ActionResult.ANTIPLAY_CURRENT || result == ActionResult.ANTIPLAY) {
 					this.gameSaver.overwriteSave();
 					System.out.println("Antiplay detected!");
 				} else {
@@ -235,7 +235,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 				res = this.stadium.endTurn();
 				
 				gameSaver.overwriteSave();
-
+        
 				if (AI != null && res != ActionResult.ERROR) {
 					isAITurn = true;
 				}

@@ -183,8 +183,8 @@ public class GamePanel extends JPanel implements Observable {
 		
 		actionsRemainingPanel.add(this.nbPassRemaining, gbc);
 		
-		// Crï¿½ation et placement du JLabel annonï¿½ant le nombre de dï¿½placements restants
-		this.nbMoveRemaining = new JLabel("Dï¿½placements : " + (2 - this.stadium.getNbMovesDone()));
+		// Creation et placement du JLabel annoncant le nombre de deplacements restants
+		this.nbMoveRemaining = new JLabel("Deplacements : " + (2 - this.stadium.getNbMovesDone()));
 		this.nbMoveRemaining.setFont(this.visualResources.customFont);
 		
 		gbc.gridx = 0;
@@ -223,7 +223,7 @@ public class GamePanel extends JPanel implements Observable {
 		
 		turnButtons.add(this.resetTurnButton, gbc);
 		
-		//Création et placement du JButton permettant de rejouer une action (en avant), invisible au départ
+		//Creation et placement du JButton permettant de rejouer une action (en avant), invisible au depart
 		this.redoButton = new JButton();
 		this.redoButton.setIcon(new ImageIcon(this.visualResources.forwardIconImage));
 		this.redoButton.setVisible(false);
