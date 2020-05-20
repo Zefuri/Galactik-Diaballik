@@ -590,13 +590,20 @@ public class Stadium {
         }
         
         if (this.antiplay(currentTurn.getTeam())) {
-        	done = ActionResult.ANTIPLAY;
+        	switch (currentTurn.getTeam().getPosition()) {
+				case TOP:
+					done = ActionResult.ANTIPLAY_TOP;
+					break;
+				case BOTTOM:
+					done = ActionResult.ANTIPLAY_BOT;
+					break;
+        	}
         }
 
         return done;
 	}
 	
-		public ActionResult actionPerformedAI(Action action) { //what controller must use
+	public ActionResult actionPerformedAI(Action action) { //what controller must use
         ActionResult done = ActionResult.DONE;
         Turn currentTurn = this.history.getLast();
 
@@ -633,7 +640,14 @@ public class Stadium {
         }
         
         if (this.antiplay(currentTurn.getTeam())) {
-        	done = ActionResult.ANTIPLAY;
+        	switch (currentTurn.getTeam().getPosition()) {
+				case TOP:
+					done = ActionResult.ANTIPLAY_TOP;
+					break;
+				case BOTTOM:
+					done = ActionResult.ANTIPLAY_BOT;
+					break;
+        	}
         }
 
         return done;

@@ -81,20 +81,22 @@ public class MouseAction extends MouseAdapter implements Observer {
 		holoTV.updateGameInfos();
 		
 		if (result == ActionResult.WIN) {
-			if(stadium.getCurrentTeamTurn().getName() == "snowKids") {
-				holoTV.switchToEndGamePanel(GameResult.VICTORY, stadium.getCurrentTeamTurn().getName());
-			} else {
+			if(stadium.getCurrentTeamTurn() == stadium.getTeam(TeamPosition.BOTTOM) && AI != null) {
 				holoTV.switchToEndGamePanel(GameResult.DEFEAT, stadium.getTeam(TeamPosition.TOP).getName());
+			} else {
+				holoTV.switchToEndGamePanel(GameResult.VICTORY, stadium.getCurrentTeamTurn().getName());
 			}
 			clearSelectedPlayer();
 		}
 		
-		if (result == ActionResult.ANTIPLAY) {
-			if(stadium.getCurrentTeamTurn().getName()  == "snowKids") {
-				holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getCurrentTeamTurn().getName());
-			} else {
-				holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
-			}
+		if (result == ActionResult.ANTIPLAY_TOP && AI != null) {
+			holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
+			clearSelectedPlayer();
+		} else if(result == ActionResult.ANTIPLAY_TOP) {
+			holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getTeam(TeamPosition.BOTTOM).getName());
+			clearSelectedPlayer();
+		} else if(result == ActionResult.ANTIPLAY_BOT) {
+			holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
 			clearSelectedPlayer();
 		}
 	}
@@ -185,9 +187,9 @@ public class MouseAction extends MouseAdapter implements Observer {
 				if (result == ActionResult.DONE) {
 					setPlayerAloneCase(clickedCase);
 					this.gameSaver.overwriteSave();
-				} else if (result == ActionResult.ANTIPLAY) {
+				} else if (result == ActionResult.ANTIPLAY_TOP || result == ActionResult.ANTIPLAY_BOT) {
 					this.gameSaver.overwriteSave();
-					throw new RuntimeException("Antiplay detected!");
+					System.out.println("Antiplay detected!");
 				} else {
 					throw new IllegalStateException("Either it is not your turn, or the selected case is not situated next to the player.");
 				}
@@ -232,25 +234,26 @@ public class MouseAction extends MouseAdapter implements Observer {
 				if (AI != null) {
 					ArrayList<Action> actions = AI.play(1);
           
-					for (Action currentAction : actions) {
-						ActionResult result = stadium.actionPerformedAI(currentAction);
+					ActionResult result;
+					int indexAction = 0;
+					Action currentAction = actions.get(indexAction);
+					
+					while(((result = stadium.actionPerformedAI(currentAction)) == ActionResult.DONE) && indexAction < actions.size()) {
+						currentAction = actions.get(indexAction);
+					}
+					
+					if(result == ActionResult.WIN) {
+						holoTV.switchToEndGamePanel(GameResult.DEFEAT, stadium.getTeam(TeamPosition.TOP).getName());
+					}
 
-						if (result == ActionResult.WIN) {
-							//TODO Impl�menter le passage � l'�cran de fin
-							System.out.println("Team \"" + stadium.getPlayer(playerWithBallCase).getTeam().getName() + "\" have won the match!");
-							holoTV.getGamePanel().showEndGamePopUp(stadium.getPlayer(playerWithBallCase).getTeam().getName());
-						}
-
-						if (result == ActionResult.ANTIPLAY) {
-							//TODO Impl�menter le passage � l'�cran de fin
-							System.out.println("The enemy team made an antiplay: Team \"" + stadium.getPlayer(playerWithBallCase).getTeam().getName() + "\" have won the match!");
-							holoTV.getGamePanel().showAntiPlayPopUp(stadium.getPlayer(playerWithBallCase).getTeam().getName());
-						}
+					if(result == ActionResult.ANTIPLAY_TOP) {
+						holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
+					} else if(result == ActionResult.ANTIPLAY_BOT) {
+						holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
 					}
 					
 					holoTV.getArkadiaNews().repaint();
 					holoTV.updateGameInfos();
-					// TODO : check end of game for AI as well
 				}
 
 				break;

@@ -119,7 +119,7 @@ public class GamePanel extends JPanel implements Observable {
 	}
 	
 	private void createGameControlPanel() {
-		this.gameControlPanel = new JPanel(new GridLayout(4, 1, 0, this.getWidth()/20));
+		this.gameControlPanel = new JPanel(new GridLayout(4, 1));
 		
 		this.createTurnPanel();
 		this.createActionsRemainingPanel();
@@ -136,7 +136,7 @@ public class GamePanel extends JPanel implements Observable {
 		// Cr�ation et placement du JLabel annon�ant le num�ro du tour
 		this.nbTurn = new JLabel("Tour " + (this.stadium.getTurnIndex() + 1) + " :");
 		this.nbTurn.setFont(this.visualResources.customFontItal);
-		this.nbTurn.setBorder(new EmptyBorder(0, this.getWidth()/20, 0, this.getWidth()/20));
+		this.nbTurn.setBorder(new EmptyBorder(0, 20, 0, 20));
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -147,7 +147,7 @@ public class GamePanel extends JPanel implements Observable {
 		// Cr�ation et placement du JLabel annon�ant � quelle �quipe jouer
 		this.whosturn = new JLabel(this.stadium.getCurrentTeamTurn().getName() + ", � vous !");
 		this.whosturn.setFont(this.visualResources.customFontItal);
-		this.whosturn.setBorder(new EmptyBorder(0, this.getWidth()/20, 0, this.getWidth()/20));
+		this.whosturn.setBorder(new EmptyBorder(0, 20, 0, 20));
 		
 		this.changeTeamTurnColor();
 		
