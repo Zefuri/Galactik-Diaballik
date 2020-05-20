@@ -14,15 +14,19 @@ public class Team {
 	private Player ballPlayer;
 	private int butLine;
 
-	public Team(String name, TeamPosition position, Stadium stadium) {
+	public Team(String name, TeamPosition position, Stadium stadium, boolean toInit) {
 		this.name = name;
 		this.position = position;
 		this.stadium = stadium;
-		initialize();
+		this.players = new ArrayList<>();
+		
+		if (toInit) {
+			initializePlayers();
+		}
 	}
 	
-	public void initialize() {
-		players = new ArrayList<>();
+	public void initializePlayers() {
+		this.players.clear();
 		
 		for (int i = 0; i < ModelConstants.BOARD_SIZE; i++) {
 			Player p;
@@ -165,5 +169,17 @@ public class Team {
 
 	public boolean isWinner() {
 		return stadium.isAWin(position);
+	}
+	
+	public Player getPlayerFromName(String name) {
+		//System.out.println("given name : " + name);
+		
+		for (Player p : this.getPlayers()) {
+			if (p.hasTheSameName(name)) {
+				return p;
+			}
+		}
+		
+		throw new IllegalStateException("There must be a player with the given name!");
 	}
 }

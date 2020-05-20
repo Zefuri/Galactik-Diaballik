@@ -37,6 +37,16 @@ public class Historic {
         this.historicList.add(new Turn(currentTeamTurn));
     }
     
+    public void removeLastTurn() {
+    	this.historicList.remove(this.historicList.size() - 1);
+    	this.currentTurnIndex--;
+    }
+    
+    public void addTurn(Turn turn) {
+    	this.historicList.add(turn);
+    	this.currentTurnIndex++;
+    }
+    
     public ActionResult undoLastAction() {
     	return this.historicList.get(currentTurnIndex).undo();
     }
@@ -44,5 +54,16 @@ public class Historic {
     public ActionResult resetCurrentTurn() {
     	Turn currentTurn = this.historicList.get(this.currentTurnIndex);
     	return currentTurn.deleteActions();
+    }
+    
+    //For testing
+    public String toString() {
+    	StringBuilder builder = new StringBuilder();
+    	
+    	for (Turn t : this.historicList) {
+    		builder.append(t.toString());
+    	}
+    	
+    	return builder.toString();
     }
 }

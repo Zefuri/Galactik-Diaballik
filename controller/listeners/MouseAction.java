@@ -10,6 +10,7 @@ import model.enums.ActionType;
 import model.enums.MoveDirection;
 import model.enums.TeamPosition;
 import patterns.Observer;
+import saver.GameSaver;
 import view.HoloTV;
 
 import java.awt.event.MouseAdapter;
@@ -21,15 +22,18 @@ public class MouseAction extends MouseAdapter implements Observer {
 	private HoloTV holoTV;
 	private Stadium stadium;
 
+	private GameSaver gameSaver;
+
 	private Case clickedCase;
 	private Case playerAloneCase;
 	private Case playerWithBallCase;
 
 	private BallActionAI_1 AI;
 	
-	public MouseAction(HoloTV holoTV, Stadium stadium, boolean withAI) {
+	public MouseAction(HoloTV holoTV, Stadium stadium, boolean withAI, GameSaver gameSaver) {
 		this.holoTV = holoTV;
 		this.stadium = stadium;
+		this.gameSaver = gameSaver;
 		this.playerAloneCase = null;
 		this.playerWithBallCase = null;
 
@@ -134,8 +138,10 @@ public class MouseAction extends MouseAdapter implements Observer {
 				if (result == ActionResult.DONE) {
 					stadium.getPlayer(playerWithBallCase).setIfSelected(false);
 					clearPlayers();
+					this.gameSaver.overwriteSave();
 				} else if (result == ActionResult.WIN) {
 					stadium.getPlayer(playerWithBallCase).setIfSelected(false);
+					this.gameSaver.overwriteSave();
 				} else {
 					throw new IllegalStateException("Either it is not your turn, or the two players are not aligned or have an opponent between them.");
 				}
@@ -169,7 +175,9 @@ public class MouseAction extends MouseAdapter implements Observer {
 				
 				if (result == ActionResult.DONE) {
 					setPlayerAloneCase(clickedCase);
+					this.gameSaver.overwriteSave();
 				} else if (result == ActionResult.ANTIPLAY) {
+					this.gameSaver.overwriteSave();
 					throw new RuntimeException("Antiplay detected!");
 				} else {
 					throw new IllegalStateException("Either it is not your turn, or the selected case is not situated next to the player.");
@@ -209,9 +217,12 @@ public class MouseAction extends MouseAdapter implements Observer {
 		switch((ActionType) object) {	
 			case END_TURN : // following code is executed when the "end of turn" button is pressed
 				res = this.stadium.endTurn();
+				
+				gameSaver.overwriteSave();
 
 				if (AI != null) {
 					ArrayList<Action> actions = AI.play(1);
+          
 					for (Action currentAction : actions) {
 						ActionResult result = stadium.actionPerformedAI(currentAction);
 
@@ -227,18 +238,22 @@ public class MouseAction extends MouseAdapter implements Observer {
 							holoTV.getGamePanel().showAntiPlayPopUp(stadium.getPlayer(playerWithBallCase).getTeam().getName());
 						}
 					}
+					
 					holoTV.getArkadiaNews().repaint();
 					holoTV.updateGameInfos();
 					// TODO : check end of game for AI as well
 				}
+
 				break;
 				
 			case UNDO :
 				res = this.stadium.undoAction();
+				gameSaver.overwriteSave();
 				break;
 			
 			case RESET :
 				res = this.stadium.resetTurn();
+				gameSaver.overwriteSave();
 				break;
 		}
 		

@@ -7,6 +7,8 @@ import model.Stadium;
 import model.enums.TeamPosition;
 import model.enums.UserInput;
 import patterns.Observer;
+import saver.GameLoader;
+import saver.GameSaver;
 import view.HoloTV;
 import view.Repainter;
 
@@ -39,24 +41,49 @@ public class Technoid implements Observer {
                 holoTV.switchToGameModePanel();
                 break;
 
-            case CLICKED_SETTINGS: // context : MainMenuPanel
-                System.out.println("Functionality not yet implemented");
+            case CLICKED_LOAD: { // context : MainMenuPanel
+            	GameLoader gameLoader = new GameLoader(stadium);
+            	
+            	if (gameLoader.loadData()) {
+	            	stadium.loadTopTeam(gameLoader.getTopTeam());
+	            	stadium.loadBotTeam(gameLoader.getBotTeam());
+	            	
+	            	GameSaver gameSaver = new GameSaver(stadium, gameLoader.getCurrentSavePath());
+	            	
+	                MouseAction mouseAction = new MouseAction(holoTV, stadium, false, gameSaver);
+	                holoTV.addArkadiaNewsMouseListener(mouseAction);
+	                holoTV.getGamePanel().addObserver(mouseAction);
+	                holoTV.switchToGamePanel();
+            	} else {
+            		System.err.println("Either the user has cancelled the loading, or an error has occurred.");
+            	}
+            	
                 break;
+            }
 
             case CLICKED_QUIT: // context : MainMenuPanel
                 holoTV.stopMusic();
                 holoTV.getFrame().dispose();
                 break;
 
-            case CLICKED_PVP: // context : GameModePanel
-                MouseAction mouseActionNoAI = new MouseAction(holoTV, stadium, false);
+            case CLICKED_PVP: { // context : GameModePanel
+            	//We also add the gameSaver and save the initial state
+            	GameSaver gameSaver = new GameSaver(stadium);
+            	gameSaver.saveToFile();
+            	
+                MouseAction mouseActionNoAI = new MouseAction(holoTV, stadium, false, gameSaver);
                 holoTV.addArkadiaNewsMouseListener(mouseActionNoAI);
                 holoTV.getGamePanel().addObserver(mouseActionNoAI);
                 holoTV.switchToGamePanel();
                 break;
+            }
 
             case CLICKED_PVC: // context : GameModePanel
-                MouseAction mouseActionWithAI = new MouseAction(holoTV, stadium, true);
+            	//We also add the gameSaver and save the initial state
+            	GameSaver gameSaver = new GameSaver(stadium);
+            	gameSaver.saveToFile();
+            	
+                MouseAction mouseActionWithAI = new MouseAction(holoTV, stadium, true, gameSaver);
                 holoTV.addArkadiaNewsMouseListener(mouseActionWithAI);
                 holoTV.getGamePanel().addObserver(mouseActionWithAI);
                 holoTV.switchToGamePanel();

@@ -18,8 +18,8 @@ public class Stadium {
     private Historic history;
 
     public Stadium() {
-        topTeam = new Team("snowKids", TeamPosition.TOP, this);
-        bottomTeam = new Team("shadows", TeamPosition.BOTTOM, this);
+        topTeam = new Team("snowKids", TeamPosition.TOP, this, true);
+        bottomTeam = new Team("shadows", TeamPosition.BOTTOM, this, true);
 
         this.history = new Historic();
         this.history.newTurn(getCurrentTeamTurn());
@@ -28,10 +28,18 @@ public class Stadium {
     public Team getTeam(TeamPosition position) {
         return position == TeamPosition.TOP ? topTeam : bottomTeam;
     }
+    
+    public void loadTopTeam(Team topTeam) {
+    	this.topTeam = topTeam;
+    }
+    
+    public void loadBotTeam(Team botTeam) {
+    	this.bottomTeam = botTeam;
+    }
 
     public void reset() {
-        topTeam.initialize();
-        bottomTeam.initialize();
+        topTeam.initializePlayers();
+        bottomTeam.initializePlayers();
     }
     
     public Player getPlayer(Case position) {
@@ -646,6 +654,10 @@ public class Stadium {
 	
 	public ActionResult resetTurn() {
 		return this.history.resetCurrentTurn();
+	}
+	
+	public Historic getHistory() {
+		return this.history;
 	}
 }
 

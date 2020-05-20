@@ -34,8 +34,10 @@ public class BallActionAI_1{
 		//calcul of Must possibility turn
 		brain.progress(depth);
 		
-		//take a random Turn on the list of MustActs
+		//take list of must turn on the mustActs
 		ArrayList<ArrayList<Action>> mustActs = brain.getMustActs();
+		
+		//take a random Turn on the list of mustActs
 		int chooseActsNumber = randomgene.nextInt(mustActs.size());
 		ArrayList<Action> tmp = mustActs.get(chooseActsNumber);
 		

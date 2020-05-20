@@ -23,7 +23,7 @@ public class Player {
 	}
 	
 	public int getNumero() {
-		return (int)(this.name.charAt(this.name.length()-1)-'0');
+		return (int) (this.name.charAt(this.name.length() - 1) - '0');
 	}
 	
 	void setTeam(Team team) {
@@ -38,12 +38,12 @@ public class Player {
 		return this.team.getStadium();
 	}
 
-	void setPosition(int x, int y) {
+	public void setPosition(int x, int y) {
 		this.getPosition().setX(x);
 		this.getPosition().setY(y);
 	}
 
-	void setPosition(Case position) {
+	public void setPosition(Case position) {
 		this.position = position;
 	}
 	
@@ -51,7 +51,7 @@ public class Player {
 		return this.position;
 	}
 	
-	void setBallPossession(boolean ballPossession) {
+	public void setBallPossession(boolean ballPossession) {
 		this.ballPossession = ballPossession;
 	}
 
@@ -143,5 +143,13 @@ public class Player {
 	
 	public boolean equals(Player second){
 		return name.equals(second.getName());
+	}
+	
+	public String toString() {
+		return "Joueur de l'equipe : " + this.getTeam().getPosition() + "\nPosition : " + this.getPosition() + "\nPossede la balle : " + this.hasBall();
+	}
+	
+	public boolean hasTheSameName(String name) {
+		return this.getName().equals(name);
 	}
 }
