@@ -2,20 +2,18 @@ package view;
 
 import javax.sound.sampled.*;
 import javax.swing.JFrame;
+
 import controller.listeners.MouseAction;
+
 import model.Stadium;
 import model.enums.GameResult;
+
 import patterns.Observer;
 
-import static java.lang.Thread.sleep;
-
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.*;
 
 public class HoloTV implements Runnable {
 	private JFrame frame;
-	private Stadium stadium;
 	private SourceDataLine audioLine;
 
 	private MainMenuPanel mainMenuPanel;
@@ -24,8 +22,6 @@ public class HoloTV implements Runnable {
 	private EndGamePanel endGamePanel;
 	
 	public HoloTV(Stadium stadium) {
-		this.stadium = stadium;
-
 		// create the main menu panel
 		this.mainMenuPanel = new MainMenuPanel();
 

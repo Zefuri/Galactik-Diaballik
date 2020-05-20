@@ -2,8 +2,6 @@ package model;
 
 import static java.lang.Math.abs;
 
-import java.util.ArrayList;
-
 import model.enums.TeamPosition;
 import model.enums.ActionResult;
 import model.enums.ActionType;

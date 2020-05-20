@@ -1,6 +1,5 @@
 package view;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -10,7 +9,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 
 import model.enums.GameResult;
 import model.enums.UserInput;
@@ -23,7 +21,6 @@ public class EndGamePanel extends JPanel implements Observable {
 	private ObservableHandler observableHandler;
 	private final VisualResources visualResources = VisualResources.getInstance();
 	
-	private GameResult gameResult;
 	private String teamName;
 	
 	private GridBagConstraints gbc;
@@ -49,7 +46,6 @@ public class EndGamePanel extends JPanel implements Observable {
 	}
 	
 	public void setGameResult(GameResult gameResult, String teamName) {
-		this.gameResult = gameResult;
 		this.teamName = teamName;
 		
 		switch (gameResult) {
