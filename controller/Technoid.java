@@ -2,21 +2,20 @@ package controller;
 
 import controller.ai.BallActionAI_1;
 import controller.listeners.MouseAction;
+
 import model.Action;
 import model.Stadium;
 import model.enums.TeamPosition;
 import model.enums.UserInput;
+
 import patterns.Observer;
+
 import saver.GameLoader;
 import saver.GameSaver;
-import view.HoloTV;
-import view.Repainter;
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import view.HoloTV;
+
 import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static java.lang.Thread.sleep;
 
@@ -230,9 +229,6 @@ public class Technoid implements Observer {
                 break;
 			case CLICKED_MAIN_MENU:
 				holoTV.switchToMainMenuPanel();
-				break;
-			case CLICKED_REWIND:
-				System.out.println("Fonctionnalité en cours d'implémentation");
 				break;
         }
     }
