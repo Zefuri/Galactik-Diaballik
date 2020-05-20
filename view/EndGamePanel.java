@@ -48,29 +48,29 @@ public class EndGamePanel extends JPanel implements Observable {
 		
 		switch (gameResult) {
 		case DEFEAT:
-			this.resultLabel.setText("Défaite ...");
-			this.resultDescriptionLabel.setText("Les " + this.teamName + " se sont inclinés face à leurs adversaires ...");
+			this.resultLabel.setText("Defaite ...");
+			this.resultDescriptionLabel.setText("Les " + this.teamName + " se sont inclines face a leurs adversaires ...");
 			
 			this.resultLabel.setForeground(this.visualResources.customRed);
 			break;
 			
 		case DEFEAT_ANTIPLAY:
-			this.resultLabel.setText("Défaite ...");
-			this.resultDescriptionLabel.setText("Les " + this.teamName + " ont fait un antijeu les menant à leur perte ...");
+			this.resultLabel.setText("Defaite ...");
+			this.resultDescriptionLabel.setText("Les " + this.teamName + " ont fait un antijeu les menant a leur perte ...");
 			
 			this.resultLabel.setForeground(this.visualResources.customRed);
 			break;
 			
 		case VICTORY:
 			this.resultLabel .setText("VICTOIRE !");
-			this.resultDescriptionLabel.setText("Les " + this.teamName + " ont été supérieurs à leurs adversaires !");
+			this.resultDescriptionLabel.setText("Les " + this.teamName + " ont ete superieurs a leurs adversaires !");
 			
 			this.resultLabel.setForeground(this.visualResources.customBlue);
 			break;
 			
 		case VICTORY_ANTIPLAY:
 			this.resultLabel.setText("VICTOIRE !");
-			this.resultDescriptionLabel.setText("Les " + this.teamName + " ont gagné suite à l'antijeu de leurs adversaires !");
+			this.resultDescriptionLabel.setText("Les " + this.teamName + " ont gagne suite a l'antijeu de leurs adversaires !");
 			
 			this.resultLabel.setForeground(this.visualResources.customBlue);
 			break;

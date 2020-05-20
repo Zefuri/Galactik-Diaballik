@@ -223,7 +223,7 @@ public class GamePanel extends JPanel implements Observable {
 		
 		turnButtons.add(this.resetTurnButton, gbc);
 		
-		//Création et placement du JButton permettant de rejouer une action (en avant), invisible au départ
+		//Creation et placement du JButton permettant de rejouer une action (en avant), invisible au depart
 		this.redoButton = new JButton();
 		this.redoButton.setIcon(new ImageIcon(this.visualResources.forwardIconImage));
 		this.redoButton.setVisible(false);
