@@ -232,7 +232,7 @@ public class Technoid implements Observer {
 				holoTV.switchToMainMenuPanel();
 				break;
 			case CLICKED_REWIND:
-				System.out.println("Fonctionnalité en cours d'implémentation");
+				System.out.println("Fonctionnalite en cours d'implementation");
 				break;
         }
     }
