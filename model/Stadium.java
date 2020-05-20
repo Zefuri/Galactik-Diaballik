@@ -520,7 +520,7 @@ public class Stadium {
 		return this.history.getCurrentTurnIndex();
 	}
 
-	public ActionResult actionPerformed(Action action) { //what controller must use
+	public ActionResult actionPerformed(Action action) { // what controller must use
         ActionResult done = ActionResult.DONE;
         Turn currentTurn = this.history.getLast();
 
@@ -583,9 +583,9 @@ public class Stadium {
         	done = ActionResult.WIN;
         }
         
-        if (this.antiplay(this.getTeam(TeamPosition.TOP))) {
+        if(this.antiplay(this.getTeam(TeamPosition.TOP))) {
         	done = ActionResult.ANTIPLAY_TOP;
-        } else if(this.antiplay(this.getTeam(TeamPosition.BOTTOM))){
+        } else if(this.antiplay(this.getTeam(TeamPosition.BOTTOM))) {
         	done = ActionResult.ANTIPLAY_BOT;
         }
 
@@ -600,18 +600,16 @@ public class Stadium {
 			case MOVE:
 				Player player = action.getMovedPlayer();
 				MoveDirection dir = action.getDirection();
-					simpleMove(player, dir);
-					currentTurn.addAction(action);
-					unselectPlayerIfNeeded(player);
-				
+				simpleMove(player, dir);
+				currentTurn.addAction(action);
+				unselectPlayerIfNeeded(player);
 				break;
 				
 			case PASS:
 				Player firstPlayer = action.getPreviousPlayer();
 				Player secondPlayer = action.getNextPlayer();
-					simplePass(firstPlayer, secondPlayer);
-					currentTurn.addAction(action);
-				
+				simplePass(firstPlayer, secondPlayer);
+				currentTurn.addAction(action);
 				break;
 				
 			case END_TURN:
@@ -628,7 +626,7 @@ public class Stadium {
         	done = ActionResult.WIN;
         }
         
-        if (this.antiplay(this.getTeam(TeamPosition.TOP))) {
+        if(this.antiplay(this.getTeam(TeamPosition.TOP))) {
         	done = ActionResult.ANTIPLAY_TOP;
         } else if(this.antiplay(this.getTeam(TeamPosition.BOTTOM))){
         	done = ActionResult.ANTIPLAY_BOT;
