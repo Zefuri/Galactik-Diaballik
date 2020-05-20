@@ -263,6 +263,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 				break;
 				
 			case LAUNCH_VISU:
+				launchVisu();
 				break;
 				
 			case PAUSE_VISU:
@@ -274,6 +275,10 @@ public class MouseAction extends MouseAdapter implements Observer {
 		}
 		
 		this.holoTV.updateGameInfos();
+	}
+	
+	private void launchVisu() {
+		
 	}
 	
 	private void clearSelectedPlayer() {
