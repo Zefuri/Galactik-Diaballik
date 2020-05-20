@@ -2,36 +2,39 @@ package view;
 
 import javax.sound.sampled.*;
 import javax.swing.JFrame;
-import listeners.MouseAction;
+
+import javax.swing.SwingUtilities;
+
+import controller.listeners.MouseAction;
+
 import model.Stadium;
+import model.enums.GameResult;
+
 import patterns.Observer;
 
-import static java.lang.Thread.sleep;
-
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.*;
 
 public class HoloTV implements Runnable {
 	private JFrame frame;
-	private Stadium stadium;
 	private SourceDataLine audioLine;
 
-    private MainMenuPanel mainMenuPanel;
-    private GameModePanel gameModePanel;
-    private GamePanel gamePanel;
-
+	private MainMenuPanel mainMenuPanel;
+	private GameModePanel gameModePanel;
+	private GamePanel gamePanel;
+	private EndGamePanel endGamePanel;
+	
 	public HoloTV(Stadium stadium) {
-		this.stadium = stadium;
-
 		// create the main menu panel
-		mainMenuPanel = new MainMenuPanel();
+		this.mainMenuPanel = new MainMenuPanel();
 
 		// create the game mode selection panel
-		gameModePanel = new GameModePanel();
+		this.gameModePanel = new GameModePanel();
 
 		// Create the GamePanel and himself create and add an ArkadiaNews
 		this.gamePanel = new GamePanel(stadium);
+		
+		// Create the end game panel
+		this.endGamePanel = new EndGamePanel();
 	}
 
 	public JFrame getFrame() {
@@ -128,6 +131,9 @@ public class HoloTV implements Runnable {
 	public void addObserverGameModePanel(Observer observer) {
 		gameModePanel.addObserver(observer);
 	}
+	public void addObserverEndGamePanel(Observer observer) {
+		endGamePanel.addObserver(observer);
+	}
 
 	/*
 	clear the frame entirely and then add the game mode selection panel
@@ -136,11 +142,31 @@ public class HoloTV implements Runnable {
 		frame.getContentPane().removeAll();
 		frame.add(gameModePanel);
 		frame.validate();  // very important
+		SwingUtilities.updateComponentTreeUI(frame);
 	}
 
 	public void switchToGamePanel() {
 		frame.getContentPane().removeAll();
 		frame.add(gamePanel);
 		frame.validate();  // very important
+		SwingUtilities.updateComponentTreeUI(frame);
+	}
+	
+	public void switchToMainMenuPanel() {
+		frame.getContentPane().removeAll();
+		frame.add(mainMenuPanel);
+		frame.validate();  // very important
+		SwingUtilities.updateComponentTreeUI(frame);
+	}
+	
+	public void switchToEndGamePanel(GameResult gameResult, String teamName) {
+		// create the end game panel
+		this.endGamePanel.setGameResult(gameResult, teamName);
+		
+		// replacing the current panel
+		frame.getContentPane().removeAll();
+		frame.add(endGamePanel);
+		frame.validate();
+		SwingUtilities.updateComponentTreeUI(frame);
 	}
 }

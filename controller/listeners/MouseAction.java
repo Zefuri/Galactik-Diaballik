@@ -1,14 +1,11 @@
-package listeners;
+package controller.listeners;
 
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-import ai.BallActionAI_1;
-import ai.BallActionAI_1;
-
-import ai.BallActionAI_1;
+import controller.ai.BallActionAI_1;
 
 import model.Action;
 import model.Case;
@@ -16,16 +13,13 @@ import model.Player;
 import model.Stadium;
 import model.enums.ActionResult;
 import model.enums.ActionType;
+import model.enums.GameResult;
 import model.enums.MoveDirection;
 import model.enums.TeamPosition;
+
 import patterns.Observer;
 import saver.GameSaver;
 import view.HoloTV;
-
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-
 
 public class MouseAction extends MouseAdapter implements Observer {
 	private HoloTV holoTV;
@@ -55,9 +49,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 	}
 	
 	@Override
-	public void mouseClicked(MouseEvent e) {
-		super.mouseClicked(e);
-		
+	public void mousePressed(MouseEvent e) {
 		if (!this.visualisationMode) {
 			ActionResult result = null;
 			
@@ -81,7 +73,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 				//ex.printStackTrace();
 			}
 	
-			// provisoir
+			// provisoire
 	//		clickNumber++;
 	//
 	//		if (clickNumber%3 == 0 && clickNumber != 0) {
@@ -92,15 +84,23 @@ public class MouseAction extends MouseAdapter implements Observer {
 			holoTV.updateGameInfos();
 			
 			if (result == ActionResult.WIN) {
-				//TODO Impl�menter le passage � l'�cran de fin
-				System.out.println("Team \"" + stadium.getPlayer(playerWithBallCase).getTeam().getName() + "\" have won the match!");
-				holoTV.getGamePanel().showEndGamePopUp(stadium.getPlayer(playerWithBallCase).getTeam().getName());
+				if(stadium.getCurrentTeamTurn() == stadium.getTeam(TeamPosition.BOTTOM) && AI != null) {
+					holoTV.switchToEndGamePanel(GameResult.DEFEAT, stadium.getTeam(TeamPosition.TOP).getName());
+				} else {
+					holoTV.switchToEndGamePanel(GameResult.VICTORY, stadium.getCurrentTeamTurn().getName());
+				}
+				clearSelectedPlayer();
 			}
 			
-			if (result == ActionResult.ANTIPLAY) {
-				//TODO Impl�menter le passage � l'�cran de fin
-				System.out.println("The enemy team made an antiplay: Team \"" + stadium.getPlayer(playerWithBallCase).getTeam().getName() + "\" have won the match!");
-				holoTV.getGamePanel().showAntiPlayPopUp(stadium.getPlayer(playerWithBallCase).getTeam().getName());
+			if (result == ActionResult.ANTIPLAY_TOP && AI != null) {
+				holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
+				clearSelectedPlayer();
+			} else if(result == ActionResult.ANTIPLAY_TOP) {
+				holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getTeam(TeamPosition.BOTTOM).getName());
+				clearSelectedPlayer();
+			} else if(result == ActionResult.ANTIPLAY_BOT) {
+				holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
+				clearSelectedPlayer();
 			}
 		} else {
 			//We are in visualization mode, so we do not want the user to perform actions other than undo/redo
@@ -144,9 +144,9 @@ public class MouseAction extends MouseAdapter implements Observer {
 				}
 			}
 		} else if (stadium.hasAPlayerOnly(clickedCase)) {
-			//There is a player only on the clicked case
+			// There is a player only on the clicked case
 			if (playerWithBallCase != null) {
-				//Do a pass if possible
+				// Do a pass if possible
 				Player previousOwner = stadium.getPlayer(playerWithBallCase);
 				Player futureOwner = stadium.getPlayer(clickedCase);
 				result = previousOwner.pass(futureOwner);
@@ -194,9 +194,9 @@ public class MouseAction extends MouseAdapter implements Observer {
 				if (result == ActionResult.DONE) {
 					setPlayerAloneCase(clickedCase);
 					this.gameSaver.overwriteSave();
-				} else if (result == ActionResult.ANTIPLAY) {
+				} else if (result == ActionResult.ANTIPLAY_TOP || result == ActionResult.ANTIPLAY_BOT) {
 					this.gameSaver.overwriteSave();
-					throw new RuntimeException("Antiplay detected!");
+					System.out.println("Antiplay detected!");
 				} else {
 					throw new IllegalStateException("Either it is not your turn, or the selected case is not situated next to the player.");
 				}
@@ -240,28 +240,27 @@ public class MouseAction extends MouseAdapter implements Observer {
 
 				if (AI != null) {
 					ArrayList<Action> actions = AI.play(1);
+          
+					ActionResult result;
+					int indexAction = 0;
+					Action currentAction = actions.get(indexAction);
+					
+					while(((result = stadium.actionPerformedAI(currentAction)) == ActionResult.DONE) && indexAction < actions.size()) {
+						currentAction = actions.get(indexAction);
+					}
+					
+					if(result == ActionResult.WIN) {
+						holoTV.switchToEndGamePanel(GameResult.DEFEAT, stadium.getTeam(TeamPosition.TOP).getName());
+					}
 
-					for (Action currentAction : actions) {
-						ActionResult result = stadium.actionPerformedAI(currentAction);
-
-						gameSaver.overwriteSave();
-						
-						if (result == ActionResult.WIN) {
-							//TODO Impl�menter le passage � l'�cran de fin
-							System.out.println("Team \"" + stadium.getPlayer(playerWithBallCase).getTeam().getName() + "\" have won the match!");
-							holoTV.getGamePanel().showEndGamePopUp(stadium.getPlayer(playerWithBallCase).getTeam().getName());
-						}
-
-						if (result == ActionResult.ANTIPLAY) {
-							//TODO Impl�menter le passage � l'�cran de fin
-							System.out.println("The enemy team made an antiplay: Team \"" + stadium.getPlayer(playerWithBallCase).getTeam().getName() + "\" have won the match!");
-							holoTV.getGamePanel().showAntiPlayPopUp(stadium.getPlayer(playerWithBallCase).getTeam().getName());
-						}
+					if(result == ActionResult.ANTIPLAY_TOP) {
+						holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
+					} else if(result == ActionResult.ANTIPLAY_BOT) {
+						holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
 					}
 					
 					holoTV.getArkadiaNews().repaint();
 					holoTV.updateGameInfos();
-					// TODO : check end of game for AI as well
 				}
 
 				break;

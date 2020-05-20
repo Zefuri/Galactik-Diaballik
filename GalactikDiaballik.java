@@ -1,7 +1,5 @@
-import listeners.MouseAction;
+import controller.Technoid;
 import model.Stadium;
-import saver.GameLoader;
-import saver.GameSaver;
 import view.HoloTV;
 
 public class GalactikDiaballik {
@@ -12,6 +10,8 @@ public class GalactikDiaballik {
 		
 		holoTV.addObserverMainMenuPanel(technoid);
 		holoTV.addObserverGameModePanel(technoid);
+		holoTV.addObserverEndGamePanel(technoid);
+		
 		holoTV.run(); // must be the last line
 	}
 }

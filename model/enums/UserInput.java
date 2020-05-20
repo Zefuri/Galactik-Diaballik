@@ -7,5 +7,7 @@ public enum UserInput {
     CLICKED_QUIT,
     CLICKED_PVP,
     CLICKED_PVC,
-    CLICKED_CVC
+    CLICKED_CVC,
+    CLICKED_MAIN_MENU,
+    CLICKED_REWIND
 }

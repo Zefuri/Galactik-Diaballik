@@ -1,11 +1,11 @@
 package model;
 
+import static java.lang.Math.abs;
+
+import model.enums.TeamPosition;
 import model.enums.ActionResult;
 import model.enums.ActionType;
 import model.enums.MoveDirection;
-import model.enums.TeamPosition;
-
-import static java.lang.Math.abs;
 
 public class Stadium {
     private Team topTeam;
@@ -22,6 +22,13 @@ public class Stadium {
         this.history = new Historic(this);
         this.history.newTurn(getCurrentTeamTurn());
         this.visualisationMode = false;
+    }
+    
+    public void resetStadium() {
+    	this.reset();
+
+        this.history = new Historic(this);
+        this.history.newTurn(getCurrentTeamTurn());
     }
     
     public Team getTeam(TeamPosition position) {
@@ -608,13 +615,20 @@ public class Stadium {
         }
         
         if (this.antiplay(currentTurn.getTeam())) {
-        	done = ActionResult.ANTIPLAY;
+        	switch (currentTurn.getTeam().getPosition()) {
+				case TOP:
+					done = ActionResult.ANTIPLAY_TOP;
+					break;
+				case BOTTOM:
+					done = ActionResult.ANTIPLAY_BOT;
+					break;
+        	}
         }
 
         return done;
 	}
 	
-		public ActionResult actionPerformedAI(Action action) { //what controller must use
+	public ActionResult actionPerformedAI(Action action) { //what controller must use
         ActionResult done = ActionResult.DONE;
         Turn currentTurn = this.history.getLast();
 
@@ -651,7 +665,14 @@ public class Stadium {
         }
         
         if (this.antiplay(currentTurn.getTeam())) {
-        	done = ActionResult.ANTIPLAY;
+        	switch (currentTurn.getTeam().getPosition()) {
+				case TOP:
+					done = ActionResult.ANTIPLAY_TOP;
+					break;
+				case BOTTOM:
+					done = ActionResult.ANTIPLAY_BOT;
+					break;
+        	}
         }
 
         return done;

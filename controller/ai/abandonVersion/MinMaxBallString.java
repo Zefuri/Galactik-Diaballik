@@ -1,4 +1,4 @@
-package ai.abandonVersion;
+package controller.ai.abandonVersion;
 
 import model.Stadium;
 import model.Team;

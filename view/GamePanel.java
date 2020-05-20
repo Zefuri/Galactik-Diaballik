@@ -5,9 +5,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -23,7 +21,7 @@ import patterns.ObservableHandler;
 import patterns.Observer;
 
 public class GamePanel extends JPanel implements Observable {
-	private final ObservableHandler observableHandler;
+	private ObservableHandler observableHandler;
 	private final VisualResources visualResources = VisualResources.getInstance();
 
 	private Stadium stadium;	
@@ -130,7 +128,7 @@ public class GamePanel extends JPanel implements Observable {
 	}
 	
 	private void createGameControlPanel() {
-		this.gameControlPanel = new JPanel(new GridLayout(4, 1, 0, this.getWidth()/20));
+		this.gameControlPanel = new JPanel(new GridLayout(4, 1));
 		
 		this.createTurnPanel();
 		this.createActionsRemainingPanel();
@@ -147,7 +145,7 @@ public class GamePanel extends JPanel implements Observable {
 		// Cr�ation et placement du JLabel annon�ant le num�ro du tour
 		this.nbTurn = new JLabel("Tour " + (this.stadium.getTurnIndex() + 1) + " :");
 		this.nbTurn.setFont(this.visualResources.customFontItal);
-		this.nbTurn.setBorder(new EmptyBorder(0, this.getWidth()/20, 0, this.getWidth()/20));
+		this.nbTurn.setBorder(new EmptyBorder(0, 20, 0, 20));
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -158,7 +156,7 @@ public class GamePanel extends JPanel implements Observable {
 		// Cr�ation et placement du JLabel annon�ant � quelle �quipe jouer
 		this.whosturn = new JLabel(this.stadium.getCurrentTeamTurn().getName() + ", � vous !");
 		this.whosturn.setFont(this.visualResources.customFontItal);
-		this.whosturn.setBorder(new EmptyBorder(0, this.getWidth()/20, 0, this.getWidth()/20));
+		this.whosturn.setBorder(new EmptyBorder(0, 20, 0, 20));
 		
 		this.changeTeamTurnColor();
 		
