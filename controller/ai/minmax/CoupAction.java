@@ -127,10 +127,10 @@ public class CoupAction {
 	
 	//research all possibility turn
 	public void init() {
-		if(!canFinish) { initOne(); 
-			if(!canFinish) { initTwo();
-				if(!canFinish) { initThree();
-		}	}	}
+		initOne(); 
+		if(!canFinish) { initTwo();
+			if(!canFinish) { initThree();
+		}	}
 		
 		oneHigh = new int[one.size()];
 		twoHigh = new int[two.size()];
@@ -153,9 +153,7 @@ public class CoupAction {
 		for(ArrayList<Action> action : actionList){
 			index++;
 			exec(action);
-				if(team.getBallPlayer().getPosition().getX() == team.getButLine()   ||   stadium.antiplay(team.getEnemyTeam())) {
-					valueList[index] = Integer.MIN_VALUE;
-				} else  if(stadium.antiplay(team)) {
+				if(stadium.antiplay(team)) {
 					valueList[index] = Integer.MAX_VALUE;
 				} else {
 					valueList[index] = (-1) * tools.ballAvance(team);
@@ -186,9 +184,7 @@ public class CoupAction {
 		for(ArrayList<Action> action : actionList){
 			index++;
 			exec(action);
-				if(team.getBallPlayer().getPosition().getX() == team.getButLine()   ||   stadium.antiplay(team.getEnemyTeam())) {
-					valueList[index] = Integer.MAX_VALUE;
-				} else  if(stadium.antiplay(team)) {
+				if(stadium.antiplay(team)) {
 					valueList[index] = Integer.MIN_VALUE;
 				} else {
 					valueList[index] = tools.ballAvance(team);
@@ -207,27 +203,26 @@ public class CoupAction {
 	private void initOne() {
 		ArrayList<Action> actionOne;
 		
-		for(Player p : team.getPlayers()) {
-			if(!canFinish) {	
-				if(!p.equals(ballPlayer)) {
-				
-					//pass
-					if(stadium.playerCanPass(ballPlayer, p)) {
-						actionOne = new ArrayList<>();
-						Case previousCase = new Case(ballPlayer.getPosition().getX(), ballPlayer.getPosition().getY());
-						Case nextCase = new Case(p.getPosition().getX(), p.getPosition().getY());
-						actionOne.add(new Action(ActionType.PASS, ballPlayer, p, previousCase, nextCase));
-						one.add(actionOne);
-						
-						if(p.getPosition().getX() == team.getButLine()) {
-							canFinish = true;
-							acts.add(tools.clone(actionOne));
-						}
-					}
+		for(int i = 0; !canFinish   &&   i != team.getPlayers().size(); i++) {
+			Player p = team.playerOfInt(i);
+			if(!p.equals(ballPlayer)) {
+			
+				//pass
+				if(stadium.playerCanPass(ballPlayer, p)) {
+					actionOne = new ArrayList<>();
+					Case previousCase = new Case(ballPlayer.getPosition().getX(), ballPlayer.getPosition().getY());
+					Case nextCase = new Case(p.getPosition().getX(), p.getPosition().getY());
+					actionOne.add(new Action(ActionType.PASS, ballPlayer, p, previousCase, nextCase));
+					one.add(actionOne);
 					
-					//depl
-					oneCanMove(p);
+					if(p.getPosition().getX() == team.getButLine()) {
+						canFinish = true;
+						acts.add(tools.clone(actionOne));
+					}
 				}
+				
+				//depl
+				oneCanMove(p);
 			}
 		}
 	}
@@ -278,36 +273,35 @@ public class CoupAction {
 				if(verifPass){
 				//depl + pass or depl + depl
 
-					for(Player p : team.getPlayers()) {
+					for(int i = 0; !canFinish   &&   i != team.getPlayers().size(); i++) {
+						Player p = team.playerOfInt(i);
+						
+						//depl + pass
+						if(!p.equals(ballPlayer)   &&   stadium.playerCanPass(ballPlayer, p)) {
+							ArrayList<Action> actionTwo = new ArrayList<>();
+							actionTwo.add(actLook.get(0));
+							Case previousCase = new Case(ballPlayer.getPosition().getX(), ballPlayer.getPosition().getY());
+							Case nextCase = new Case(p.getPosition().getX(), p.getPosition().getY());
+							actionTwo.add(new Action(ActionType.PASS, ballPlayer, p, previousCase, nextCase));
+							two.add(actionTwo);
+							
+							if(p.getPosition().getX() == team.getButLine()) {
+								canFinish = true;
+								acts.add(tools.clone(actionTwo));
+							}
+						}
 						
 						if(!canFinish) {
-							//depl + pass
-							if(!p.equals(ballPlayer)   &&   stadium.playerCanPass(ballPlayer, p)) {
-								ArrayList<Action> actionTwo = new ArrayList<>();
-								actionTwo.add(actLook.get(0));
-								Case previousCase = new Case(ballPlayer.getPosition().getX(), ballPlayer.getPosition().getY());
-								Case nextCase = new Case(p.getPosition().getX(), p.getPosition().getY());
-								actionTwo.add(new Action(ActionType.PASS, ballPlayer, p, previousCase, nextCase));
-								two.add(actionTwo);
+							//depl + depl
+							lessPlayer = p.getNumero() < firstPlayer.getNumero();
+							if(!lessPlayer   &&   !p.equals(ballPlayer)) {
 								
-								if(p.getPosition().getX() == team.getButLine()) {
-									canFinish = true;
-									acts.add(tools.clone(actionTwo));
-								}
-							}
-							
-							if(!canFinish) {
-								//depl + depl
-								lessPlayer = p.getNumero() < firstPlayer.getNumero();
-								if(!lessPlayer   &&   !p.equals(ballPlayer)) {
-									
-									twoCanMove(actLook, p, firstPlayer);
-									
-								} else if(!p.equals(ballPlayer)) {
-									
-									tryRemplace1(actLook.get(0), p, actLook.get(0).getPreviousCase());
-									
-								}
+								twoCanMove(actLook, p, firstPlayer);
+								
+							} else if(!p.equals(ballPlayer)) {
+								
+								tryRemplace1(actLook.get(0), p, actLook.get(0).getPreviousCase());
+								
 							}
 						}
 					}
@@ -322,11 +316,11 @@ public class CoupAction {
 	
 	//research all action: depl_1 + depl_2 with number of player in depl_1 < number of player in depl_2
 	private void twoCanMove(ArrayList<Action> actLook, Player player, Player firstPlayer) {
-		if(!canFinish) { twoCanMoveDirection(actLook, player, firstPlayer, MoveDirection.UP);
-			if(!canFinish) { twoCanMoveDirection(actLook, player, firstPlayer, MoveDirection.RIGHT);
-				if(!canFinish) { twoCanMoveDirection(actLook, player, firstPlayer, MoveDirection.DOWN);
-					if(!canFinish) { twoCanMoveDirection(actLook, player, firstPlayer, MoveDirection.LEFT);
-		}	}	}	}
+		twoCanMoveDirection(actLook, player, firstPlayer, MoveDirection.UP);
+		if(!canFinish) { twoCanMoveDirection(actLook, player, firstPlayer, MoveDirection.RIGHT);
+			if(!canFinish) { twoCanMoveDirection(actLook, player, firstPlayer, MoveDirection.DOWN);
+				if(!canFinish) { twoCanMoveDirection(actLook, player, firstPlayer, MoveDirection.LEFT);
+		}	}	}
 	}
 	
 	
@@ -359,11 +353,11 @@ public class CoupAction {
 	//research action: depl_1 + depl_2 with number of player in depl_1 > number of player in depl_2
 	//this actions are only remplace first player
 	private void tryRemplace1(Action action, Player player, Case previousCase) {
-		if(!canFinish) { tryRemplace2(action, player, previousCase, MoveDirection.UP);
-			if(!canFinish) { tryRemplace2(action, player, previousCase, MoveDirection.RIGHT);
-				if(!canFinish) { tryRemplace2(action, player, previousCase, MoveDirection.DOWN);
-					if(!canFinish) { tryRemplace2(action, player, previousCase, MoveDirection.LEFT);
-		}	}	}	}
+		tryRemplace2(action, player, previousCase, MoveDirection.UP);
+		if(!canFinish) { tryRemplace2(action, player, previousCase, MoveDirection.RIGHT);
+			if(!canFinish) { tryRemplace2(action, player, previousCase, MoveDirection.DOWN);
+				if(!canFinish) { tryRemplace2(action, player, previousCase, MoveDirection.LEFT);
+		}	}	}
 	}
 	
 	//test action: depl_1 + depl_2 with number of player in depl_1 >= number of player in depl_2 in the deplacement
@@ -445,21 +439,20 @@ public class CoupAction {
 				if(verifPass) {
 				//depl + depl + pass
 					
-					for(Player p : team.getPlayers()) {
-						if(!canFinish) {
-							if(!p.equals(ballPlayer)   &&   stadium.playerCanPass(ballPlayer, p)) {
-								ArrayList<Action> actionThree = new ArrayList<>();
-				 				actionThree.add(actLook.get(0));
-				 				actionThree.add(actLook.get(1));
-				 				Case previousCase = new Case(ballPlayer.getPosition().getX(), ballPlayer.getPosition().getY());
-				 				Case nextCase = new Case(p.getPosition().getX(), p.getPosition().getY());
-				 				actionThree.add(new Action(ActionType.PASS, ballPlayer, p, previousCase, nextCase));
-				 				three.add(actionThree);
-				 				
-								if(p.getPosition().getX() == team.getButLine()) {
-									canFinish = true;
-									acts.add(tools.clone(actionThree));
-								}
+					for(int i = 0; !canFinish   &&   i != team.getPlayers().size(); i++) {
+						Player p = team.playerOfInt(i);
+						if(!p.equals(ballPlayer)   &&   stadium.playerCanPass(ballPlayer, p)) {
+							ArrayList<Action> actionThree = new ArrayList<>();
+			 				actionThree.add(actLook.get(0));
+			 				actionThree.add(actLook.get(1));
+			 				Case previousCase = new Case(ballPlayer.getPosition().getX(), ballPlayer.getPosition().getY());
+			 				Case nextCase = new Case(p.getPosition().getX(), p.getPosition().getY());
+			 				actionThree.add(new Action(ActionType.PASS, ballPlayer, p, previousCase, nextCase));
+			 				three.add(actionThree);
+			 				
+							if(p.getPosition().getX() == team.getButLine()) {
+								canFinish = true;
+								acts.add(tools.clone(actionThree));
 							}
 						}
 					}
@@ -469,7 +462,8 @@ public class CoupAction {
 				//pass + depl +depl: same condition of 2 for
 					firstPlayer = actLook.get(1).getNextPlayer();
 
-					for(Player p : team.getPlayers()) {
+					for(int i = 0; !canFinish   &&   i != team.getPlayers().size(); i++) {
+						Player p = team.playerOfInt(i);
 						threeCanMove(actLook, p, firstPlayer);
 					}
 					
@@ -490,11 +484,11 @@ public class CoupAction {
 	//research action: pass + depl_1 + depl_2
 	//this action are only move the last ballPlayer in depl_1
 	private void threeCanMove(ArrayList<Action> actLook, Player player, Player firstPlayer){
-		if(!canFinish) { threeCanMoveDeplacement(actLook, player, firstPlayer, MoveDirection.UP);
-			if(!canFinish) { threeCanMoveDeplacement(actLook, player, firstPlayer, MoveDirection.RIGHT);
-				if(!canFinish) { threeCanMoveDeplacement(actLook, player, firstPlayer, MoveDirection.DOWN);
-					if(!canFinish) { threeCanMoveDeplacement(actLook, player, firstPlayer, MoveDirection.LEFT);
-		}	}	}	}
+		threeCanMoveDeplacement(actLook, player, firstPlayer, MoveDirection.UP);
+		if(!canFinish) { threeCanMoveDeplacement(actLook, player, firstPlayer, MoveDirection.RIGHT);
+			if(!canFinish) { threeCanMoveDeplacement(actLook, player, firstPlayer, MoveDirection.DOWN);
+				if(!canFinish) { threeCanMoveDeplacement(actLook, player, firstPlayer, MoveDirection.LEFT);
+		}	}	}
 	}
 	
 	//test action: pass + depl_1 + depl_2 in the deplacement
@@ -559,15 +553,13 @@ public class CoupAction {
 	
 	//research must or worst acts with must or worst avancement and add to acts
 	public void initActs() {
-		if(!canFinish){
-			for(int i = 0; i != numberOfAction(); i++) {
-				if(i < one.size()   &&   avancement == oneHigh[i]) {
-					acts.add(one.get(i));
-				} else if(-1 < i-one.size()   &&   i-one.size() < two.size()   &&   avancement == twoHigh[i-one.size()]) {
-					acts.add(two.get(i-one.size()));
-				} else if(-1 < i-one.size()-two.size()   &&   avancement == threeHigh[i-one.size()-two.size()]) {
-					acts.add(three.get(i-one.size()-two.size()));
-				}
+		for(int i = 0; i != numberOfAction(); i++) {
+			if(i < one.size()   &&   avancement == oneHigh[i]) {
+				acts.add(one.get(i));
+			} else if(-1 < i-one.size()   &&   i-one.size() < two.size()   &&   avancement == twoHigh[i-one.size()]) {
+				acts.add(two.get(i-one.size()));
+			} else if(-1 < i-one.size()-two.size()   &&   avancement == threeHigh[i-one.size()-two.size()]) {
+				acts.add(three.get(i-one.size()-two.size()));
 			}
 		}
 	}
