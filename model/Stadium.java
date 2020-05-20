@@ -4,7 +4,7 @@ import model.enums.ActionResult;
 import model.enums.ActionType;
 import model.enums.MoveDirection;
 import model.enums.TeamPosition;
-
+import java.util.HashMap;
 import static java.lang.Math.abs;
 
 public class Stadium {
@@ -16,27 +16,47 @@ public class Stadium {
 	private Case playerWithBallCase;
 
     private boolean cheatModActivated;
-
-    private Player[][] board;
-    
     private Historic history;
 
+    private boolean visualisationMode;
+    
     public Stadium() {
-        topTeam = new Team("snowKids", TeamPosition.TOP, this);
-        bottomTeam = new Team("shadows", TeamPosition.BOTTOM, this);
+        topTeam = new Team("snowKids", TeamPosition.TOP, this, true);
+        bottomTeam = new Team("shadows", TeamPosition.BOTTOM, this, true);
+
+        this.history = new Historic(this);
+        this.history.newTurn(getCurrentTeamTurn());
+        this.visualisationMode = false;
+    }
+    
+    public void resetStadium() {
+    	this.reset();
 
         this.cheatModActivated = false;
-        this.history = new Historic();
+        this.history = new Historic(this);
         this.history.newTurn(getCurrentTeamTurn(), cheatModActivated);
     }
     
     public Team getTeam(TeamPosition position) {
         return position == TeamPosition.TOP ? topTeam : bottomTeam;
     }
+    
+    public void loadTopTeam(Team topTeam) {
+    	this.topTeam = topTeam;
+    }
+    
+    public void loadBotTeam(Team botTeam) {
+    	this.bottomTeam = botTeam;
+    }
 
     public void reset() {
-        topTeam.initialize();
-        bottomTeam.initialize();
+        topTeam.initializePlayers();
+        bottomTeam.initializePlayers();
+    }
+    
+    public void replaceTeam() {
+    	topTeam.replace();
+    	bottomTeam.replace();
     }
     
     public Player getPlayer(Case position) {
@@ -288,16 +308,11 @@ public class Stadium {
         boolean result = false;
         
         int contact = 0;
-        
-        for (Player currPlayer : team.getPlayers()) { 
-            boolean leftFriend = allyOnTheLeft(currPlayer);
-            boolean rightFriend = allyOnTheRight(currPlayer);
-            
-            //No neighbor on the left nor the right, so no antiplay
-            if (!leftFriend || !rightFriend){
-                return false;
-            }
-            
+		if (!allyMakeAStraightLine(team)){
+			return false;
+		}
+
+        for (Player currPlayer : team.getPlayers()) {
             if (inContactWithOpponent(currPlayer)) {
             	contact++;
             }
@@ -309,68 +324,30 @@ public class Stadium {
         
         return result;
     }
-    
-    private boolean allyOnTheLeft(Player p) {
-    	Case playerPos = p.getPosition();
-    	boolean allyOnTheLeft = false;
-    	
-    	for (Player currPlayer : p.getTeam().getPlayers()) {
-    		Case currPlayerPos = currPlayer.getPosition();
-    		
-    		if (currPlayerPos.getY() <= 0) {
-    			allyOnTheLeft = true;
-    		} else if (currPlayerPos.getX() == playerPos.getX()) {
-    			if (currPlayerPos.getY() == playerPos.getY() - 1) {
-    				allyOnTheLeft = true;
-    			}
-    		} else if (currPlayerPos.getX() == playerPos.getX() - 1) {
-    			if (currPlayerPos.getY() == playerPos.getY() - 1) {
-    				allyOnTheLeft = true;
-    			}
-    		} else if (currPlayerPos.getX() == playerPos.getX() + 1) {
-    			if (currPlayerPos.getY() == playerPos.getY() - 1) {
-    				allyOnTheLeft = true;
-    			}
-    		}
-    		
-    		if (allyOnTheLeft) {
-    			break;
-    		}
-    	}
-    	
-    	return allyOnTheLeft;
-    }
-    
-    private boolean allyOnTheRight(Player p) {
-    	Case playerPos = p.getPosition();
-    	boolean allyOnTheRight = false;
-    	
-    	for (Player currPlayer : p.getTeam().getPlayers()) {
-    		Case currPlayerPos = currPlayer.getPosition();
-    		
-    		if (currPlayerPos.getY() >= 6) {
-    			allyOnTheRight = true;
-    		} else if (currPlayerPos.getX() == playerPos.getX() - 1) {
-    			if (currPlayerPos.getY() == playerPos.getY() + 1) {
-    				allyOnTheRight = true;
-    			}
-    		} else if (currPlayerPos.getX() == playerPos.getX()) {
-    			if (currPlayerPos.getY() == playerPos.getY() + 1) {
-    				allyOnTheRight = true;
-    			}
-    		} else if (currPlayerPos.getX() == playerPos.getX() + 1) {
-    			if (currPlayerPos.getY() == playerPos.getY() + 1) {
-    				allyOnTheRight = true;
-    			}
-    		}
-    		
-    		if (allyOnTheRight) {
-    			break;
-    		}
-    	}
-    	
-    	return allyOnTheRight;
-    }
+
+    private boolean allyMakeAStraightLine(Team team) {
+		boolean result = true;
+		HashMap<Integer, Integer> index = new HashMap<>();
+		for (Player currPlayer : team.getPlayers()) {
+			Case position = currPlayer.getPosition();
+			index.putIfAbsent(position.getY(), position.getX());
+		}
+		if (index.size() != 7) {
+			result = false;
+		}else{
+			for (int i = 1; i < 6; i++)  {
+				int before = index.get(i - 1);
+				int after = index.get( i + 1);
+				int now = index.get(i);
+					if ((!(before + 1 == now || before == now || before - 1 == now)) ||
+							!(after + 1 == now || after == now || after - 1 == now)){
+						result = false;
+						break;
+				}
+			}
+		}
+		return result;
+	}
     
     private boolean inContactWithOpponent(Player p) {
     	Case playerPos = p.getPosition();
@@ -580,11 +557,73 @@ public class Stadium {
         	done = ActionResult.WIN;
         }
         
-        if (this.antiplay(currentTurn.getTeam())) {
+        if (this.antiplay(this.getCurrentTeamTurn())) {
+        	done = ActionResult.ANTIPLAY_CURRENT;
+        } else if(this.antiplay(this.getNotPlayingTeam())){
+        	done = ActionResult.ANTIPLAY;
+        }
+        
+        return done;
+	}
+	
+	public ActionResult actionPerformedAI(Action action) { //what controller must use
+        ActionResult done = ActionResult.DONE;
+        Turn currentTurn = this.history.getLast();
+
+		switch (action.getType()) {
+			case MOVE:
+				Player player = action.getMovedPlayer();
+				MoveDirection dir = action.getDirection();
+					simpleMove(player, dir);
+					currentTurn.addAction(action);
+					unselectPlayerIfNeeded(player);
+				
+				break;
+				
+			case PASS:
+				Player firstPlayer = action.getPreviousPlayer();
+				Player secondPlayer = action.getNextPlayer();
+					simplePass(firstPlayer, secondPlayer);
+					currentTurn.addAction(action);
+				
+				break;
+				
+			case END_TURN:
+					this.history.nextTurn();
+					this.history.newTurn(getCurrentTeamTurn());
+				
+				break;
+				
+			default:
+				throw new IllegalStateException("Please select a valid action type!");
+		}
+		
+        if (this.isAWin(currentTurn.getTeam().getPosition())) {
+        	done = ActionResult.WIN;
+        }
+        
+        if (this.antiplay(this.getCurrentTeamTurn())) {
+        	done = ActionResult.ANTIPLAY_CURRENT;
+        } else if(this.antiplay(this.getNotPlayingTeam())){
         	done = ActionResult.ANTIPLAY;
         }
 
         return done;
+	}
+	
+	public Team getNotPlayingTeam() {
+		Team res = null;
+
+		switch (getCurrentTeamTurn().getPosition()) {
+			case TOP:
+				res = getTeam(TeamPosition.BOTTOM);
+				break;
+			case BOTTOM:
+				res = getTeam(TeamPosition.TOP);
+				break;
+		}
+
+		return res;
 	}
 	
 	private void unselectPlayerIfNeeded(Player p) {
@@ -603,6 +642,10 @@ public class Stadium {
 	
 	public ActionResult undoAction() {
 		return this.history.undoLastAction();
+	}
+	
+	public boolean redoAction() {
+		return this.history.redoNextAction();
 	}
 	
 	public ActionResult resetTurn() {
@@ -758,6 +801,17 @@ public class Stadium {
 		//holoTV.getArkadiaNews().repaint();
 	}
 
-
+	
+	public Historic getHistory() {
+		return this.history;
+	}
+	
+	public boolean isInVisualisationMode() {
+		return this.visualisationMode;
+	}
+	
+	public void setVisualisaionMode(boolean visu) {
+		this.visualisationMode = visu;
+	}
 }
 

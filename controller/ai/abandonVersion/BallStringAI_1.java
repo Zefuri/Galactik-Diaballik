@@ -1,17 +1,11 @@
-package controller.ai;
+package controller.ai.abandonVersion;
+
+import model.*;
+import model.enums.ActionType;
+import model.enums.TeamPosition;
 
 import java.util.ArrayList;
 import java.util.Random;
-
-import controller.ai.minmax.MaxMinBallString;
-
-import model.Stadium;
-import model.Team;
-import model.Player;
-import model.Case;
-import model.enums.ActionType;
-import model.enums.TeamPosition;
-import model.Action;
 
 public class BallStringAI_1{
 	

@@ -12,16 +12,21 @@ public class Team {
 	private Stadium stadium;
 	private TeamPosition position;
 	private Player ballPlayer;
+	private int butLine;
 
-	public Team(String name, TeamPosition position, Stadium stadium) {
+	public Team(String name, TeamPosition position, Stadium stadium, boolean toInit) {
 		this.name = name;
 		this.position = position;
 		this.stadium = stadium;
-		initialize();
+		this.players = new ArrayList<>();
+		
+		if (toInit) {
+			initializePlayers();
+		}
 	}
 	
-	public void initialize() {
-		players = new ArrayList<>();
+	public void initializePlayers() {
+		this.players.clear();
 		
 		for (int i = 0; i < ModelConstants.BOARD_SIZE; i++) {
 			Player p;
@@ -29,9 +34,11 @@ public class Team {
 			if (position == TeamPosition.TOP) {
 				p = new Player("TOP_" + i);
 				p.setPosition(new Case(0, i));
+				this.butLine = 6;
 			} else {
 				p = new Player("BOT_" + i);
 				p.setPosition(new Case(6, i));
+				this.butLine = 0;
 			}
 			
 			if (i == 3) {
@@ -40,6 +47,23 @@ public class Team {
 			}
 			
 			addPlayer(p);
+		}
+	}
+	
+	public void replace() {
+		for (Player p : this.getPlayers()) {
+			int index = p.getNumero();
+			p.setBallPossession(false);
+			
+			if (position == TeamPosition.TOP) {
+				p.setPosition(new Case(0, index));
+			} else {
+				p.setPosition(new Case(6, index));
+			}
+			
+			if (index == 3) {
+				p.setBallPossession(true);
+			}
 		}
 	}
 	
@@ -74,6 +98,10 @@ public class Team {
 	
 	public void setBallPlayer(Player player) {
 		ballPlayer = player;
+	}
+	
+	public int getButLine() {
+		return butLine;
 	}
 	
 	//number of possibility pass
@@ -158,5 +186,17 @@ public class Team {
 
 	public boolean isWinner() {
 		return stadium.isAWin(position);
+	}
+	
+	public Player getPlayerFromName(String name) {
+		//System.out.println("given name : " + name);
+		
+		for (Player p : this.getPlayers()) {
+			if (p.hasTheSameName(name)) {
+				return p;
+			}
+		}
+		
+		throw new IllegalStateException("There must be a player with the given name!");
 	}
 }

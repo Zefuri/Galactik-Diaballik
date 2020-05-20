@@ -1,4 +1,4 @@
-package controller.ai;
+package controller.ai.artefact;
 
 import model.Stadium;
 import model.Team;

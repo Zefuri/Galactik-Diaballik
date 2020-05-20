@@ -7,4 +7,5 @@ public enum ActionType {
     UNDO,
     RESET,
     CHEAT
+    REDO
 }

@@ -12,7 +12,7 @@ public class Turn {
 
 
 	public Turn(Team team) {
-		this.actions = new Action[3];
+		this.actions = new Action[]{null, null, null};
 		this.team = team;
 		this.nbPass = 0;
 		this.nbMove = 0;
@@ -45,6 +45,18 @@ public class Turn {
 		return this.actions[index];
 	}
 	
+	public Action getFirstAction() {
+		return this.getAction(0);
+	}
+	
+	public Action getSecondAction() {
+		return this.getAction(1);
+	}
+	
+	public Action getThirdAction() {
+		return this.getAction(2);
+	}
+	
 	public Team getTeam() {
 		return this.team;
 	}
@@ -68,7 +80,7 @@ public class Turn {
 	public ActionResult undo() {
 		ActionResult res = ActionResult.DONE;
 		
-		if(this.nbMove + this.nbPass > 0) {
+		if (this.nbMove + this.nbPass > 0) {
 			Action actionToDelete = this.actions[(this.nbPass + this.nbMove) - 1];
 			
 			if(actionToDelete.getType() == ActionType.PASS) {
@@ -83,6 +95,11 @@ public class Turn {
 					this.nbMove--;
 				}
 			}
+			
+			//We clear the action properly (better for the save) if we are not in visualization mode
+			if (!this.team.getStadium().isInVisualisationMode()) {
+				this.actions[this.nbPass + this.nbMove] = null;
+			}
 		} else {
 			res = ActionResult.ERROR;
 		}
@@ -90,10 +107,23 @@ public class Turn {
 		return res;
 	}
 	
-	public ActionResult deleteActions() {
-		ActionResult res = ActionResult.DONE;
+	public void redo() {
+		Action actionToPerform = this.actions[this.nbPass + this.nbMove];
 		
-		while(this.nbMove + this.nbPass > 0 && res == ActionResult.DONE) {
+		if (actionToPerform.getType() == ActionType.PASS) {
+			actionToPerform.getPreviousPlayer().setBallPossession(false);
+			actionToPerform.getNextPlayer().setBallPossession(true);
+			this.nbPass++;
+		} else {
+			actionToPerform.getPreviousPlayer().setPosition(actionToPerform.getNextCase());
+			this.nbMove++;
+		}
+	}
+	
+	public ActionResult deleteActions() {
+		ActionResult res = ActionResult.ERROR;
+		
+		while (this.nbMove + this.nbPass > 0) {
 			res = undo();
 		}
 		
@@ -131,14 +161,40 @@ public class Turn {
 	}
 
 	public String toString(){
-		String acts = "";
+		StringBuilder builder = new StringBuilder();
+		
 		for(Action a : actions){
-			acts += a.toString();
+			builder.append((a != null) ? a.toString() : "NA\n\n");
 		}
-		return acts;
+		
+		return builder.toString();
+	}
+	
+	public void setNbMovesDone(int nbMoves) {
+		this.nbMove = nbMoves;
+	}
+	
+	public void setNbPassesDone(int nbPasses) {
+		this.nbPass = nbPasses;
+	}
+	
+	public boolean undoGoesToPreviousTour() {
+		return this.nbPass + this.nbMove == 0;
+	}
+	
+	public boolean redoGoesToNextTour() {
+		if (this.nbMove + this.nbPass == 3) {
+			return true;
+		}
+		
+		return (this.actions[this.nbPass + this.nbMove] == null);
 	}
 
 	public void switchCheatModActivated() {
 		this.cheatModActivated = !cheatModActivated;
 	}
+	
+	public boolean isEmpty() {
+		return this.actions[0] == null && this.actions[1] == null && this.actions[2] == null;
+	} 
 }

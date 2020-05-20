@@ -43,19 +43,24 @@ public class MainMenuPanel extends JPanel implements Observable {
         titleLabel.setFont(titleFont);
         mainTitlePanel.add(titleLabel, gbc);
 
-        buttonsPanel = new JPanel(new GridLayout(3,1)); // panel will hold the buttons. need as many rows as buttons
+        buttonsPanel = new JPanel(new GridLayout(4,1)); // panel will hold the buttons. need as many rows as buttons
+        buttonsPanel.setBackground(backgroundColor);
         this.add(buttonsPanel);
 
         buttonsFont = customFont.deriveFont(45f); // use the font and set its size
-        buttonsDimensions = new Dimension(300, 70); // arbitrary button dimension
+        buttonsDimensions = new Dimension(400, 70); // arbitrary button dimension
 
         //create the play button
         JButton playButton = createButton("Jouer");
         playButton.addActionListener(actionEvent -> notify(UserInput.CLICKED_PLAY)); // action listener for when button is clicked
 
         // create the settings button
-        JButton settingsButton = createButton("Option");
-        settingsButton.addActionListener(actionEvent -> notify(UserInput.CLICKED_SETTINGS));
+        JButton settingsButton = createButton("Charger");
+        settingsButton.addActionListener(actionEvent -> notify(UserInput.CLICKED_LOAD));
+
+        // create the visualize button
+        JButton visualizeButton = createButton("Visualiser partie");
+        visualizeButton.addActionListener(actionEvent -> notify(UserInput.CLICKED_VISU));
 
         // create the quit button
         JButton quitButton = createButton("Quitter");

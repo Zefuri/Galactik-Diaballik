@@ -3,7 +3,6 @@ package view;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -19,7 +18,7 @@ import patterns.ObservableHandler;
 import patterns.Observer;
 
 public class GamePanel extends JPanel implements Observable {
-	private final ObservableHandler observableHandler;
+	private ObservableHandler observableHandler;
 	private final VisualResources visualResources = VisualResources.getInstance();
 
 	private Stadium stadium;	
@@ -32,6 +31,7 @@ public class GamePanel extends JPanel implements Observable {
 	private JLabel nbMoveRemaining;
 	private JButton undoButton;
 	private JButton resetTurnButton;
+	private JButton redoButton;
 	private JButton endTurnButton;
 	private JButton cheatModButton;
 	
@@ -89,7 +89,7 @@ public class GamePanel extends JPanel implements Observable {
 	
 	public void showEndGamePopUp(String teamName) {
 		int input = JOptionPane.showOptionDialog(null, "The team \"" + teamName + "\" won the game!", "Game over", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
-		
+
 		if (input == JOptionPane.OK_OPTION || input == JOptionPane.CANCEL_OPTION || input == JOptionPane.CLOSED_OPTION) {
 			System.exit(0);
 		}
@@ -101,6 +101,14 @@ public class GamePanel extends JPanel implements Observable {
 		if (input == JOptionPane.OK_OPTION || input == JOptionPane.CANCEL_OPTION || input == JOptionPane.CLOSED_OPTION) {
 			System.exit(0);
 		}
+	}
+	
+	public void showFirstTurnReachedPopup() {
+		JOptionPane.showMessageDialog(null, "You reached the first turn of this game!");
+	}
+	
+	public void showLastTurnReachedPopup() {
+		JOptionPane.showMessageDialog(null, "You reached the last turn of this game!");
 	}
 	
 	private void setMargin() {
@@ -119,6 +127,7 @@ public class GamePanel extends JPanel implements Observable {
 	
 	private void createGameControlPanel() {
 		this.gameControlPanel = new JPanel(new GridLayout(5, 1, 0, this.getWidth()/20));
+		// this.gameControlPanel = new JPanel(new GridLayout(4, 1));
 		
 		this.createTurnPanel();
 		this.createActionsRemainingPanel();
@@ -136,7 +145,7 @@ public class GamePanel extends JPanel implements Observable {
 		// Cr�ation et placement du JLabel annon�ant le num�ro du tour
 		this.nbTurn = new JLabel("Tour " + (this.stadium.getTurnIndex() + 1) + " :");
 		this.nbTurn.setFont(this.visualResources.customFontItal);
-		this.nbTurn.setBorder(new EmptyBorder(0, this.getWidth()/20, 0, this.getWidth()/20));
+		this.nbTurn.setBorder(new EmptyBorder(0, 20, 0, 20));
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -147,7 +156,7 @@ public class GamePanel extends JPanel implements Observable {
 		// Cr�ation et placement du JLabel annon�ant � quelle �quipe jouer
 		this.whosturn = new JLabel(this.stadium.getCurrentTeamTurn().getName() + ", � vous !");
 		this.whosturn.setFont(this.visualResources.customFontItal);
-		this.whosturn.setBorder(new EmptyBorder(0, this.getWidth()/20, 0, this.getWidth()/20));
+		this.whosturn.setBorder(new EmptyBorder(0, 20, 0, 20));
 		
 		this.changeTeamTurnColor();
 		
@@ -174,8 +183,8 @@ public class GamePanel extends JPanel implements Observable {
 		
 		actionsRemainingPanel.add(this.nbPassRemaining, gbc);
 		
-		// Cr�ation et placement du JLabel annon�ant le nombre de d�placements restants
-		this.nbMoveRemaining = new JLabel("D�placements : " + (2 - this.stadium.getNbMovesDone()));
+		// Creation et placement du JLabel annoncant le nombre de deplacements restants
+		this.nbMoveRemaining = new JLabel("Deplacements : " + (2 - this.stadium.getNbMovesDone()));
 		this.nbMoveRemaining.setFont(this.visualResources.customFont);
 		
 		gbc.gridx = 0;
@@ -213,11 +222,24 @@ public class GamePanel extends JPanel implements Observable {
 		gbc.weightx = 0.5;
 		
 		turnButtons.add(this.resetTurnButton, gbc);
+		
+		//Creation et placement du JButton permettant de rejouer une action (en avant), invisible au depart
+		this.redoButton = new JButton();
+		this.redoButton.setIcon(new ImageIcon(this.visualResources.forwardIconImage));
+		this.redoButton.setVisible(false);
+		
+		gbc.gridx = 2;
+		gbc.gridy = 0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0.5;
+		
+		turnButtons.add(this.redoButton, gbc);
 
 		this.gameControlPanel.add(turnButtons);
 		
 		this.undoButton.addActionListener(actionEvent -> notify(ActionType.UNDO));
 		this.resetTurnButton.addActionListener(actionEvent -> notify(ActionType.RESET));
+		this.redoButton.addActionListener(actionEvent -> notify(ActionType.REDO));
 	}
 	
 	private void createEndTurnButtonPanel() {
@@ -264,5 +286,10 @@ public class GamePanel extends JPanel implements Observable {
 		} else {
 			this.cheatModButton.setBackground(null);
 		}
+	
+	public void overwriteComponents() {
+		this.endTurnButton.setVisible(false);
+		this.resetTurnButton.setVisible(false);
+		this.redoButton.setVisible(true);
 	}
 }
