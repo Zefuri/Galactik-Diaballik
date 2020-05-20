@@ -1,4 +1,4 @@
-package ai.artefact;
+package controller.ai.artefact;
 
 import java.util.Random;
 import model.Stadium;
