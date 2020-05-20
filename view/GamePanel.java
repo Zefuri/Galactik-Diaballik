@@ -119,8 +119,7 @@ public class GamePanel extends JPanel implements Observable {
 	}
 	
 	private void createGameControlPanel() {
-		this.gameControlPanel = new JPanel(new GridLayout(5, 1, 0, this.getWidth()/20));
-		// this.gameControlPanel = new JPanel(new GridLayout(4, 1));
+		this.gameControlPanel = new JPanel(new GridLayout(5, 1));
 		
 		this.createTurnPanel();
 		this.createActionsRemainingPanel();
@@ -135,13 +134,14 @@ public class GamePanel extends JPanel implements Observable {
 		JPanel turnPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		
-		// Cr�ation et placement du JLabel annon�ant le num�ro du tour
+		// Creation et placement du JLabel annoncant le numero du tour
 		this.nbTurn = new JLabel("Tour " + (this.stadium.getTurnIndex() + 1) + " :");
 		this.nbTurn.setFont(this.visualResources.customFontItal);
 		this.nbTurn.setBorder(new EmptyBorder(0, 20, 0, 20));
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.insets = new Insets(0, 20, 0, 20);
 		gbc.anchor = GridBagConstraints.ABOVE_BASELINE;
 		
 		turnPanel.add(this.nbTurn, gbc);
@@ -155,6 +155,7 @@ public class GamePanel extends JPanel implements Observable {
 		
 		gbc.gridx = 0;
 		gbc.gridy = 1;
+		gbc.insets = new Insets(0, 20, 0, 20);
 		gbc.anchor = GridBagConstraints.ABOVE_BASELINE;
 		
 		turnPanel.add(this.whosturn, gbc);
@@ -172,6 +173,7 @@ public class GamePanel extends JPanel implements Observable {
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.insets = new Insets(0, 20, 0, 20);
 		gbc.anchor = GridBagConstraints.ABOVE_BASELINE_LEADING;
 		
 		actionsRemainingPanel.add(this.nbPassRemaining, gbc);
@@ -182,7 +184,7 @@ public class GamePanel extends JPanel implements Observable {
 		
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		gbc.ipady = this.getWidth()/20;
+		gbc.insets = new Insets(0, 20, 0, 20);
 		gbc.anchor = GridBagConstraints.ABOVE_BASELINE_LEADING;
 		
 		actionsRemainingPanel.add(this.nbMoveRemaining, gbc);
@@ -200,6 +202,7 @@ public class GamePanel extends JPanel implements Observable {
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.insets = new Insets(0, 20, 0, 10);
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		
@@ -211,6 +214,7 @@ public class GamePanel extends JPanel implements Observable {
 		
 		gbc.gridx = 2;
 		gbc.gridy = 0;
+		gbc.insets = new Insets(0, 10, 0, 20);
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		
@@ -223,6 +227,7 @@ public class GamePanel extends JPanel implements Observable {
 		
 		gbc.gridx = 2;
 		gbc.gridy = 0;
+		gbc.insets = new Insets(0, 20, 0, 20);
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		
@@ -245,6 +250,7 @@ public class GamePanel extends JPanel implements Observable {
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.insets = new Insets(0, 20, 0, 20);
 		gbc.anchor = GridBagConstraints.ABOVE_BASELINE;
 		
 		endTurnButtonPanel.add(this.endTurnButton, gbc);
