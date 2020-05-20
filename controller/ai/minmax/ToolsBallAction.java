@@ -1,14 +1,26 @@
 package controller.ai.minmax;
 
+import java.util.ArrayList;
+
 import model.Stadium;
 import model.Team;
 import model.Player;
 import model.Case;
+import model.Action;
 import model.enums.MoveDirection;
 import model.enums.TeamPosition;
 import model.ModelConstants;
 
 public class ToolsBallAction {
+	
+	//return a clone of turn
+	public ArrayList<Action> clone(ArrayList<Action> turn) {
+		ArrayList<Action> clone = new ArrayList<>();
+		for(Action action : turn) {
+			clone.add(action);
+		}
+		return clone;
+	}
 	
 	
 	//return the avancement of team ball (6 - ball position if team bottom and 0 + ball position if team top)
@@ -17,6 +29,7 @@ public class ToolsBallAction {
 			return team.getBallPlayer().getPosition().getX();
 		return (ModelConstants.BOARD_SIZE - 1) - team.getBallPlayer().getPosition().getX();
 	}
+	
 	
 	//return the difference between the avancement of two ball
 	public int ballAvance(Team team){
