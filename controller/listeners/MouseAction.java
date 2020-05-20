@@ -1,17 +1,12 @@
 package controller.listeners;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import model.Action;
 import model.Case;
-import model.Player;
 import model.Stadium;
 import model.enums.ActionResult;
 import model.enums.ActionType;
-import model.enums.MoveDirection;
-import patterns.Observable;
 import patterns.Observer;
 import view.HoloTV;
 
@@ -116,7 +111,8 @@ public class MouseAction extends MouseAdapter implements Observer {
 				break;
 
 			case CHEAT :
-
+				stadium.switchCheatModActivated();
+				holoTV.getGamePanel().cheatModColorToggle(stadium.isCheatModActivated());
 				break;
 		}
 		

@@ -1,10 +1,6 @@
 package view;
 
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 
 import javax.swing.Icon;
@@ -260,5 +256,13 @@ public class GamePanel extends JPanel implements Observable {
 		this.gameControlPanel.add(cheatModPanel);
 
 		this.cheatModButton.addActionListener(actionEvent -> notify(ActionType.CHEAT));
+	}
+
+	public void cheatModColorToggle(boolean isCheatMod) {
+		if (isCheatMod) {
+			this.cheatModButton.setBackground(Color.GREEN);
+		} else {
+			this.cheatModButton.setBackground(null);
+		}
 	}
 }
