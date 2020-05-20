@@ -37,6 +37,7 @@ public class GamePanel extends JPanel implements Observable {
 	private JButton undoButton;
 	private JButton resetTurnButton;
 	private JButton endTurnButton;
+	private JButton cheatModButton;
 	
 	public GamePanel(Stadium stadium) {
 		super(new BorderLayout());
@@ -121,12 +122,13 @@ public class GamePanel extends JPanel implements Observable {
 	}
 	
 	private void createGameControlPanel() {
-		this.gameControlPanel = new JPanel(new GridLayout(4, 1, 0, this.getWidth()/20));
+		this.gameControlPanel = new JPanel(new GridLayout(5, 1, 0, this.getWidth()/20));
 		
 		this.createTurnPanel();
 		this.createActionsRemainingPanel();
 		this.createTurnButtonsPanel();
 		this.createEndTurnButtonPanel();
+		this.createCheatModPanel();
 		
 		this.add(this.gameControlPanel, BorderLayout.EAST);
 	}
@@ -240,5 +242,23 @@ public class GamePanel extends JPanel implements Observable {
 		
 		// Ajout de la fonction "observeur/observ�" au endTurnButton permettant de notifier la partie controller
 		this.endTurnButton.addActionListener(actionEvent -> notify(ActionType.END_TURN));
+	}
+
+	private void createCheatModPanel() {
+		JPanel cheatModPanel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		this.cheatModButton = new JButton("Cheat Mod");
+		this.cheatModButton.setFont(this.visualResources.customFontSuperItal);
+
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.anchor = GridBagConstraints.ABOVE_BASELINE;
+
+		cheatModPanel.add(this.cheatModButton, gbc);
+
+		this.gameControlPanel.add(cheatModPanel);
+
+		this.cheatModButton.addActionListener(actionEvent -> notify(ActionType.CHEAT));
 	}
 }

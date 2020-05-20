@@ -114,6 +114,10 @@ public class MouseAction extends MouseAdapter implements Observer {
 			case RESET :
 				res = this.stadium.resetTurn();
 				break;
+
+			case CHEAT :
+
+				break;
 		}
 		
 		if (res == ActionResult.ERROR) {
