@@ -5,11 +5,11 @@ import controller.listeners.MouseAction;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Repainter implements ActionListener {
+public class PVETimer implements ActionListener {
 
     private MouseAction mouseAction;
 
-    public Repainter(MouseAction mouseAction) {
+    public PVETimer(MouseAction mouseAction) {
         this.mouseAction = mouseAction;
     }
 

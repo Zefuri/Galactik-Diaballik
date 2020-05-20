@@ -1,7 +1,7 @@
 package controller.listeners;
 
 
-import controller.Repainter;
+import controller.PVETimer;
 import controller.ai.BallActionAI_1;
 import model.Action;
 import model.Case;
@@ -46,13 +46,13 @@ public class MouseAction extends MouseAdapter implements Observer {
 			AI = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.BOTTOM)); // setup the AI as the bottom player
 			isAITurn = false; // player starts
 			AIActions = new ArrayList<>();
-			timer = new Timer(300, new Repainter(this)); // AI plays every 0.3 seconds
+			timer = new Timer(300, new PVETimer(this)); // AI plays every 0.3 seconds
 			timer.start();
 		}
 	}
 	
 	@Override
-	public void mousePressed(MouseEvent e) {
+	public void mouseClicked(MouseEvent e) {
 		if (!this.visualisationMode) {
 			if (!isAITurn) {
 				ActionResult result = null;
