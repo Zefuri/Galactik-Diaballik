@@ -82,6 +82,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 			} else {
 				holoTV.switchToEndGamePanel(GameResult.DEFEAT, stadium.getTeam(TeamPosition.TOP).getName());
 			}
+			clearSelectedPlayer();
 		}
 		
 		if (result == ActionResult.ANTIPLAY) {
@@ -90,6 +91,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 			} else {
 				holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
 			}
+			clearSelectedPlayer();
 		}
 	}
 	
@@ -177,7 +179,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 				if (result == ActionResult.DONE) {
 					setPlayerAloneCase(player.getPosition());
 				} else if (result == ActionResult.ANTIPLAY) {
-					throw new RuntimeException("Antiplay detected!");
+					System.out.println("Antiplay detected!");
 				} else {
 					throw new IllegalStateException("Either it is not your turn, or the selected case is not situated next to the player.");
 				}

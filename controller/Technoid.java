@@ -47,6 +47,7 @@ public class Technoid implements Observer {
                 MouseAction mouseActionNoAI = new MouseAction(holoTV, stadium, false);
                 holoTV.addArkadiaNewsMouseListener(mouseActionNoAI);
                 holoTV.getGamePanel().addObserver(mouseActionNoAI);
+                holoTV.updateGameInfos();
                 holoTV.switchToGamePanel();
                 break;
 
@@ -55,11 +56,13 @@ public class Technoid implements Observer {
                 MouseAction mouseActionWithAI = new MouseAction(holoTV, stadium, true);
                 holoTV.addArkadiaNewsMouseListener(mouseActionWithAI);
                 holoTV.getGamePanel().addObserver(mouseActionWithAI);
+                holoTV.updateGameInfos();
                 holoTV.switchToGamePanel();
                 break;
 
             case CLICKED_CVC: // context : GameModePanel
             	stadium.resetStadium();
+            	holoTV.updateGameInfos();
                 holoTV.switchToGamePanel();
 
                 BallActionAI_1 AI1 = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.TOP));

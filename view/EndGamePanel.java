@@ -36,10 +36,8 @@ public class EndGamePanel extends JPanel implements Observable {
 		
 		this.observableHandler = new ObservableHandler();
 		this.gbc = new GridBagConstraints();
-	}
 	
-	public void initialize(GameResult gameResult, String teamName) {
-		this.setGameResult(gameResult, teamName);
+		this.createResultLabel(GameResult.VICTORY, "Snow Kids");
 		this.createReplayButton();
 		this.createNewGameButton();
 		this.createMainMenuButton();
@@ -50,33 +48,40 @@ public class EndGamePanel extends JPanel implements Observable {
 		
 		switch (gameResult) {
 		case DEFEAT:
-			this.resultLabel = new JLabel("Défaite ...");
-			this.resultDescriptionLabel = new JLabel("Les " + this.teamName + " se sont inclinés face à leurs adversaires ...");
+			this.resultLabel.setText("Défaite ...");
+			this.resultDescriptionLabel.setText("Les " + this.teamName + " se sont inclinés face à leurs adversaires ...");
 			
 			this.resultLabel.setForeground(this.visualResources.customRed);
 			break;
 			
 		case DEFEAT_ANTIPLAY:
-			this.resultLabel = new JLabel("Défaite ...");
-			this.resultDescriptionLabel = new JLabel("Les " + this.teamName + " ont fait un antijeu les menant à leur perte ...");
+			this.resultLabel.setText("Défaite ...");
+			this.resultDescriptionLabel.setText("Les " + this.teamName + " ont fait un antijeu les menant à leur perte ...");
 			
 			this.resultLabel.setForeground(this.visualResources.customRed);
 			break;
 			
 		case VICTORY:
-			this.resultLabel = new JLabel("VICTOIRE !");
-			this.resultDescriptionLabel = new JLabel("Les " + this.teamName + " ont été supérieurs à leurs adversaires !");
+			this.resultLabel .setText("VICTOIRE !");
+			this.resultDescriptionLabel.setText("Les " + this.teamName + " ont été supérieurs à leurs adversaires !");
 			
 			this.resultLabel.setForeground(this.visualResources.customBlue);
 			break;
 			
 		case VICTORY_ANTIPLAY:
-			this.resultLabel = new JLabel("VICTOIRE !");
-			this.resultDescriptionLabel = new JLabel("Les " + this.teamName + " ont gagné suite à l'antijeu de leurs adversaires !");
+			this.resultLabel.setText("VICTOIRE !");
+			this.resultDescriptionLabel.setText("Les " + this.teamName + " ont gagné suite à l'antijeu de leurs adversaires !");
 			
 			this.resultLabel.setForeground(this.visualResources.customBlue);
 			break;
 		}
+	}
+	
+	private void createResultLabel(GameResult gameResult, String teamName) {
+		this.resultLabel = new JLabel();
+		this.resultDescriptionLabel = new JLabel();
+		
+		this.setGameResult(gameResult, teamName);
 		
 		this.resultLabel.setFont(this.visualResources.customFontSuperItal.deriveFont(80f));
 		this.resultLabel.setBorder(new EmptyBorder(0, 0, 0, 20));

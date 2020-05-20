@@ -160,7 +160,7 @@ public class HoloTV implements Runnable {
 	
 	public void switchToEndGamePanel(GameResult gameResult, String teamName) {
 		// create the end game panel
-		this.endGamePanel.initialize(gameResult, teamName);
+		this.endGamePanel.setGameResult(gameResult, teamName);
 		
 		// replacing the current panel
 		frame.getContentPane().removeAll();
