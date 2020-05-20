@@ -121,7 +121,7 @@ public class Technoid implements Observer {
                             stadium.actionPerformedAI(currentAction);
                         }
 
-                        ArrayList<Action> AI2Actions = AI2.play(1);
+                        ArrayList<Action> AI2Actions = AI2.play(2);
                         for(Action currentAction : AI2Actions) {
                             stadium.actionPerformedAI(currentAction);
                         }
