@@ -1,11 +1,11 @@
-package controller.listeners;
+package listeners;
 
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-import controller.ai.BallActionAI_1;
+import ai.BallActionAI_1;
 
 import model.Action;
 import model.Case;
