@@ -89,7 +89,7 @@ public class Team {
 	}
 	
 	public boolean isCurrentlyPlaying() {
-		return this.equals(this.stadium.getCurrentTeamTurn());
+		return (this.equals(this.stadium.getCurrentTeamTurn()) || this.stadium.isCheatModActivated());
 	}
 	
 	public Player getBallPlayer() throws IllegalStateException {

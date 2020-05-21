@@ -1,4 +1,3 @@
-import controller.Technoid;
 import model.Stadium;
 import view.HoloTV;
 

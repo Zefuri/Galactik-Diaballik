@@ -1,24 +1,14 @@
 package view;
 
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
 import model.Stadium;
 import model.enums.ActionType;
-
 import patterns.Observable;
 import patterns.ObservableHandler;
 import patterns.Observer;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 
 public class GamePanel extends JPanel implements Observable {
 	private ObservableHandler observableHandler;
@@ -36,6 +26,7 @@ public class GamePanel extends JPanel implements Observable {
 	private JButton resetTurnButton;
 	private JButton redoButton;
 	private JButton endTurnButton;
+	private JButton cheatModButton;
 	
 	public GamePanel(Stadium stadium) {
 		super(new BorderLayout());
@@ -128,12 +119,13 @@ public class GamePanel extends JPanel implements Observable {
 	}
 	
 	private void createGameControlPanel() {
-		this.gameControlPanel = new JPanel(new GridLayout(4, 1));
+		this.gameControlPanel = new JPanel(new GridLayout(5, 1));
 		
 		this.createTurnPanel();
 		this.createActionsRemainingPanel();
 		this.createTurnButtonsPanel();
 		this.createEndTurnButtonPanel();
+		this.createCheatModPanel();
 		
 		this.add(this.gameControlPanel, BorderLayout.EAST);
 	}
@@ -142,13 +134,14 @@ public class GamePanel extends JPanel implements Observable {
 		JPanel turnPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		
-		// Crï¿½ation et placement du JLabel annonï¿½ant le numï¿½ro du tour
+		// Creation et placement du JLabel annoncant le numero du tour
 		this.nbTurn = new JLabel("Tour " + (this.stadium.getTurnIndex() + 1) + " :");
 		this.nbTurn.setFont(this.visualResources.customFontItal);
 		this.nbTurn.setBorder(new EmptyBorder(0, 20, 0, 20));
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.insets = new Insets(0, 20, 0, 20);
 		gbc.anchor = GridBagConstraints.ABOVE_BASELINE;
 		
 		turnPanel.add(this.nbTurn, gbc);
@@ -162,6 +155,7 @@ public class GamePanel extends JPanel implements Observable {
 		
 		gbc.gridx = 0;
 		gbc.gridy = 1;
+		gbc.insets = new Insets(0, 20, 0, 20);
 		gbc.anchor = GridBagConstraints.ABOVE_BASELINE;
 		
 		turnPanel.add(this.whosturn, gbc);
@@ -179,17 +173,18 @@ public class GamePanel extends JPanel implements Observable {
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.insets = new Insets(0, 20, 0, 20);
 		gbc.anchor = GridBagConstraints.ABOVE_BASELINE_LEADING;
 		
 		actionsRemainingPanel.add(this.nbPassRemaining, gbc);
 		
-		// Crï¿½ation et placement du JLabel annonï¿½ant le nombre de dï¿½placements restants
-		this.nbMoveRemaining = new JLabel("Dï¿½placements : " + (2 - this.stadium.getNbMovesDone()));
+		// Creation et placement du JLabel annoncant le nombre de deplacements restants
+		this.nbMoveRemaining = new JLabel("Deplacements : " + (2 - this.stadium.getNbMovesDone()));
 		this.nbMoveRemaining.setFont(this.visualResources.customFont);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		gbc.ipady = this.getWidth()/20;
+		gbc.insets = new Insets(0, 20, 0, 20);
 		gbc.anchor = GridBagConstraints.ABOVE_BASELINE_LEADING;
 		
 		actionsRemainingPanel.add(this.nbMoveRemaining, gbc);
@@ -207,6 +202,7 @@ public class GamePanel extends JPanel implements Observable {
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.insets = new Insets(0, 20, 0, 10);
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		
@@ -218,18 +214,20 @@ public class GamePanel extends JPanel implements Observable {
 		
 		gbc.gridx = 2;
 		gbc.gridy = 0;
+		gbc.insets = new Insets(0, 10, 0, 20);
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		
 		turnButtons.add(this.resetTurnButton, gbc);
 		
-		//Création et placement du JButton permettant de rejouer une action (en avant), invisible au départ
+		//Creation et placement du JButton permettant de rejouer une action (en avant), invisible au depart
 		this.redoButton = new JButton();
 		this.redoButton.setIcon(new ImageIcon(this.visualResources.forwardIconImage));
 		this.redoButton.setVisible(false);
 		
 		gbc.gridx = 2;
 		gbc.gridy = 0;
+		gbc.insets = new Insets(0, 20, 0, 20);
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 0.5;
 		
@@ -252,6 +250,7 @@ public class GamePanel extends JPanel implements Observable {
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.insets = new Insets(0, 20, 0, 20);
 		gbc.anchor = GridBagConstraints.ABOVE_BASELINE;
 		
 		endTurnButtonPanel.add(this.endTurnButton, gbc);
@@ -260,6 +259,32 @@ public class GamePanel extends JPanel implements Observable {
 		
 		// Ajout de la fonction "observeur/observï¿½" au endTurnButton permettant de notifier la partie controller
 		this.endTurnButton.addActionListener(actionEvent -> notify(ActionType.END_TURN));
+	}
+
+	private void createCheatModPanel() {
+		JPanel cheatModPanel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		this.cheatModButton = new JButton("Cheat Mod");
+		this.cheatModButton.setFont(this.visualResources.customFontSuperItal);
+
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.anchor = GridBagConstraints.ABOVE_BASELINE;
+
+		cheatModPanel.add(this.cheatModButton, gbc);
+
+		this.gameControlPanel.add(cheatModPanel);
+
+		this.cheatModButton.addActionListener(actionEvent -> notify(ActionType.CHEAT));
+	}
+
+	public void cheatModColorToggle(boolean isCheatMod) {
+		if (isCheatMod) {
+			this.cheatModButton.setBackground(Color.GREEN);
+		} else {
+			this.cheatModButton.setBackground(null);
+		}
 	}
 	
 	public void overwriteComponents() {

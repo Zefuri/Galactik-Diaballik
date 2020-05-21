@@ -44,6 +44,7 @@ public class MainMenuPanel extends JPanel implements Observable {
         mainTitlePanel.add(titleLabel, gbc);
 
         buttonsPanel = new JPanel(new GridLayout(4,1)); // panel will hold the buttons. need as many rows as buttons
+        buttonsPanel.setBackground(backgroundColor);
         this.add(buttonsPanel);
 
         buttonsFont = customFont.deriveFont(45f); // use the font and set its size
