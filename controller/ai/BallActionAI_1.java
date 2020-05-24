@@ -25,6 +25,9 @@ public class BallActionAI_1{
 	}
 	
 	public ArrayList<Action> play(int depth) {
+		//board initialisation in Stadium
+		stadium.initBoard();
+	
 		//creation of MinMax tree
 		this.brain = new MaxMinBallAction(stadium, team, Integer.MIN_VALUE, Integer.MAX_VALUE);
 		

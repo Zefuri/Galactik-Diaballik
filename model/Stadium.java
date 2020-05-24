@@ -10,6 +10,7 @@ import static java.lang.Math.abs;
 public class Stadium {
     private Team topTeam;
     private Team bottomTeam;
+	private String[][] board;    
 
 	private Case clickedCase;
 	private Case playerAloneCase;
@@ -23,10 +24,35 @@ public class Stadium {
     public Stadium() {
         topTeam = new Team("snowKids", TeamPosition.TOP, this, true);
         bottomTeam = new Team("shadows", TeamPosition.BOTTOM, this, true);
+        board = new String [ModelConstants.BOARD_SIZE] [ModelConstants.BOARD_SIZE];
 
         this.history = new Historic(this);
         this.history.newTurn(getCurrentTeamTurn(), cheatModActivated);
         this.visualisationMode = false;
+    }
+    
+    public void initBoard() {
+        for(int x = 0; x != board.length; x++) {
+        	for(int y = 0; y != board[x].length; y++) {
+        		board[x][y] = "";
+        	}
+        }
+        
+        for(Player p : topTeam.getPlayers()){
+        	setBoard(p, "O");
+        }
+        
+        for(Player p : bottomTeam.getPlayers()){
+        	setBoard(p, "O");
+        }
+    }
+    
+    public void setBoard(Player player, String value) {
+    	setBoard(player.getPosition().getX(), player.getPosition().getY(), value);
+    }
+    
+    public void setBoard(int line, int colunm, String value) {
+    	board[line][colunm] = value;
     }
     
     public void resetStadium() {
@@ -107,6 +133,12 @@ public class Stadium {
     		simpleMove(player, direction);
     	}
     }
+    
+    public void simpleMoveAI(Player player, MoveDirection direction){
+        	setBoard(player, "");
+        	simpleMove(player, direction);
+        	setBoard(player,"O");
+    }
 
     public void simpleMove(Player player, MoveDirection direction){ //move player at position in the selected direction
     	// /!\ Caution: Please use the playerCanMove() function before using this one/!\
@@ -169,7 +201,49 @@ public class Stadium {
 		
 		return canMove;
 	}
+	
+	public boolean playerCanMoveAI(Player player){
+		return playerCanMoveAI(player, MoveDirection.UP) || playerCanMoveAI(player, MoveDirection.RIGHT) || playerCanMoveAI(player, MoveDirection.DOWN) || playerCanMoveAI(player, MoveDirection.LEFT);
+	}
+	
+	    public boolean playerCanMoveAI(Player player, MoveDirection direction) {
+    	boolean canMove = true;
+    	
+		switch (direction) {
+			case UP:
+				if (player.getPosition().getX() <= 0 || board[player.getPosition().getX()-1][player.getPosition().getY()].equals("O")) {
+					canMove = false;
+				}
+				break;
+				
+			case DOWN:
+				if (player.getPosition().getX() >= ModelConstants.BOARD_SIZE-1 || board[player.getPosition().getX()+1][player.getPosition().getY()].equals("O")) {
+					canMove = false;
+				}
 
+				break;
+
+			case LEFT:
+				if (player.getPosition().getY() <= 0 || board[player.getPosition().getX()][player.getPosition().getY()-1].equals("O")) {
+					canMove = false;
+				}
+
+				break;
+
+			case RIGHT:
+				if (player.getPosition().getY() >= 6 || board[player.getPosition().getX()][player.getPosition().getY()+1].equals("O")) {
+					canMove = false;
+				}
+				break;
+
+			default:
+				System.out.println("wrong move input in move function");
+				canMove = false;
+				break;
+		}
+		
+		return canMove;
+	}
 
 	public boolean playerCanMove(Player player){
 		return playerCanMove(player, MoveDirection.UP) || playerCanMove(player, MoveDirection.RIGHT) || playerCanMove(player, MoveDirection.DOWN) || playerCanMove(player, MoveDirection.LEFT);

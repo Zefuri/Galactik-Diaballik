@@ -238,7 +238,7 @@ public class CoupAction {
 
 	//test action: depl with the direction
 	private void oneCanMoveDirection(Player player, MoveDirection direction) {
-		if(stadium.playerCanMove(player, direction)){
+		if(stadium.playerCanMoveAI(player, direction)){
 			ArrayList<Action> actionOne = new ArrayList<>();
 			Case previousCase = new Case(player.getPosition().getX(), player.getPosition().getY());
 			actionOne.add(new Action(ActionType.MOVE, player, player, previousCase, tools.nextCase(player.getPosition(), direction)));
@@ -330,7 +330,7 @@ public class CoupAction {
 		boolean sameFirstPlayer = player.equals(firstPlayer);
 		boolean verifBack = !sameFirstPlayer   ||   actLook.get(0).inverse().getDirection() != deplacement; //You can't back
 		
-		if(verifBack   &&   stadium.playerCanMove(player, deplacement)) {
+		if(verifBack   &&   stadium.playerCanMoveAI(player, deplacement)) {
 			
 			ArrayList<Action> actionTwo = new ArrayList<>();
 			actionTwo.add(actLook.get(0));
@@ -363,7 +363,7 @@ public class CoupAction {
 	//test action: depl_1 + depl_2 with number of player in depl_1 >= number of player in depl_2 in the deplacement
 	private void tryRemplace2(Action action, Player player, Case previousCase, MoveDirection direction) {
 		
-		if(stadium.playerCanMove(player, direction)) {
+		if(stadium.playerCanMoveAI(player, direction)) {
 		
 			Case nextDirectionCase = tools.nextCase(player.getPosition(), direction);
 			boolean canRemplace = nextDirectionCase.getX() == previousCase.getX()   &&   nextDirectionCase.getY() == previousCase.getY();
@@ -402,7 +402,7 @@ public class CoupAction {
 	//test action: pass + depl in the deplacement
 	private void twoCanMovePreviousBallDeplacement(Action action, MoveDirection deplacement) {
 		
-		if(stadium.playerCanMove(ballPlayer, deplacement)){
+		if(stadium.playerCanMoveAI(ballPlayer, deplacement)){
 			ArrayList<Action> actionTwo = new ArrayList<>();
 			actionTwo.add(action);
 			Case previousCase = new Case(ballPlayer.getPosition().getX(), ballPlayer.getPosition().getY());
@@ -497,7 +497,7 @@ public class CoupAction {
 		boolean sameFirstPlayer = player.equals(firstPlayer);
 		boolean verifBack = !sameFirstPlayer   ||   actLook.get(1).inverse().getDirection() != deplacement; //You can't back
 		
-		if(verifBack   &&   !player.equals(team.getBallPlayer())   &&   stadium.playerCanMove(player, deplacement)) {
+		if(verifBack   &&   !player.equals(team.getBallPlayer())   &&   stadium.playerCanMoveAI(player, deplacement)) {
 			ArrayList<Action> actionThree = new ArrayList<>();
 			actionThree.add(actLook.get(0));
 			actionThree.add(actLook.get(1));
@@ -531,7 +531,7 @@ public class CoupAction {
 	//test action: depl_1 + pass + depl_2 in deplacement
 	private void threeCanMovePreviousBallDeplacement(ArrayList<Action> action, MoveDirection deplacement) {
 		
-		if(stadium.playerCanMove(ballPlayer, deplacement)) {
+		if(stadium.playerCanMoveAI(ballPlayer, deplacement)) {
 			ArrayList<Action> actionThree = new ArrayList<>();
 			actionThree.add(action.get(0));
 			actionThree.add(action.get(1));
@@ -587,7 +587,7 @@ public class CoupAction {
 		if(action.getType() == ActionType.PASS) {
 			stadium.simplePass(action.getPreviousPlayer(), action.getNextPlayer());
 		} else {
-			stadium.simpleMove(action.getNextPlayer(), action.getDirection());
+			stadium.simpleMoveAI(action.getNextPlayer(), action.getDirection());
 		}
 	}
 	
