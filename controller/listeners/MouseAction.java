@@ -64,7 +64,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 				try {
 					result = stadium.performRequestedAction();
 
-					System.out.println(this.gameSaver == null);
+					System.out.println((this.gameSaver == null) + " dans le mouse pressed");
 
 					this.gameSaver.overwriteSave();
 				} catch (RuntimeException ex) {
@@ -104,6 +104,8 @@ public class MouseAction extends MouseAdapter implements Observer {
 		ActionResult res = ActionResult.DONE;
 
 		stadium.clearSelectedPlayer();
+
+		System.out.println((this.gameSaver == null) + " dans le update");
 
 		switch((ActionType) object) {
 			case END_TURN : // following code is executed when the "end of turn" button is pressed

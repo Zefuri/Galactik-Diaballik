@@ -127,8 +127,6 @@ public class Technoid implements Observer {
                 stadium.resetStadium();
             	gameSaver = new GameSaver(stadium);
             	gameSaver.saveToFile();
-
-            	System.out.println("??");
             	
                 MouseAction mouseActionWithAI = new MouseAction(holoTV, stadium, true, gameSaver);
                 
