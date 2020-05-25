@@ -62,8 +62,12 @@ public class MouseAction extends MouseAdapter implements Observer {
 				try {
 					result = stadium.performRequestedAction();
 					gameSaver.overwriteSave();
-				} catch (RuntimeException ex) {
+				} catch (IllegalStateException ex) {
 					//Means that the user performed an undoable action
+					System.out.println(ex.toString());
+					//ex.printStackTrace();
+				} catch (RuntimeException ex) {
+					//Means that the user performed a doable action but an error occurred
 					System.out.println(ex.toString());
 					//ex.printStackTrace();
 				}
@@ -71,8 +75,24 @@ public class MouseAction extends MouseAdapter implements Observer {
 				holoTV.getArkadiaNews().repaint();
 				holoTV.updateGameInfos();
 
-				if (holoTV.switchToGoodPanel(result, AI)) {
-					closeGameSaver();
+				if (result == ActionResult.WIN) {
+					if(stadium.getCurrentTeamTurn() == stadium.getTeam(TeamPosition.BOTTOM) && AI != null) {
+						holoTV.switchToEndGamePanel(GameResult.DEFEAT, stadium.getTeam(TeamPosition.TOP).getName());
+					} else {
+						holoTV.switchToEndGamePanel(GameResult.VICTORY, stadium.getCurrentTeamTurn().getName());
+					}
+					stadium.clearSelectedPlayer();
+				}
+
+				if (result == ActionResult.ANTIPLAY_CURRENT && AI != null) {
+					holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getCurrentTeamTurn().getName());
+					stadium.clearSelectedPlayer();
+				} else if(result == ActionResult.ANTIPLAY_CURRENT) {
+					holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getNotPlayingTeam().getName());
+					stadium.clearSelectedPlayer();
+				} else if(result == ActionResult.ANTIPLAY) {
+					holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getCurrentTeamTurn().getName());
+					stadium.clearSelectedPlayer();
 				}
 			}
 		} else {
@@ -135,7 +155,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 				if (!this.stadium.redoAction()) {
 					this.holoTV.getGamePanel().showLastTurnReachedPopup();
 				}
-				//System.out.println("redo");
+				System.out.println("redo");
 				break;
 
 			case CHEAT :
@@ -159,7 +179,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 		if (isAITurn) {
 			// if we got no actions available then it's the beginning of the AIs turn.
 			if (AIActions.size() == 0) {
-				AIActions = AI.play(0); // generate the next actions
+				AIActions = AI.play(2); // generate the next actions
 			}
 
 			ActionResult actionResult = stadium.actionPerformedAI(AIActions.get(0)); // perform the first action in queue...
@@ -189,10 +209,5 @@ public class MouseAction extends MouseAdapter implements Observer {
 				isAITurn = false;
 			}
 		}
-	}
-
-	private void closeGameSaver()
-	{
-		this.gameSaver = null;
 	}
 }

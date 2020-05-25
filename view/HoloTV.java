@@ -5,14 +5,11 @@ import javax.swing.JFrame;
 
 import javax.swing.SwingUtilities;
 
-import controller.ai.BallActionAI_1;
 import controller.listeners.MouseAction;
 
 import model.Stadium;
-import model.enums.ActionResult;
 import model.enums.GameResult;
 
-import model.enums.TeamPosition;
 import patterns.Observer;
 
 import java.io.*;
@@ -25,12 +22,8 @@ public class HoloTV implements Runnable {
 	private GameModePanel gameModePanel;
 	private GamePanel gamePanel;
 	private EndGamePanel endGamePanel;
-
-	private Stadium stadium;
 	
 	public HoloTV(Stadium stadium) {
-		this.stadium = stadium;
-
 		// create the main menu panel
 		this.mainMenuPanel = new MainMenuPanel();
 
@@ -175,35 +168,5 @@ public class HoloTV implements Runnable {
 		frame.add(endGamePanel);
 		frame.validate();
 		SwingUtilities.updateComponentTreeUI(frame);
-	}
-
-	public boolean switchToGoodPanel(ActionResult actionResult, BallActionAI_1 AI) {
-		boolean panelSwitched = false;
-
-		if (actionResult == ActionResult.WIN) {
-			if (stadium.getCurrentTeamTurn() == stadium.getTeam(TeamPosition.BOTTOM) && AI != null) {
-				this.switchToEndGamePanel(GameResult.DEFEAT, stadium.getTeam(TeamPosition.TOP).getName());
-			} else {
-				this.switchToEndGamePanel(GameResult.VICTORY, stadium.getCurrentTeamTurn().getName());
-			}
-			stadium.clearSelectedPlayer();
-			panelSwitched = true;
-		}
-
-		if (actionResult == ActionResult.ANTIPLAY_CURRENT && AI != null) {
-			this.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getCurrentTeamTurn().getName());
-			stadium.clearSelectedPlayer();
-			panelSwitched = true;
-		} else if (actionResult == ActionResult.ANTIPLAY_CURRENT) {
-			this.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getNotPlayingTeam().getName());
-			stadium.clearSelectedPlayer();
-			panelSwitched = true;
-		} else if (actionResult == ActionResult.ANTIPLAY) {
-			this.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getCurrentTeamTurn().getName());
-			stadium.clearSelectedPlayer();
-			panelSwitched = true;
-		}
-
-		return panelSwitched;
 	}
 }

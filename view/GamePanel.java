@@ -290,7 +290,6 @@ public class GamePanel extends JPanel implements Observable {
 	public void overwriteComponents() {
 		this.endTurnButton.setVisible(false);
 		this.resetTurnButton.setVisible(false);
-		this.cheatModButton.setVisible(false);
 		this.redoButton.setVisible(true);
 	}
 }

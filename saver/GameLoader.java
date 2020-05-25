@@ -93,12 +93,15 @@ public class GameLoader {
             	
             	try {
 					board = new JSONObject(line).getString("board");
-				} catch (NoSuchElementException | ParseException e) {
+				} catch (NoSuchElementException e) {
+					e.printStackTrace();
+					return false;
+				} catch (ParseException e) {
 					e.printStackTrace();
 					return false;
 				}
-
-				int index = 0;
+            	
+	            int index = 0; 
 	            int currColumn = 0;
 	            int realLine = 0;
 	            int topPlayerIndex = 0;
@@ -196,7 +199,7 @@ public class GameLoader {
         }    
         
         scanner.close();
-        System.out.println(this.stadium.getHistory());
+        //System.out.println(this.stadium.getHistory());
         
         return true;
 	}

@@ -44,19 +44,6 @@ public class Turn {
 	public Action getAction(int index) {
 		return this.actions[index];
 	}
-
-	public Action getLastActionPerformed() {
-		if (this.getThirdAction() != null) {
-			return this.getThirdAction();
-		} else if (this.getSecondAction() != null) {
-			return this.getSecondAction();
-		} else if (this.getFirstAction() != null) {
-			return this.getFirstAction();
-		} else {
-			//The current turn is empty
-			return null;
-		}
-	}
 	
 	public Action getFirstAction() {
 		return this.getAction(0);

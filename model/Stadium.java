@@ -33,7 +33,6 @@ public class Stadium {
     	this.reset();
 
         this.cheatModActivated = false;
-        this.visualisationMode = false;
         this.history = new Historic(this);
         this.history.newTurn(getCurrentTeamTurn(), cheatModActivated);
     }
@@ -693,6 +692,8 @@ public class Stadium {
 				Player futureOwner = getPlayer(clickedCase);
 				result = previousOwner.pass(futureOwner);
 
+				//TODO remettre le if / else if en 1 bloc apr�s impl�mentation de l'�cran de fin
+
 				if (result == ActionResult.DONE) {
 					getPlayer(playerWithBallCase).setIfSelected(false);
 					clearPlayers();
@@ -800,28 +801,6 @@ public class Stadium {
 		//holoTV.getArkadiaNews().repaint();
 	}
 
-	public ActionResult gameCanBeLoaded()
-	{
-		Action lastActionPerformed = this.getHistory().getLast().getLastActionPerformed();
-
-		if (lastActionPerformed == null) {
-			//If the last turn contains no action, it can be loaded
-			return ActionResult.DONE;
-		}
-
-		if (this.isAWin(lastActionPerformed.getNextPlayer().getTeam().getPosition())) {
-			//The last player's team has won, so we can not load
-			return ActionResult.WIN;
-		}
-
-		if (this.antiplay(lastActionPerformed.getNextPlayer().getTeam())) {
-			return ActionResult.ANTIPLAY_CURRENT;
-		} else if(this.antiplay(lastActionPerformed.getNextPlayer().getTeam().getEnemyTeam())){
-			return ActionResult.ANTIPLAY;
-		}
-
-		return ActionResult.DONE;
-	}
 	
 	public Historic getHistory() {
 		return this.history;

@@ -1,4 +1,4 @@
-package controller.ai.abandonVersion;
+package ai.abandonVersion;
 
 import model.ModelConstants;
 import model.Team;

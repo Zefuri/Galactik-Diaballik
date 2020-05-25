@@ -1,13 +1,14 @@
 package saver;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -22,9 +23,9 @@ import model.Turn;
 import model.enums.TeamPosition;
 
 public class GameSaver {
-	private final Stadium stadium;
+	private Stadium stadium;
 	
-	private static final String savesPath = Paths.get(System.getProperty("user.dir"), "saves").toString();
+	private static final String savesPath = Paths.get(System.getProperty("user.dir").toString(), "saves").toString();
 	private static final String savePrefix = "save-";
 	private static final String saveSuffix = ".sv";
 	
@@ -57,15 +58,15 @@ public class GameSaver {
 					//We check either the player is on the first team or the second and if he has the ball
 					if (currPlayer.getTeam().equals(this.stadium.getTeam(TeamPosition.TOP))) {
 						if (currPlayer.hasBall()) {
-							builder.append(SaverConstants.TOP_TEAM_PLAYER_WITH_BALL).append(currPlayer.getNumero());
+							builder.append(SaverConstants.TOP_TEAM_PLAYER_WITH_BALL + currPlayer.getNumero());
 						} else {
-							builder.append(SaverConstants.TOP_TEAM_PLAYER_ALONE).append(currPlayer.getNumero());
+							builder.append(SaverConstants.TOP_TEAM_PLAYER_ALONE + currPlayer.getNumero());
 						}
 					} else {
 						if (currPlayer.hasBall()) {
-							builder.append(SaverConstants.BOT_TEAM_PLAYER_WITH_BALL).append(currPlayer.getNumero());
+							builder.append(SaverConstants.BOT_TEAM_PLAYER_WITH_BALL + currPlayer.getNumero());
 						} else {
-							builder.append(SaverConstants.BOT_TEAM_PLAYER_ALONE).append(currPlayer.getNumero());
+							builder.append(SaverConstants.BOT_TEAM_PLAYER_ALONE + currPlayer.getNumero());
 						}
 					}
 				}
@@ -168,7 +169,7 @@ public class GameSaver {
 			
 			if (!Files.exists(path)) {
 				//The save file does not exist: we add the board at the beginning
-				Files.write(path, Collections.singletonList(jsonBoard.toString()), StandardCharsets.UTF_8, StandardOpenOption.CREATE);
+				Files.write(path, Arrays.asList(jsonBoard.toString()), StandardCharsets.UTF_8, StandardOpenOption.CREATE);
 			} else {
 				//The save file exists, we replace the first line (board) by the new board
 				List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
@@ -184,11 +185,13 @@ public class GameSaver {
 			    lines.set(lines.size() - 1, jsonTurn.toString());
 			    Files.write(path, lines, StandardCharsets.UTF_8);
 			} else {
-				Files.write(path, Collections.singletonList(jsonTurn.toString()), StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+				Files.write(path, Arrays.asList(jsonTurn.toString()), StandardCharsets.UTF_8, StandardOpenOption.APPEND);
 				this.previousTurnIndex = currentTurnIndex;
 			}
 			
 			this.setCurrentSavePath(path.toString());
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
