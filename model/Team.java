@@ -93,10 +93,10 @@ public class Team {
 	}
 	
 	public Player getBallPlayer() throws IllegalStateException {
-		System.out.println(ballPlayer);
+		/*System.out.println(ballPlayer);
 
 		System.out.println(this);
-		System.out.println(this.getEnemyTeam());
+		System.out.println(this.getEnemyTeam());*/
 
 		return ballPlayer;
 	}

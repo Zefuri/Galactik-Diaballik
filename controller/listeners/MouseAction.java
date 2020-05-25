@@ -23,16 +23,16 @@ public class MouseAction extends MouseAdapter implements Observer {
 	private boolean isAITurn;
 	private ArrayList<Action> AIActions;
 	private Timer timer;
-	
+
 	private boolean visualisationMode;
-	
+
 	public MouseAction(HoloTV holoTV, Stadium stadium, boolean withAI, GameSaver gameSaver) {
 		this.holoTV = holoTV;
 		this.stadium = stadium;
-    
+
 		stadium.setPlayerAloneCase(null);
 		stadium.setPlayerWithBallCase(null);
-    
+
 		this.gameSaver = gameSaver;
 		this.visualisationMode = stadium.isInVisualisationMode();
 
@@ -44,7 +44,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 			timer.start();
 		}
 	}
-	
+
 	@Override
 	public void mousePressed(MouseEvent e) {
 		if (!this.visualisationMode) {
@@ -62,12 +62,8 @@ public class MouseAction extends MouseAdapter implements Observer {
 				try {
 					result = stadium.performRequestedAction();
 					gameSaver.overwriteSave();
-				} catch (IllegalStateException ex) {
-					//Means that the user performed an undoable action
-					System.out.println(ex.toString());
-					//ex.printStackTrace();
 				} catch (RuntimeException ex) {
-					//Means that the user performed a doable action but an error occurred
+					//Means that the user performed an undoable action
 					System.out.println(ex.toString());
 					//ex.printStackTrace();
 				}
@@ -75,24 +71,8 @@ public class MouseAction extends MouseAdapter implements Observer {
 				holoTV.getArkadiaNews().repaint();
 				holoTV.updateGameInfos();
 
-				if (result == ActionResult.WIN) {
-					if(stadium.getCurrentTeamTurn() == stadium.getTeam(TeamPosition.BOTTOM) && AI != null) {
-						holoTV.switchToEndGamePanel(GameResult.DEFEAT, stadium.getTeam(TeamPosition.TOP).getName());
-					} else {
-						holoTV.switchToEndGamePanel(GameResult.VICTORY, stadium.getCurrentTeamTurn().getName());
-					}
-					stadium.clearSelectedPlayer();
-				}
-
-				if (result == ActionResult.ANTIPLAY_CURRENT && AI != null) {
-					holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getCurrentTeamTurn().getName());
-					stadium.clearSelectedPlayer();
-				} else if(result == ActionResult.ANTIPLAY_CURRENT) {
-					holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getNotPlayingTeam().getName());
-					stadium.clearSelectedPlayer();
-				} else if(result == ActionResult.ANTIPLAY) {
-					holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getCurrentTeamTurn().getName());
-					stadium.clearSelectedPlayer();
+				if (holoTV.switchToGoodPanel(result, AI)) {
+					closeGameSaver();
 				}
 			}
 		} else {
@@ -100,62 +80,62 @@ public class MouseAction extends MouseAdapter implements Observer {
 			System.err.println("You might not press anything else than the undo/redo action buttons!");
 		}
 	}
-	
+
 	private Case getCase(int x, int y) {
 		int caseSize = holoTV.getCaseSize();
 		int xValue = x / caseSize;
 		int yValue = y / caseSize;
-		
+
 		if (xValue > 6 || yValue > 6) {
 			throw new IllegalStateException();
 		}
-		
+
 		return new Case(xValue, yValue);
 	}
 
 	@Override
 	public void update(Object object) {
 		ActionResult res = ActionResult.DONE;
-		
+
 		stadium.clearSelectedPlayer();
-		
-		switch((ActionType) object) {	
+
+		switch((ActionType) object) {
 			case END_TURN : // following code is executed when the "end of turn" button is pressed
 				res = this.stadium.endTurn();
-				
+
 				gameSaver.overwriteSave();
-        
+
 				if (AI != null && res != ActionResult.ERROR) {
 					isAITurn = true;
 				}
 
 				break;
-				
+
 			case UNDO :
 				if (!this.visualisationMode) {
 					res = this.stadium.undoAction();
 					gameSaver.overwriteSave();
 				} else {
 					res = this.stadium.undoAction();
-					
+
 					if (res == ActionResult.ERROR) {
 						this.holoTV.getGamePanel().showFirstTurnReachedPopup();
 					}
 				}
-				
+
 				break;
-			
+
 			case RESET :
 				res = this.stadium.resetTurn();
 				gameSaver.overwriteSave();
-			
+
 				break;
-				
+
 			case REDO:
 				if (!this.stadium.redoAction()) {
 					this.holoTV.getGamePanel().showLastTurnReachedPopup();
 				}
-				System.out.println("redo");
+				//System.out.println("redo");
 				break;
 
 			case CHEAT :
@@ -163,11 +143,11 @@ public class MouseAction extends MouseAdapter implements Observer {
 				holoTV.getGamePanel().cheatModColorToggle(stadium.isCheatModActivated());
 				break;
 		}
-		
+
 		if (res == ActionResult.ERROR) {
 			System.err.println("You need to do at least one action before doing that.");
 		}
-		
+
 		this.holoTV.updateGameInfos();
 		this.holoTV.getGamePanel().repaint(); //Added in last case
 	}
@@ -179,7 +159,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 		if (isAITurn) {
 			// if we got no actions available then it's the beginning of the AIs turn.
 			if (AIActions.size() == 0) {
-				AIActions = AI.play(2); // generate the next actions
+				AIActions = AI.play(0); // generate the next actions
 			}
 
 			ActionResult actionResult = stadium.actionPerformedAI(AIActions.get(0)); // perform the first action in queue...
@@ -209,5 +189,10 @@ public class MouseAction extends MouseAdapter implements Observer {
 				isAITurn = false;
 			}
 		}
+	}
+
+	private void closeGameSaver()
+	{
+		this.gameSaver = null;
 	}
 }
