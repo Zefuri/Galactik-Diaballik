@@ -26,10 +26,10 @@ import model.enums.ActionType;
 import model.enums.TeamPosition;
 
 public class GameLoader {
-	private static final String savesPath = Paths.get(System.getProperty("user.dir").toString(), "saves").toString();
+	private static final String savesPath = Paths.get(System.getProperty("user.dir"), "saves").toString();
 	private String currentSavePath;
 	
-	private Stadium stadium;
+	private final Stadium stadium;
 	
 	private Team topTeam, botTeam;
 	
@@ -46,7 +46,6 @@ public class GameLoader {
 			Path path = Paths.get(savesPath);
 			Files.createDirectories(path);
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
@@ -93,30 +92,24 @@ public class GameLoader {
             	
             	try {
 					board = new JSONObject(line).getString("board");
-				} catch (NoSuchElementException e) {
-					e.printStackTrace();
-					return false;
-				} catch (ParseException e) {
+				} catch (NoSuchElementException | ParseException e) {
 					e.printStackTrace();
 					return false;
 				}
-            	
-	            int index = 0; 
+
+				int index = 0;
 	            int currColumn = 0;
 	            int realLine = 0;
-	            int topPlayerIndex = 0;
-	            int botPlayerIndex = 0;
+
 	            String val = "";
 	            
 	            while (index < board.length()) {
 	            	if (board.charAt(index) == ' ') {
 	            		//We read a space so we go to next column
 	            		if (val.matches(SaverConstants.REGEXP_TOP_TEAM_PLAYER_ALONE) || val.matches(SaverConstants.REGEXP_TOP_TEAM_PLAYER_WITH_BALL)) {
-	            			addPlayerIfNeeded(val, realLine, currColumn, topTeam, topPlayerIndex);
-	            			topPlayerIndex++;
+	            			addPlayerIfNeeded(val, realLine, currColumn, topTeam);
 	            		} else if (val.matches(SaverConstants.REGEXP_BOT_TEAM_PLAYER_ALONE) || val.matches(SaverConstants.REGEXP_BOT_TEAM_PLAYER_WITH_BALL)) {
-	            			addPlayerIfNeeded(val, realLine, currColumn, botTeam, botPlayerIndex);
-	            			botPlayerIndex++;
+	            			addPlayerIfNeeded(val, realLine, currColumn, botTeam);
 	            		}
 	            		
 	            		val = "";
@@ -204,10 +197,13 @@ public class GameLoader {
         return true;
 	}
 	
-	private void addPlayerIfNeeded(String val, int currLine, int currColumn, Team team, int playerIndex) {
+	private void addPlayerIfNeeded(String val, int currLine, int currColumn, Team team) {
+		final String playerNameTop = "TOP_" + val.substring(val.length() - 1);
+		final String playerNameBot = "BOT_" + val.substring(val.length() - 1);
+
 		switch (val.substring(0, val.length() - 1)) {
 			case SaverConstants.TOP_TEAM_PLAYER_ALONE: {
-				Player player = new Player("TOP_" + val.substring(val.length() - 1));
+				Player player = new Player(playerNameTop);
 				player.setPosition(currLine, currColumn);
 				
 				team.addPlayer(player);
@@ -215,7 +211,7 @@ public class GameLoader {
 			}
 				
 			case SaverConstants.TOP_TEAM_PLAYER_WITH_BALL: {
-				Player player = new Player("TOP_" + val.substring(val.length() - 1));
+				Player player = new Player(playerNameTop);
 				player.setPosition(currLine, currColumn);
 				player.setBallPossession(true);
 				
@@ -225,7 +221,7 @@ public class GameLoader {
 			}
 			
 			case SaverConstants.BOT_TEAM_PLAYER_ALONE: {
-				Player player = new Player("BOT_" + val.substring(val.length() - 1));
+				Player player = new Player(playerNameBot);
 				player.setPosition(currLine, currColumn);
 				
 				team.addPlayer(player);
@@ -233,7 +229,7 @@ public class GameLoader {
 			}
 				
 			case SaverConstants.BOT_TEAM_PLAYER_WITH_BALL: {
-				Player player = new Player("BOT_" + val.substring(val.length() - 1));
+				Player player = new Player(playerNameBot);
 				player.setPosition(currLine, currColumn);
 				player.setBallPossession(true);
 				
