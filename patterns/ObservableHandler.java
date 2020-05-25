@@ -12,6 +12,7 @@ public class ObservableHandler implements Observable {
 
     @Override
     public void addObserver(Observer observer) {
+        observers.clear();
         observers.add(observer);
     }
 

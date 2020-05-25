@@ -109,6 +109,7 @@ public class HoloTV implements Runnable {
 	}
 
 	public void addArkadiaNewsMouseListener(MouseAction mouseAction) {
+		//We suppress the already existant mouseListeners
 		MouseListener[] mouseListeners = this.gamePanel.getArkadiaNews().getMouseListeners();
 		for (MouseListener mouseListener : mouseListeners) {
 			this.gamePanel.getArkadiaNews().removeMouseListener(mouseListener);

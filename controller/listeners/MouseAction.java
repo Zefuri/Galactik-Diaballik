@@ -36,8 +36,6 @@ public class MouseAction extends MouseAdapter implements Observer {
 		this.gameSaver = gameSaver;
 		this.visualisationMode = stadium.isInVisualisationMode();
 
-		System.out.println((this.gameSaver == null) + " dans le constructeur");
-
 		if (withAI) { // initialize AI if needed
 			AI = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.BOTTOM)); // setup the AI as the bottom player
 			isAITurn = false; // player starts
@@ -64,7 +62,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 				try {
 					result = stadium.performRequestedAction();
 
-					System.out.println(this.gameSaver == null);
+					System.out.println((this.gameSaver == null) + " dans le mouse pressed");
 
 					this.gameSaver.overwriteSave();
 				} catch (RuntimeException ex) {
@@ -77,7 +75,6 @@ public class MouseAction extends MouseAdapter implements Observer {
 				holoTV.updateGameInfos();
 
 				if (holoTV.switchToGoodPanel(result, AI)) {
-					System.out.println("on a switch to good panel sans raison");
 					closeGameSaver();
 				}
 			}
