@@ -11,23 +11,22 @@ import model.enums.ActionType;
 import model.enums.TeamPosition;
 import model.Action;
 
-public class BallActionAI_1{
-	
-	MaxMinBallAction brain;
-	Random randomgene;
-	Stadium stadium;
-	Team team;
+public class BallActionAI_1 {
+	private MaxMinBallAction brain;
+	private final Random randomgene;
+	private final Stadium stadium;
+	private final Team team;
 	
 	public BallActionAI_1(Stadium stadium, Team team) {
 		this.stadium = stadium;
 		this.team = team;
-		randomgene = new Random();
+		this.randomgene = new Random();
 	}
 	
 	public ArrayList<Action> play(int depth) {
 		//creation of MinMax tree
-		this.brain = new MaxMinBallAction(stadium, team, Integer.MIN_VALUE, Integer.MAX_VALUE);
-		
+		this.brain = new MaxMinBallAction(this.stadium, this.team, Integer.MIN_VALUE, Integer.MAX_VALUE);
+
 		//creation of result ArrayList
 		ArrayList<Action> chooseActs = new ArrayList<>();
 		

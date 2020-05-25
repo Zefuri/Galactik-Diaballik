@@ -61,9 +61,6 @@ public class MouseAction extends MouseAdapter implements Observer {
 
 				try {
 					result = stadium.performRequestedAction();
-
-					System.out.println((this.gameSaver == null) + " dans le mouse pressed");
-
 					this.gameSaver.overwriteSave();
 				} catch (RuntimeException ex) {
 					//Means that the user performed an undoable action

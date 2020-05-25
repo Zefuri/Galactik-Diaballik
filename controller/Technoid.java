@@ -57,6 +57,7 @@ public class Technoid implements Observer {
             	    if (gameCanBeLoaded == ActionResult.DONE) {
                         gameSaver = new GameSaver(stadium, gameLoader.getCurrentSavePath());
 
+                        //Mettre true si on veut jouer contre l'IA, false sinon
                         MouseAction mouseAction = new MouseAction(holoTV, stadium, true, gameSaver);
                         holoTV.addArkadiaNewsMouseListener(mouseAction);
                         holoTV.getGamePanel().addObserver(mouseAction);
@@ -92,6 +93,7 @@ public class Technoid implements Observer {
 	                MouseAction mouseAction = new MouseAction(holoTV, stadium, false, null);
 	                holoTV.addArkadiaNewsMouseListener(mouseAction);
 	                holoTV.getGamePanel().addObserver(mouseAction);
+	                holoTV.updateGameInfos();
 	                holoTV.switchToGamePanel();
 	                holoTV.getGamePanel().overwriteComponents();
             	} else {

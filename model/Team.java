@@ -7,10 +7,10 @@ import model.enums.MoveDirection;
 import model.enums.TeamPosition;
 
 public class Team {
-	private String name;
-	private ArrayList<Player> players;
-	private Stadium stadium;
-	private TeamPosition position;
+	private final String name;
+	private final ArrayList<Player> players;
+	private final Stadium stadium;
+	private final TeamPosition position;
 	private Player ballPlayer;
 	private int butLine;
 
@@ -93,11 +93,6 @@ public class Team {
 	}
 	
 	public Player getBallPlayer() throws IllegalStateException {
-		/*System.out.println(ballPlayer);
-
-		System.out.println(this);
-		System.out.println(this.getEnemyTeam());*/
-
 		return ballPlayer;
 	}
 	
@@ -189,13 +184,7 @@ public class Team {
 		return this.position == t.getPosition();
 	}
 
-	public boolean isWinner() {
-		return stadium.isAWin(position);
-	}
-	
 	public Player getPlayerFromName(String name) {
-		//System.out.println("given name : " + name);
-		
 		for (Player p : this.getPlayers()) {
 			if (p.hasTheSameName(name)) {
 				return p;
