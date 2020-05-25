@@ -1,5 +1,7 @@
-import ai.BallActionAI_1;
-import listeners.MouseAction;
+package controller;
+
+import controller.ai.BallActionAI_1;
+import controller.listeners.MouseAction;
 
 import model.Action;
 import model.Stadium;
@@ -16,7 +18,6 @@ import saver.GameSaver;
 import view.HoloTV;
 import javax.swing.*;
 import java.util.ArrayList;
-
 
 public class Technoid implements Observer {
 
@@ -47,15 +48,24 @@ public class Technoid implements Observer {
             	GameLoader gameLoader = new GameLoader(stadium);
             	
             	if (gameLoader.loadData()) {
-	            	stadium.loadTopTeam(gameLoader.getTopTeam());
-	            	stadium.loadBotTeam(gameLoader.getBotTeam());
-	            	
-	            	gameSaver = new GameSaver(stadium, gameLoader.getCurrentSavePath());
-	            	
-	                MouseAction mouseAction = new MouseAction(holoTV, stadium, false, gameSaver);
-	                holoTV.addArkadiaNewsMouseListener(mouseAction);
-	                holoTV.getGamePanel().addObserver(mouseAction);
-	                holoTV.switchToGamePanel();
+                    stadium.loadTopTeam(gameLoader.getTopTeam());
+                    stadium.loadBotTeam(gameLoader.getBotTeam());
+
+                    ActionResult gameCanBeLoaded = stadium.gameCanBeLoaded();
+
+            	    if (gameCanBeLoaded == ActionResult.DONE) {
+                        gameSaver = new GameSaver(stadium, gameLoader.getCurrentSavePath());
+
+                        MouseAction mouseAction = new MouseAction(holoTV, stadium, false, gameSaver);
+                        holoTV.addArkadiaNewsMouseListener(mouseAction);
+                        holoTV.getGamePanel().addObserver(mouseAction);
+                        holoTV.switchToGamePanel();
+                    } else {
+            	        //The loaded game is in a bad conformation (WIN, ANTIPLAY) so we go to another mode
+                        if (!holoTV.switchToGoodPanel(gameCanBeLoaded, null)) {
+                            throw new IllegalStateException("The game state could not be found properly.");
+                        }
+                    }
             	} else {
             		System.err.println("Either the user has cancelled the loading, or an error has occurred.");
             	}
@@ -65,6 +75,7 @@ public class Technoid implements Observer {
             
             case CLICKED_VISU: {
             	GameLoader gameLoader = new GameLoader(stadium);
+            	stadium.resetStadium();
             	
             	if (gameLoader.loadData()) {
 	            	stadium.loadTopTeam(gameLoader.getTopTeam());
@@ -81,8 +92,6 @@ public class Technoid implements Observer {
 	                holoTV.getGamePanel().addObserver(mouseAction);
 	                holoTV.switchToGamePanel();
 	                holoTV.getGamePanel().overwriteComponents();
-	                
-	                //TODO Si besoin mettre le stadium et la holotv en mode visu
             	} else {
             		System.err.println("Either the user has cancelled the loading, or an error has occurred.");
             	}
@@ -97,6 +106,7 @@ public class Technoid implements Observer {
 
             case CLICKED_PVP: // context : GameModePanel
             	//We also add the gameSaver and save the initial state
+                stadium.resetStadium();
             	gameSaver = new GameSaver(stadium);
             	gameSaver.saveToFile();
             	
@@ -111,6 +121,7 @@ public class Technoid implements Observer {
 
             case CLICKED_PVC: // context : GameModePanel
             	//We also add the gameSaver and save the initial state
+                stadium.resetStadium();
             	gameSaver = new GameSaver(stadium);
             	gameSaver.saveToFile();
             	

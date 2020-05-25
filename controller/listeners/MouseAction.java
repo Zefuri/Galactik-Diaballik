@@ -1,6 +1,7 @@
-package listeners;
+package controller.listeners;
 
-import ai.BallActionAI_1;
+import controller.PVETimer;
+import controller.ai.BallActionAI_1;
 import model.Action;
 import model.Case;
 import model.Stadium;
@@ -39,8 +40,8 @@ public class MouseAction extends MouseAdapter implements Observer {
 			AI = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.BOTTOM)); // setup the AI as the bottom player
 			isAITurn = false; // player starts
 			AIActions = new ArrayList<>();
-//			timer = new Timer(300, new PVETimer(this)); // AI plays every 0.3 seconds
-//			timer.start();
+			timer = new Timer(300, new PVETimer(this)); // AI plays every 0.3 seconds
+			timer.start();
 		}
 	}
 	
@@ -61,12 +62,8 @@ public class MouseAction extends MouseAdapter implements Observer {
 				try {
 					result = stadium.performRequestedAction();
 					gameSaver.overwriteSave();
-				} catch (IllegalStateException ex) {
-					//Means that the user performed an undoable action
-					System.out.println(ex.toString());
-					//ex.printStackTrace();
 				} catch (RuntimeException ex) {
-					//Means that the user performed a doable action but an error occurred
+					//Means that the user performed an undoable action
 					System.out.println(ex.toString());
 					//ex.printStackTrace();
 				}
@@ -74,24 +71,8 @@ public class MouseAction extends MouseAdapter implements Observer {
 				holoTV.getArkadiaNews().repaint();
 				holoTV.updateGameInfos();
 
-				if (result == ActionResult.WIN) {
-					if(stadium.getCurrentTeamTurn() == stadium.getTeam(TeamPosition.BOTTOM) && AI != null) {
-						holoTV.switchToEndGamePanel(GameResult.DEFEAT, stadium.getTeam(TeamPosition.TOP).getName());
-					} else {
-						holoTV.switchToEndGamePanel(GameResult.VICTORY, stadium.getCurrentTeamTurn().getName());
-					}
-					stadium.clearSelectedPlayer();
-				}
-
-				if (result == ActionResult.ANTIPLAY_CURRENT && AI != null) {
-					holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getCurrentTeamTurn().getName());
-					stadium.clearSelectedPlayer();
-				} else if(result == ActionResult.ANTIPLAY_CURRENT) {
-					holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getNotPlayingTeam().getName());
-					stadium.clearSelectedPlayer();
-				} else if(result == ActionResult.ANTIPLAY) {
-					holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getCurrentTeamTurn().getName());
-					stadium.clearSelectedPlayer();
+				if (holoTV.switchToGoodPanel(result, AI)) {
+					closeGameSaver();
 				}
 			}
 		} else {
@@ -154,7 +135,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 				if (!this.stadium.redoAction()) {
 					this.holoTV.getGamePanel().showLastTurnReachedPopup();
 				}
-				System.out.println("redo");
+				//System.out.println("redo");
 				break;
 
 			case CHEAT :
@@ -208,5 +189,10 @@ public class MouseAction extends MouseAdapter implements Observer {
 				isAITurn = false;
 			}
 		}
+	}
+
+	private void closeGameSaver()
+	{
+		this.gameSaver = null;
 	}
 }

@@ -1,5 +1,6 @@
 import model.Stadium;
 import view.HoloTV;
+import controller.Technoid;
 
 public class GalactikDiaballik {
 	public static void main(String[] args) {

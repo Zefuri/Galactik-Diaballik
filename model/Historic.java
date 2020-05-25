@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import model.enums.ActionResult;
 
 public class Historic {
-    ArrayList<Turn> historicList;
+    private ArrayList<Turn> historicList;
     private int currentTurnIndex;
     private Stadium stadium;
 
     public Historic(Stadium stadium){
-         this.historicList = new ArrayList<Turn>();
+         this.historicList = new ArrayList<>();
          this.stadium = stadium;
          currentTurnIndex = 0;
     }
@@ -90,11 +90,11 @@ public class Historic {
     
     public void setToFirstTurn() {
     	this.currentTurnIndex = 0;
-    	
-    	for (int i = 0; i < this.historicList.size(); i++) {
-    		this.historicList.get(i).setNbMovesDone(0);
-    		this.historicList.get(i).setNbPassesDone(0);
-    	}
+
+        for (Turn turn : this.historicList) {
+            turn.setNbMovesDone(0);
+            turn.setNbPassesDone(0);
+        }
     }
     
     //For testing
