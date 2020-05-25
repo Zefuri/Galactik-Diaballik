@@ -36,8 +36,6 @@ public class MouseAction extends MouseAdapter implements Observer {
 		this.gameSaver = gameSaver;
 		this.visualisationMode = stadium.isInVisualisationMode();
 
-		System.out.println((this.gameSaver == null) + " dans le constructeur");
-
 		if (withAI) { // initialize AI if needed
 			AI = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.BOTTOM)); // setup the AI as the bottom player
 			isAITurn = false; // player starts
@@ -77,7 +75,6 @@ public class MouseAction extends MouseAdapter implements Observer {
 				holoTV.updateGameInfos();
 
 				if (holoTV.switchToGoodPanel(result, AI)) {
-					System.out.println("on a switch to good panel sans raison");
 					closeGameSaver();
 				}
 			}
@@ -104,8 +101,6 @@ public class MouseAction extends MouseAdapter implements Observer {
 		ActionResult res = ActionResult.DONE;
 
 		stadium.clearSelectedPlayer();
-
-		System.out.println((this.gameSaver == null) + " dans le update");
 
 		switch((ActionType) object) {
 			case END_TURN : // following code is executed when the "end of turn" button is pressed
