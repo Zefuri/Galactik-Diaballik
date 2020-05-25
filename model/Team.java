@@ -25,6 +25,39 @@ public class Team {
 		}
 	}
 	
+	public void initializePlayersOption() {
+		this.players.clear();
+		
+		for (int i = 0; i < ModelConstants.BOARD_SIZE; i++) {
+			Player p;
+			
+			if (position == TeamPosition.TOP) {
+				p = new Player("TOP_" + i);
+				if(i == 1 || i == 5) {
+					p.setPosition(new Case(6, i));
+				} else{
+					p.setPosition(new Case(0, i));
+				}
+				this.butLine = 6;
+			} else {
+				p = new Player("BOT_" + i);
+				if(i == 1 || i == 5) {
+					p.setPosition(new Case(0, i));
+				} else{
+					p.setPosition(new Case(6, i));
+				}
+				this.butLine = 0;
+			}
+			
+			if (i == 3) {
+				p.setBallPossession(true);
+				ballPlayer = p;
+			}
+			
+			addPlayer(p);
+		}
+	}
+	
 	public void initializePlayers() {
 		this.players.clear();
 		
@@ -47,6 +80,31 @@ public class Team {
 			}
 			
 			addPlayer(p);
+		}
+	}
+	
+	public void replaceOption() {
+		for (Player p : this.getPlayers()) {
+			int index = p.getNumero();
+			p.setBallPossession(false);
+			
+			if (position == TeamPosition.TOP) {
+				if(index == 1 || index == 5) {
+					p.setPosition(new Case(6, index));
+				} else {
+					p.setPosition(new Case(0, index));
+				}
+			} else {
+				if(index == 1 || index == 5) {
+					p.setPosition(new Case(0, index));
+				} else {
+					p.setPosition(new Case(6, index));
+				}
+			}
+			
+			if (index == 3) {
+				p.setBallPossession(true);
+			}
 		}
 	}
 	

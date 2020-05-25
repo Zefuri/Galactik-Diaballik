@@ -76,13 +76,13 @@ public class Stadium {
     }
 
     public void reset() {
-        topTeam.initializePlayers();
-        bottomTeam.initializePlayers();
+        topTeam.initializePlayersOption();
+        bottomTeam.initializePlayersOption();
     }
     
     public void replaceTeam() {
-    	topTeam.replace();
-    	bottomTeam.replace();
+    	topTeam.replaceOption();
+    	bottomTeam.replaceOption();
     }
     
     public Player getPlayer(Case position) {
