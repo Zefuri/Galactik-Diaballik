@@ -1,3 +1,5 @@
+package controller;
+
 import controller.listeners.MouseAction;
 
 import java.awt.event.ActionEvent;

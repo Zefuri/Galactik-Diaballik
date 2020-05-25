@@ -1,5 +1,6 @@
 package controller.listeners;
 
+import controller.PVETimer;
 import controller.ai.BallActionAI_1;
 import model.Action;
 import model.Case;
@@ -39,8 +40,8 @@ public class MouseAction extends MouseAdapter implements Observer {
 			AI = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.BOTTOM)); // setup the AI as the bottom player
 			isAITurn = false; // player starts
 			AIActions = new ArrayList<>();
-//			timer = new Timer(300, new PVETimer(this)); // AI plays every 0.3 seconds
-//			timer.start();
+			timer = new Timer(300, new PVETimer(this)); // AI plays every 0.3 seconds
+			timer.start();
 		}
 	}
 	
@@ -178,7 +179,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 		if (isAITurn) {
 			// if we got no actions available then it's the beginning of the AIs turn.
 			if (AIActions.size() == 0) {
-				AIActions = AI.play(0); // generate the next actions
+				AIActions = AI.play(2); // generate the next actions
 			}
 
 			ActionResult actionResult = stadium.actionPerformedAI(AIActions.get(0)); // perform the first action in queue...
