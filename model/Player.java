@@ -17,7 +17,7 @@ public class Player {
 		this.ballPossession = false;
 		this.selected = false;
 	}
-	
+
 	public String getName() {
 		return this.name;
 	}
@@ -142,7 +142,7 @@ public class Player {
 	}
 	
 	public boolean equals(Player second){
-		System.out.println(name + "/" + second);
+		//System.out.println(name + "/" + second);
 		return name.equals(second.getName());
 	}
 	

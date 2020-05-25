@@ -15,6 +15,7 @@ import model.enums.GameResult;
 import model.enums.TeamPosition;
 import patterns.Observer;
 
+import java.awt.event.MouseListener;
 import java.io.*;
 
 public class HoloTV implements Runnable {
@@ -108,6 +109,11 @@ public class HoloTV implements Runnable {
 	}
 
 	public void addArkadiaNewsMouseListener(MouseAction mouseAction) {
+		MouseListener[] mouseListeners = this.gamePanel.getArkadiaNews().getMouseListeners();
+		for (MouseListener mouseListener : mouseListeners) {
+			this.gamePanel.getArkadiaNews().removeMouseListener(mouseListener);
+		}
+
 		this.gamePanel.getArkadiaNews().addMouseListener(mouseAction);
 	}
 

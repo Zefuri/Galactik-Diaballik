@@ -36,6 +36,8 @@ public class MouseAction extends MouseAdapter implements Observer {
 		this.gameSaver = gameSaver;
 		this.visualisationMode = stadium.isInVisualisationMode();
 
+		System.out.println((this.gameSaver == null) + " dans le constructeur");
+
 		if (withAI) { // initialize AI if needed
 			AI = new BallActionAI_1(stadium, stadium.getTeam(TeamPosition.BOTTOM)); // setup the AI as the bottom player
 			isAITurn = false; // player starts
@@ -61,7 +63,10 @@ public class MouseAction extends MouseAdapter implements Observer {
 
 				try {
 					result = stadium.performRequestedAction();
-					gameSaver.overwriteSave();
+
+					System.out.println(this.gameSaver == null);
+
+					this.gameSaver.overwriteSave();
 				} catch (RuntimeException ex) {
 					//Means that the user performed an undoable action
 					System.out.println(ex.toString());
@@ -72,6 +77,7 @@ public class MouseAction extends MouseAdapter implements Observer {
 				holoTV.updateGameInfos();
 
 				if (holoTV.switchToGoodPanel(result, AI)) {
+					System.out.println("on a switch to good panel sans raison");
 					closeGameSaver();
 				}
 			}
@@ -170,18 +176,8 @@ public class MouseAction extends MouseAdapter implements Observer {
 			holoTV.updateGameInfos();
 
 			// check if WIN and switch to the end panel
-			if(actionResult == ActionResult.WIN) {
-				timer.stop();
-				holoTV.switchToEndGamePanel(GameResult.DEFEAT, stadium.getTeam(TeamPosition.TOP).getName());
-			}
-
-			// check if ANTIPLAY and switch to the end panel
-			if(actionResult == ActionResult.ANTIPLAY) {
-				timer.stop();
-				holoTV.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
-			} else if(actionResult == ActionResult.ANTIPLAY_CURRENT) {
-				timer.stop();
-				holoTV.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getTeam(TeamPosition.TOP).getName());
+			if (holoTV.switchToGoodPanel(actionResult, AI)) {
+				closeGameSaver();
 			}
 
 			// if this was the last action then switch back to the player

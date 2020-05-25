@@ -46,6 +46,7 @@ public class Technoid implements Observer {
 
             case CLICKED_LOAD: { // context : MainMenuPanel
             	GameLoader gameLoader = new GameLoader(stadium);
+            	stadium.resetStadium();
             	
             	if (gameLoader.loadData()) {
                     stadium.loadTopTeam(gameLoader.getTopTeam());
@@ -59,6 +60,7 @@ public class Technoid implements Observer {
                         MouseAction mouseAction = new MouseAction(holoTV, stadium, true, gameSaver);
                         holoTV.addArkadiaNewsMouseListener(mouseAction);
                         holoTV.getGamePanel().addObserver(mouseAction);
+                        holoTV.updateGameInfos();
                         holoTV.switchToGamePanel();
                     } else {
             	        //The loaded game is in a bad conformation (WIN, ANTIPLAY) so we go to another mode
@@ -113,6 +115,7 @@ public class Technoid implements Observer {
                 MouseAction mouseActionNoAI = new MouseAction(holoTV, stadium, false, gameSaver);
                 
                 stadium.resetStadium();
+
                 holoTV.addArkadiaNewsMouseListener(mouseActionNoAI);
                 holoTV.getGamePanel().addObserver(mouseActionNoAI);
                 holoTV.updateGameInfos();
@@ -124,6 +127,8 @@ public class Technoid implements Observer {
                 stadium.resetStadium();
             	gameSaver = new GameSaver(stadium);
             	gameSaver.saveToFile();
+
+            	System.out.println("??");
             	
                 MouseAction mouseActionWithAI = new MouseAction(holoTV, stadium, true, gameSaver);
                 
