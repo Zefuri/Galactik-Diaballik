@@ -5,11 +5,14 @@ import javax.swing.JFrame;
 
 import javax.swing.SwingUtilities;
 
+import controller.ai.BallActionAI_1;
 import controller.listeners.MouseAction;
 
 import model.Stadium;
+import model.enums.ActionResult;
 import model.enums.GameResult;
 
+import model.enums.TeamPosition;
 import patterns.Observer;
 
 import java.io.*;
@@ -22,8 +25,12 @@ public class HoloTV implements Runnable {
 	private GameModePanel gameModePanel;
 	private GamePanel gamePanel;
 	private EndGamePanel endGamePanel;
-	
+
+	private Stadium stadium;
+
 	public HoloTV(Stadium stadium) {
+		this.stadium = stadium;
+
 		// create the main menu panel
 		this.mainMenuPanel = new MainMenuPanel();
 
@@ -32,7 +39,7 @@ public class HoloTV implements Runnable {
 
 		// Create the GamePanel and himself create and add an ArkadiaNews
 		this.gamePanel = new GamePanel(stadium);
-		
+
 		// Create the end game panel
 		this.endGamePanel = new EndGamePanel();
 	}
@@ -41,9 +48,9 @@ public class HoloTV implements Runnable {
 		return frame;
 	}
 
-    public GamePanel getGamePanel() {
-        return gamePanel;
-    }
+	public GamePanel getGamePanel() {
+		return gamePanel;
+	}
 
 	@Override
 	public void run() {
@@ -52,13 +59,13 @@ public class HoloTV implements Runnable {
 
 		// Add the panel to the frame
 		this.frame.add(this.mainMenuPanel);
-		
-		// When red X is clicked
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Give it a default size and lets roll
-        frame.setSize(950, 740);
-        frame.setVisible(true);
+		// When red X is clicked
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		// Give it a default size and lets roll
+		frame.setSize(950, 740);
+		frame.setVisible(true);
 
 		playMusic();
 
@@ -99,27 +106,27 @@ public class HoloTV implements Runnable {
 	public void stopMusic() {
 		audioLine.stop();
 	}
-	
+
 	public void addArkadiaNewsMouseListener(MouseAction mouseAction) {
 		this.gamePanel.getArkadiaNews().addMouseListener(mouseAction);
 	}
-	
+
 	public ArkadiaNews getArkadiaNews() {
 		return this.gamePanel.getArkadiaNews();
 	}
-	
+
 	public void updateGameInfos() {
 		this.gamePanel.updateGamePanelInfos();
 	}
-	
+
 	public int getCaseSize() {
 		return this.gamePanel.getArkadiaNews().getCaseSize();
 	}
-	
+
 	public int getScreenWidth() {
 		return this.frame.getWidth();
 	}
-	
+
 	public int getScreenHeight() {
 		return this.frame.getHeight();
 	}
@@ -151,22 +158,52 @@ public class HoloTV implements Runnable {
 		frame.validate();  // very important
 		SwingUtilities.updateComponentTreeUI(frame);
 	}
-	
+
 	public void switchToMainMenuPanel() {
 		frame.getContentPane().removeAll();
 		frame.add(mainMenuPanel);
 		frame.validate();  // very important
 		SwingUtilities.updateComponentTreeUI(frame);
 	}
-	
+
 	public void switchToEndGamePanel(GameResult gameResult, String teamName) {
 		// create the end game panel
 		this.endGamePanel.setGameResult(gameResult, teamName);
-		
+
 		// replacing the current panel
 		frame.getContentPane().removeAll();
 		frame.add(endGamePanel);
 		frame.validate();
 		SwingUtilities.updateComponentTreeUI(frame);
+	}
+
+	public boolean switchToGoodPanel(ActionResult actionResult, BallActionAI_1 AI) {
+		boolean panelSwitched = false;
+
+		if (actionResult == ActionResult.WIN) {
+			if (stadium.getCurrentTeamTurn() == stadium.getTeam(TeamPosition.BOTTOM) && AI != null) {
+				this.switchToEndGamePanel(GameResult.DEFEAT, stadium.getTeam(TeamPosition.TOP).getName());
+			} else {
+				this.switchToEndGamePanel(GameResult.VICTORY, stadium.getCurrentTeamTurn().getName());
+			}
+			stadium.clearSelectedPlayer();
+			panelSwitched = true;
+		}
+
+		if (actionResult == ActionResult.ANTIPLAY_CURRENT && AI != null) {
+			this.switchToEndGamePanel(GameResult.DEFEAT_ANTIPLAY, stadium.getCurrentTeamTurn().getName());
+			stadium.clearSelectedPlayer();
+			panelSwitched = true;
+		} else if (actionResult == ActionResult.ANTIPLAY_CURRENT) {
+			this.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getNotPlayingTeam().getName());
+			stadium.clearSelectedPlayer();
+			panelSwitched = true;
+		} else if (actionResult == ActionResult.ANTIPLAY) {
+			this.switchToEndGamePanel(GameResult.VICTORY_ANTIPLAY, stadium.getCurrentTeamTurn().getName());
+			stadium.clearSelectedPlayer();
+			panelSwitched = true;
+		}
+
+		return panelSwitched;
 	}
 }

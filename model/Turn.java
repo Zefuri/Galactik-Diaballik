@@ -26,63 +26,76 @@ public class Turn {
 		this.nbMove = 0;
 		this.cheatModActivated = cheat;
 	}
-	
+
 	public void addAction(Action action) {
 		this.actions[this.nbMove + this.nbPass] = action;
-		
+
 		if (action.getType() == ActionType.PASS && !cheatModActivated) {
 			this.nbPass++;
 		} else if (action.getType() == ActionType.MOVE && !cheatModActivated) {
 			this.nbMove++;
 		}
 	}
-	
+
 	public Action[] getActions() {
 		return this.actions;
 	}
-	
+
 	public Action getAction(int index) {
 		return this.actions[index];
 	}
-	
+
+	public Action getLastActionPerformed() {
+		if (this.getThirdAction() != null) {
+			return this.getThirdAction();
+		} else if (this.getSecondAction() != null) {
+			return this.getSecondAction();
+		} else if (this.getFirstAction() != null) {
+			return this.getFirstAction();
+		} else {
+			//The current turn is empty
+			return null;
+		}
+	}
+
 	public Action getFirstAction() {
 		return this.getAction(0);
 	}
-	
+
 	public Action getSecondAction() {
 		return this.getAction(1);
 	}
-	
+
 	public Action getThirdAction() {
 		return this.getAction(2);
 	}
-	
+
 	public Team getTeam() {
 		return this.team;
 	}
-	
+
 	public int getNbPassDone() {
 		return this.nbPass;
 	}
-	
+
 	public int getNbPassLeft() {
 		return ModelConstants.MAX_PASSES_PER_TOUR - this.nbPass;
 	}
-	
+
 	public int getNbMoveDone() {
 		return this.nbMove;
 	}
-	
+
 	public int getNbMoveLeft() {
 		return ModelConstants.MAX_MOVES_PER_TOUR - this.nbMove;
 	}
-	
+
 	public ActionResult undo() {
 		ActionResult res = ActionResult.DONE;
-		
+
 		if (this.nbMove + this.nbPass > 0) {
 			Action actionToDelete = this.actions[(this.nbPass + this.nbMove) - 1];
-			
+
 			if(actionToDelete.getType() == ActionType.PASS) {
 				actionToDelete.getPreviousPlayer().setBallPossession(true);
 				actionToDelete.getNextPlayer().setBallPossession(false);
@@ -95,7 +108,7 @@ public class Turn {
 					this.nbMove--;
 				}
 			}
-			
+
 			//We clear the action properly (better for the save) if we are not in visualization mode
 			if (!this.team.getStadium().isInVisualisationMode()) {
 				this.actions[this.nbPass + this.nbMove] = null;
@@ -103,13 +116,13 @@ public class Turn {
 		} else {
 			res = ActionResult.ERROR;
 		}
-		
+
 		return res;
 	}
-	
+
 	public void redo() {
 		Action actionToPerform = this.actions[this.nbPass + this.nbMove];
-		
+
 		if (actionToPerform.getType() == ActionType.PASS) {
 			actionToPerform.getPreviousPlayer().setBallPossession(false);
 			actionToPerform.getNextPlayer().setBallPossession(true);
@@ -119,21 +132,21 @@ public class Turn {
 			this.nbMove++;
 		}
 	}
-	
+
 	public ActionResult deleteActions() {
 		ActionResult res = ActionResult.ERROR;
-		
+
 		while (this.nbMove + this.nbPass > 0) {
 			res = undo();
 		}
-		
+
 		return res;
 	}
 
 	public Turn inverse() {
 		Turn inverseTurn = new Turn(team);
 
-        for (int i = 2; i >= 0; i--) {
+		for (int i = 2; i >= 0; i--) {
 			Action a = actions[i];
 
 			if (a.getType() != ActionType.END_TURN) {
@@ -162,39 +175,39 @@ public class Turn {
 
 	public String toString(){
 		StringBuilder builder = new StringBuilder();
-		
+
 		for(Action a : actions){
 			builder.append((a != null) ? a.toString() : "NA\n\n");
 		}
-		
+
 		return builder.toString();
 	}
-	
+
 	public void setNbMovesDone(int nbMoves) {
 		this.nbMove = nbMoves;
 	}
-	
+
 	public void setNbPassesDone(int nbPasses) {
 		this.nbPass = nbPasses;
 	}
-	
+
 	public boolean undoGoesToPreviousTour() {
 		return this.nbPass + this.nbMove == 0;
 	}
-	
+
 	public boolean redoGoesToNextTour() {
 		if (this.nbMove + this.nbPass == 3) {
 			return true;
 		}
-		
+
 		return (this.actions[this.nbPass + this.nbMove] == null);
 	}
 
 	public void switchCheatModActivated() {
 		this.cheatModActivated = !cheatModActivated;
 	}
-	
+
 	public boolean isEmpty() {
 		return this.actions[0] == null && this.actions[1] == null && this.actions[2] == null;
-	} 
+	}
 }
