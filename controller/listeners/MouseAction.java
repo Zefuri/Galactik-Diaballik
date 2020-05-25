@@ -1,6 +1,6 @@
-package listeners;
+package controller.listeners;
 
-import ai.BallActionAI_1;
+import controller.ai.BallActionAI_1;
 import model.Action;
 import model.Case;
 import model.Stadium;

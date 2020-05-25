@@ -5,7 +5,7 @@ import javax.swing.JFrame;
 
 import javax.swing.SwingUtilities;
 
-import listeners.MouseAction;
+import controller.listeners.MouseAction;
 
 import model.Stadium;
 import model.enums.GameResult;

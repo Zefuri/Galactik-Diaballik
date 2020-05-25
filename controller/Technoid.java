@@ -1,5 +1,5 @@
-import ai.BallActionAI_1;
-import listeners.MouseAction;
+import controller.ai.BallActionAI_1;
+import controller.listeners.MouseAction;
 
 import model.Action;
 import model.Stadium;

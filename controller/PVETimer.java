@@ -1,4 +1,4 @@
-import listeners.MouseAction;
+import controller.listeners.MouseAction;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
