@@ -205,6 +205,7 @@ public class CoupAction {
 		
 		for(int i = 0; !canFinish   &&   i != team.getPlayers().size(); i++) {
 			Player p = team.playerOfInt(i);
+
 			if(!p.equals(ballPlayer)) {
 			
 				//pass

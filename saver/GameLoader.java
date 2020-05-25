@@ -217,6 +217,7 @@ public class GameLoader {
 				player.setBallPossession(true);
 				
 				team.addPlayer(player);
+				team.setBallPlayer(player);
 				break;
 			}
 			
@@ -234,6 +235,7 @@ public class GameLoader {
 				player.setBallPossession(true);
 				
 				team.addPlayer(player);
+				team.setBallPlayer(player);
 				break;
 			}
 		}

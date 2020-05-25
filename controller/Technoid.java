@@ -56,7 +56,7 @@ public class Technoid implements Observer {
             	    if (gameCanBeLoaded == ActionResult.DONE) {
                         gameSaver = new GameSaver(stadium, gameLoader.getCurrentSavePath());
 
-                        MouseAction mouseAction = new MouseAction(holoTV, stadium, false, gameSaver);
+                        MouseAction mouseAction = new MouseAction(holoTV, stadium, true, gameSaver);
                         holoTV.addArkadiaNewsMouseListener(mouseAction);
                         holoTV.getGamePanel().addObserver(mouseAction);
                         holoTV.switchToGamePanel();

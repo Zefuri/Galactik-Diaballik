@@ -142,6 +142,7 @@ public class Player {
 	}
 	
 	public boolean equals(Player second){
+		System.out.println(name + "/" + second);
 		return name.equals(second.getName());
 	}
 	

@@ -93,6 +93,11 @@ public class Team {
 	}
 	
 	public Player getBallPlayer() throws IllegalStateException {
+		System.out.println(ballPlayer);
+
+		System.out.println(this);
+		System.out.println(this.getEnemyTeam());
+
 		return ballPlayer;
 	}
 	
@@ -198,5 +203,17 @@ public class Team {
 		}
 		
 		throw new IllegalStateException("There must be a player with the given name!");
+	}
+
+	public String toString()
+	{
+		StringBuilder builder = new StringBuilder();
+
+		for (Player p : this.getPlayers())
+		{
+			builder.append("Nom : ").append(p.getName()).append("\n").append("Case : ").append(p.getPosition()).append("\n").append("Possession balle : ").append(p.hasBall()).append("\n\n");
+		}
+
+		return builder.toString();
 	}
 }
