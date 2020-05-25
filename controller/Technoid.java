@@ -113,8 +113,7 @@ public class Technoid implements Observer {
             	gameSaver.saveToFile();
             	
                 MouseAction mouseActionNoAI = new MouseAction(holoTV, stadium, false, gameSaver);
-                
-                stadium.resetStadium();
+
 
                 holoTV.addArkadiaNewsMouseListener(mouseActionNoAI);
                 holoTV.getGamePanel().addObserver(mouseActionNoAI);
@@ -131,8 +130,7 @@ public class Technoid implements Observer {
             	System.out.println("??");
             	
                 MouseAction mouseActionWithAI = new MouseAction(holoTV, stadium, true, gameSaver);
-                
-                stadium.resetStadium();
+
                 holoTV.addArkadiaNewsMouseListener(mouseActionWithAI);
                 holoTV.getGamePanel().addObserver(mouseActionWithAI);
                 holoTV.updateGameInfos();
